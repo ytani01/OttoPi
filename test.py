@@ -28,7 +28,11 @@ def init_logger(name, debug):
 
 #####
 class Sample:
-    SLEEP_MSEC = 500
+    SLEEP_MSEC = 600
+
+    VAL_CENTER = 1500
+    VAL_MIN    = 500
+    VAL_MAX    = 2500
     
     def __init__(self, pins, debug=False):
         self.debug = debug
@@ -41,13 +45,6 @@ class Sample:
 
         self.stop()
 
-    def move_all(self, val):
-        self.logger.debug('val=%d', val)
-        
-        for p in self.pins:
-            self.pi.set_servo_pulsewidth(p, val)
-
-        time.sleep(self.SLEEP_MSEC)
 
     def main(self):
         self.logger.debug('')
@@ -55,15 +52,33 @@ class Sample:
         while True:
             for v in [550, 2450, 1500]:
                 self.move_all(v)
-                
-    def stop(self):
-        for p in self.pins:
-            self.pi.set_servo_pulsewidth(p, 0)
+
 
     def finish(self):
         self.logger.debug('')
+        self.move_all(self.VAL_CENTER)
         self.stop()
         self.pi.stop()
+
+        
+    def stop(self):
+        self.logger.debug('')
+        
+        for p in self.pins:
+            self.pi.set_servo_pulsewidth(p, 0)
+
+    def move_all(self, val, sleep_ms=SLEEP_MSEC):
+        self.logger.debug('val=%d', val)
+
+        if val < 500 or val > 2500:
+            self.logger.warn('500 <= val <= 2500')
+            return
+        
+        for p in self.pins:
+            self.pi.set_servo_pulsewidth(p, val)
+
+        self.logger.debug('sleep %d msec', sleep_ms)
+        time.sleep(sleep_ms/1000)
 
 #####
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -75,6 +90,9 @@ def main(pins, debug):
     logger = init_logger('', debug)
     logger.debug('pins   = %s', pins)
 
+    if len(pins) == 0:
+        return
+    
     obj = Sample(pins, debug=debug)
     try:
         obj.main()
