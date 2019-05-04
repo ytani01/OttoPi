@@ -42,7 +42,7 @@ class Sample:
         self.stop()
 
     def move_all(self, val):
-        self.logger.debug('val=%d')
+        self.logger.debug('val=%d', val)
         
         for p in self.pins:
             self.pi.set_servo_pulsewidth(p, val)
@@ -55,7 +55,6 @@ class Sample:
         while True:
             for v in [550, 2450, 1500]:
                 self.move_all(v)
-
                 
     def stop(self):
         for p in self.pins:
