@@ -28,20 +28,22 @@ def init_logger(name, debug):
 
 #####
 class Sample:
-    SLEEP_MSEC = 600
+    SLEEP_MSEC = 500
 
     VAL_CENTER = 1500
     VAL_MIN    = 500
     VAL_MAX    = 2500
     
-    def __init__(self, pins, debug=False):
+    def __init__(self, pi, pins, sleep_msec=None, debug=False):
         self.debug = debug
         self.logger = init_logger(__class__.__name__, debug)
         self.logger.debug('pins = %s', pins)
 
-        self.pins = pins
-
-        self.pi = pigpio.pi()
+        self.pi         = pi
+        self.pins       = pins
+        self.sleep_msec = sleep_msec
+        if self.sleep_msec is None:
+            self.sleep_msec = self.SLEEP_MSEC
 
         self.stop()
 
@@ -50,40 +52,66 @@ class Sample:
         self.logger.debug('')
 
         while True:
-            for v in [550, 2450, 1500]:
-                self.move_all(v)
+            for v in [500, 2500, 1500, 1200, 1800, 1500]:
+                pv = {}
+                for p in self.pins:
+                    pv[p] = v
+                self.move_all(pv)
 
 
     def finish(self):
         self.logger.debug('')
-        self.move_all(self.VAL_CENTER)
+
+        pv = {}
+        for p in self.pins:
+            if p == 0:
+                continue
+
+            pv[p] = self.VAL_CENTER
+        
+        self.move_all(pv)
         self.stop()
-        self.pi.stop()
 
         
     def stop(self):
         self.logger.debug('')
         
         for p in self.pins:
+            if p == 0:
+                continue
             self.pi.set_servo_pulsewidth(p, 0)
 
-    def move_all(self, val, sleep_ms=SLEEP_MSEC):
-        self.logger.debug('val=%d', val)
+    def move_all(self, pv, sleep_msec=None):
+        self.logger.debug('pv=%s', str(pv))
 
-        if val < 500 or val > 2500:
-            self.logger.warn('500 <= val <= 2500')
-            return
+        if sleep_msec is None:
+            sleep_msec = self.sleep_msec
+            
+        for p in pv.keys():
+            if p == 0:
+                self.logger.warn('p=%d: ignored', p)
+                continue
+
+            v = pv[p]
+            if v < 500 or v > 2500:
+                self.logger.warn('500 <= v <= 2500')
+                continue
         
-        for p in self.pins:
-            self.pi.set_servo_pulsewidth(p, val)
+            self.move1(p, v)
 
-        self.logger.debug('sleep %d msec', sleep_ms)
-        time.sleep(sleep_ms/1000)
+        self.logger.debug('sleep %d msec', sleep_msec)
+        time.sleep(sleep_msec/1000)
+
+
+    def move1(self, pin, val):
+        self.logger.debug('%d:%d', pin, val)
+
+        self.pi.set_servo_pulsewidth(pin, val)
 
 #####
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(context_settings=CONTEXT_SETTINGS)
-@click.argument('pins', type=int, nargs=-1)
+@click.argument('pins',   type=int, nargs=-1)
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(pins, debug):
@@ -93,12 +121,14 @@ def main(pins, debug):
     if len(pins) == 0:
         return
     
-    obj = Sample(pins, debug=debug)
+    pi  = pigpio.pi()
+    obj = Sample(pi, pins, 500, debug=debug)
     try:
         obj.main()
     finally:
         print('finally')
         obj.finish()
+        pi.stop()
 
 if __name__ == '__main__':
     main()
