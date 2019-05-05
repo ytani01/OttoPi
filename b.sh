@@ -21,9 +21,11 @@ move $i $i $i $i $s
 i=$(($i + $d))
 done
 
-while [ $i -ge 1500 ]
-do
-echo $i
-move $i $i $i $i $s
-i=$(($i - $d))
-done
+#while [ $i -ge 1500 ]
+#do
+#echo $i
+#move $i $i $i $i $s
+#i=$(($i - $d))
+#done
+
+reset
