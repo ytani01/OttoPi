@@ -33,8 +33,8 @@ PULSE_MIN  = 500
 PULSE_MAX  = 2500
 PULSE_HOME = 1500
 
-PULSE_STEP      = 30
-INTERVAL_FACTOR = 0.25
+PULSE_STEP      = 25
+INTERVAL_FACTOR = 0.4
 #INTERVAL_FACTOR = 1
 
 #####
@@ -100,15 +100,16 @@ class PiServo:
             self.pi.set_servo_pulsewidth(self.pin[i], pulse[i])
 
 
-    def home(self, v=0, quick=False):
+    def home(self, v=None, quick=False):
         self.logger.debug('')
+        
         p = [0] * self.pin_n
         self.move(p, v, quick)
         #self.set_pulse(self.pulse_home)
 
 
     def pos2pulse(self, pos):
-        self.logger.debug('pos = %s', pos)
+        self.logger.debug('pos=%s', pos)
 
         p = []
         for i in range(self.pin_n):
@@ -118,13 +119,14 @@ class PiServo:
 
 
     def move(self, pos, v=None, quick=False):
-        self.logger.debug('')
-        p = self.pos2pulse(pos)
+        self.logger.debug('pos=%s, v=%s, quick=%s', pos, v, quick)
+        p = [pos[i] + self.pulse_home[i] for i in range(self.pin_n)]
+        #p = self.pos2pulse(pos)
         self.move0(p, v, quick)
 
 
     def move0(self, pulse, v=None, quick=False):
-        self.logger.debug('pulse=%s', pulse)
+        self.logger.debug('pulse=%s, v=%s, quick=%s', pulse, v, quick)
 
         if v is None:
             v = INTERVAL_FACTOR
@@ -182,6 +184,9 @@ class PiServo:
         self.logger.debug('')
 
         print('cur_pulse = %s' % self.cur_pulse)
+        print('cur_pos = %s' %
+              [(self.cur_pulse[i] - self.pulse_home[i])
+               for i in range(self.pin_n)])
 
 #####
 class Sample:
@@ -196,24 +201,24 @@ class Sample:
         self.pin = pins
 
         self.servo = PiServo(self.pi, self.pin,
-                             [1500, 1420, 1330, 1450], debug=self.debug)
+                             [1500, 1440, 1340, 1450], debug=self.debug)
 
-    def move(self, p1, p2, p3, p4, v=None):
+    def move(self, p1, p2, p3, p4, v=None, quick=False):
         self.logger.debug('')
 
-        self.servo.move([p1, p2, p3, p4], v)
+        self.servo.move([p1, p2, p3, p4], v, quick)
         self.servo.print_pulse()
 
-    def walk1(self, v=None):
+    def walk1(self, v=None, quick=False):
         p1 = 250
         p2 = 200
-        p3 = 650
-        p4 = 280
+        p3 = 600
+        p4 = 260
         
-        self.move( p1,  p2,   0,  p3, v)
-        self.move(  0,  p4,  p4,   0, v)
-        self.move(-p3,   0, -p2, -p1, v)
-        self.move(  0, -p4, -p4,   0, v)
+        self.move( p1,  p2,   0,  p3, v, quick)
+        self.move(  0,  p4,  p4,   0, v, quick)
+        self.move(-p3,   0, -p2, -p1, v, quick)
+        self.move(  0, -p4, -p4,   0, v, quick)
         
 
     def main(self):
@@ -221,26 +226,27 @@ class Sample:
 
         self.servo.home()
         self.servo.print_pulse()
-        time.sleep(2)
 
-        self.servo.move([300, 0, 0, 300])
-        self.servo.move([-300, 0, 0, -300])
+        self.move( 100,  200,  200,  100)
+        self.move(-100, -200, -200, -100)
         self.servo.home()
         time.sleep(2)
 
-        self.walk1(v=0.5)
-        self.walk1(v=0.5)
-        self.walk1(v=0.5)
-        self.walk1(v=0.5)
+        self.move(0, 260, 260, 0)
+        self.walk1()
+        self.walk1()
+        self.walk1()
+        self.walk1()
 
         self.finish()
             
     def finish(self):
         self.logger.debug('')
 
-        self.servo.move([0, 0, 0, 0], v=0.5)
-        self.servo.stop()
+        self.servo.home()
+        self.servo.print_pulse()
         time.sleep(1)
+        self.servo.stop()
         
 #####
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
