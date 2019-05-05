@@ -61,8 +61,13 @@ class PiServo:
         if self.pulse_home is None:
             self.pulse_home = [PULSE_HOME] * self.pin_n
 
-        self.cur_pulse = [pulse_home] * self.pin_n
-        self.set_pulse(self.pulse_home)
+        self.logger.debug('pulse_min  = %s', self.pulse_min)
+        self.logger.debug('pulse_max  = %s', self.pulse_max)
+        self.logger.debug('pulse_home = %s', self.pulse_home)
+
+        self.cur_pulse = [0] * self.pin_n
+
+        self.home()
         self.stop()
 
     def set_pulse(self, pulse):
@@ -80,9 +85,12 @@ class PiServo:
                                      self.pulse_max[i])
                     pulse[i] = self.pulse_max[i]
 
-                self.cur_pulse[i] = pulse[i] - self.pulse_min[i]
+                self.cur_pulse[i] = pulse[i]
 
             self.pi.set_servo_pulsewidth(self.pin[i], pulse[i])
+
+    def home(self):
+        self.set_pulse(self.pulse_home)
 
     def stop(self):
         self.logger.debug('')
@@ -90,7 +98,16 @@ class PiServo:
         pulse = [0] * self.pin_n
         self.set_pulse(pulse)
         
-    def move(self, pulse):
+    def move(self, pos):
+        self.logger.debug('')
+
+        p = [0] * self.pin_n
+        for i in range(self.pin_n):
+            p[i] = pos[i] + self.pulse_home[i]
+
+        self.move0(p)
+
+    def move0(self, pulse):
         self.logger.debug('pulse=%s', pulse)
 
         d_max = 0
@@ -104,7 +121,9 @@ class PiServo:
         if d_max > PULSE_STEP * step_n:
             step_n += 1
         print('step_n =', step_n)
-        
+
+        interval_msec = d_max / step_n * INTERVAL_FACTOR
+
         pulse0 = [0] * self.pin_n
         dp = [0] * self.pin_n
         for i in range(self.pin_n):
@@ -120,29 +139,9 @@ class PiServo:
 
             print('p =', p)
             self.set_pulse(p)
-            
-            
-        '''
-        if interval_msec is None:
-            interval_msec = self.DEF_INTERVAL_MSEC
-
-        if new_pos > self.cur_pulse:
-            pulse_step = self.PULSE_STEP
-        else:
-            pulse_step = -self.PULSE_STEP
-
-        while self.cur_pulse != new_pos:
-            d = new_pos - self.cur_pulse
-            if abs(d) >= self.PULSE_STEP:
-                next_pos = self.cur_pulse + pulse_step
-            else:
-                next_pos = self.cur_pulse + d
-            self.logger.debug('next_pos = %d', next_pos)
-
-            self.set_pulse(next_pos + self.pulse_home)
             time.sleep(interval_msec/1000)
-        '''
-
+            
+            
     def print_pulse(self):
         self.logger.debug('')
 
@@ -160,20 +159,27 @@ class Sample:
         self.pi  = pi
         self.pin = pins
 
-        self.servo = PiServo(self.pi, self.pin, debug=self.debug)
+        self.servo = PiServo(self.pi, self.pin,
+                             [1500, 1400, 1320, 1450], debug=self.debug)
 
     def main(self):
         self.logger.debug('')
 
+        self.servo.home()
         self.servo.print_pulse()
 
-        self.servo.move([1000,  2000, 1750, 1999])
+
+        time.sleep(self.SLEEP_MSEC/1000)
+
+        self.servo.move([100,  0, 0, 100])
         self.servo.print_pulse()
 
         time.sleep(self.SLEEP_MSEC/1000)
 
-        self.servo.move([1500, 1500, 1500, 1500])
+        self.servo.move([200,  0, 0, 100])
         self.servo.print_pulse()
+
+        time.sleep(self.SLEEP_MSEC/1000)
 
         self.finish()
             
@@ -181,6 +187,7 @@ class Sample:
         self.logger.debug('')
 
         self.servo.stop()
+        time.sleep(1)
         
 #####
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
