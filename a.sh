@@ -1,20 +1,24 @@
 #!/bin/sh
 
-P1=22
-P2=27
-P3=17
-P4=4
+echo $0
 
-move() {
-    pigs s $P1 $1 s $P2 $2 s $P3 $3 s $P4 $4 mils $5
-}
-
-reset() {
-    move 1500 1500 1500 1500 500
-    move 0 0 0 0 500
-}
+. ./common.sh
 
 #####
+reset
+sleep 1
+
+move 1400 1600 1500 1700 500
+move 1300 1500 1500 1500 500
+exit
+move 1300 1200 1500 1700 500
+reset
+
+exit
+
+move 1300 1500 1600 1700 500
+move 1300 1500 1800 1700 500
+sleep 1
 reset
 
 while true; do
