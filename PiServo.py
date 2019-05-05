@@ -34,8 +34,10 @@ PULSE_MAX  = 2500
 PULSE_HOME = 1500
 
 PULSE_STEP      = 25
-INTERVAL_FACTOR = 0.4
+INTERVAL_FACTOR = 0.5
 #INTERVAL_FACTOR = 1
+
+SAMPLE_PULSE_HOME = [1500, 1440, 1345, 1450]
 
 #####
 class PiServo:
@@ -190,18 +192,16 @@ class PiServo:
 
 #####
 class Sample:
-    #SLEEP_MSEC = 1000
-
-    def __init__(self, pi, pins, debug=False):
+    def __init__(self, pins, debug=False):
         self.debug = debug
         self.logger = get_logger(__class__.__name__, debug)
         self.logger.debug('pins = %s', pins)
 
-        self.pi  = pi
         self.pin = pins
 
-        self.servo = PiServo(self.pi, self.pin,
-                             [1500, 1440, 1340, 1450], debug=self.debug)
+        self.pi  = pigpio.pi()
+        self.servo = PiServo(self.pi, self.pin, SAMPLE_PULSE_HOME,
+                             debug=self.debug)
 
     def move(self, p1, p2, p3, p4, v=None, quick=False):
         self.logger.debug('')
@@ -209,7 +209,11 @@ class Sample:
         self.servo.move([p1, p2, p3, p4], v, quick)
         self.servo.print_pulse()
 
-    def walk1(self, v=None, quick=False):
+
+    def home(self, v=None, quick=False):
+        self.move(0, 0, 0, 0, v, quick)
+
+    def walk(self, v=None, quick=False):
         p1 = 250
         p2 = 200
         p3 = 600
@@ -217,8 +221,11 @@ class Sample:
         
         self.move( p1,  p2,   0,  p3, v, quick)
         self.move(  0,  p4,  p4,   0, v, quick)
+        #self.move(  0,   0,   0,   0, v, quick)
+        
         self.move(-p3,   0, -p2, -p1, v, quick)
         self.move(  0, -p4, -p4,   0, v, quick)
+        #self.move(  0,   0,   0,   0, v, quick)
         
 
     def main(self):
@@ -232,14 +239,15 @@ class Sample:
         self.servo.home()
         time.sleep(2)
 
-        self.move(0, 260, 260, 0)
-        self.walk1()
-        self.walk1()
-        self.walk1()
-        self.walk1()
+        #self.move(0, 260, 260, 0, v=2)
+        self.walk()
+        self.walk()
+        self.walk()
+        self.walk()
 
         self.finish()
             
+
     def finish(self):
         self.logger.debug('')
 
@@ -247,6 +255,7 @@ class Sample:
         self.servo.print_pulse()
         time.sleep(1)
         self.servo.stop()
+        self.pi.stop()
         
 #####
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -261,14 +270,12 @@ def main(pin1, pin2, pin3, pin4, debug):
     logger = get_logger('', debug)
     logger.debug('pins: %d, %d, %d, %d', pin1, pin2, pin3, pin4)
 
-    pi  = pigpio.pi()
-    obj = Sample(pi, [pin1, pin2, pin3, pin4], debug=debug)
+    obj = Sample([pin1, pin2, pin3, pin4], debug=debug)
     try:
         obj.main()
     finally:
         print('finally')
         obj.finish()
-        pi.stop()
 
 if __name__ == '__main__':
     main()
