@@ -213,6 +213,28 @@ class Sample:
     def home(self, v=None, quick=False):
         self.move1(0, 0, 0, 0, v, quick)
 
+    def turn_right1(self, interval=.2, v=None, quick=False):
+        self.home()
+        self.move1(-500, 0,    0, -250)
+        time.sleep(interval)
+        self.move1(   0, 0, -300, -250)
+        time.sleep(interval)
+        self.move1(   0, 0, -200,    0)
+        time.sleep(interval)
+        self.home()
+        time.sleep(interval)
+        
+    def turn_left1(self, interval=.2, v=None, quick=False):
+        self.home()
+        self.move1(250,   0, 0, 500)
+        time.sleep(interval)
+        self.move1(250, 300, 0,   0)
+        time.sleep(interval)
+        self.move1(  0, 200, 0,   0)
+        time.sleep(interval)
+        self.home()
+        time.sleep(interval)
+
     def walk1(self, v=None, quick=False):
         p1 = 250
         p2 = 200
@@ -232,6 +254,7 @@ class Sample:
         self.logger.debug('')
 
         self.servo.home()
+        time.sleep(1)
 
         self.move1(-400,    0,    0,  100)
         self.servo.home()
@@ -240,9 +263,15 @@ class Sample:
 
         time.sleep(1)
 
-        for i in range(4):
-            self.walk1()
-
+        self.turn_right1()
+        self.turn_right1()
+        self.walk1()
+        self.walk1()
+        self.turn_left1()
+        self.turn_left1()
+        self.walk1()
+        self.walk1()
+        
         self.servo.home()
 
         time.sleep(1)
