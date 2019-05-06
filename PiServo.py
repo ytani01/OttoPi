@@ -110,20 +110,16 @@ class PiServo:
         #self.set_pulse(self.pulse_home)
 
 
-    def pos2pulse(self, pos):
-        self.logger.debug('pos=%s', pos)
+    def move(self, pos_list=[], interval=0, v=None, quick=False):
+        self.logger.debug('pos_list=%s, v=%s, quick=%s', pos_list, v, quick)
 
-        p = []
-        for i in range(self.pin_n):
-            p.append(pos[i] + self.pulse_home[i])
-
-        return p
-
+        for p in pos_list:
+            move1(p, v, quick)
+            time.sleep(interval/1000)
 
     def move1(self, pos, v=None, quick=False):
         self.logger.debug('pos=%s, v=%s, quick=%s', pos, v, quick)
         p = [pos[i] + self.pulse_home[i] for i in range(self.pin_n)]
-        #p = self.pos2pulse(pos)
         self.move_p(p, v, quick)
 
 
@@ -203,8 +199,16 @@ class Sample:
         self.servo = PiServo(self.pi, self.pin, SAMPLE_PULSE_HOME,
                              debug=self.debug)
 
+    def move(self, p_lst=[], interval=0, v=None, quick=False):
+        self.logger.debug('p_lst=%s, interval=%dmsec, v=%s, quick=%s',
+                          p_lst, interval, v, quick)
+
+        self.servo.move(p_lst, interval, v, quick)
+
+
     def move1(self, p1, p2, p3, p4, v=None, quick=False):
-        self.logger.debug('')
+        self.logger.debug('(p1, p2, p3, p4)=%s, v=%s, quick=%s',
+                          (p1, p2, p3, p4), v, quick)
 
         self.servo.move1([p1, p2, p3, p4], v, quick)
         self.servo.print_pulse()
@@ -213,24 +217,27 @@ class Sample:
     def home(self, v=None, quick=False):
         self.move1(0, 0, 0, 0, v, quick)
 
-    def turn_right1(self, interval=.2, v=None, quick=False):
+ 
+    def turn_right1(self, interval=.3, v=None, quick=False):
         self.home()
-        self.move1(-500, 0,    0, -250)
+        self.move1(-500, 0, -100, -230)
         time.sleep(interval)
-        self.move1(   0, 0, -300, -250)
+        self.move1(   0, 0, -250, -230)
+        self.move1(   0, 0, -200, -100)
         time.sleep(interval)
-        self.move1(   0, 0, -200,    0)
+        self.move1(   0, 0,    0, -100)
         time.sleep(interval)
         self.home()
         time.sleep(interval)
         
-    def turn_left1(self, interval=.2, v=None, quick=False):
+    def turn_left1(self, interval=.3, v=None, quick=False):
         self.home()
-        self.move1(250,   0, 0, 500)
+        self.move1(230, 100, 0, 500)
         time.sleep(interval)
-        self.move1(250, 300, 0,   0)
+        self.move1(230, 250, 0,   0)
+        self.move1(100, 200, 0,   0)
         time.sleep(interval)
-        self.move1(  0, 200, 0,   0)
+        self.move1(100,   0, 0,   0)
         time.sleep(interval)
         self.home()
         time.sleep(interval)
