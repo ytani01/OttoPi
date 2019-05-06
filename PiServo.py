@@ -106,7 +106,7 @@ class PiServo:
         self.logger.debug('')
         
         p = [0] * self.pin_n
-        self.move(p, v, quick)
+        self.move1(p, v, quick)
         #self.set_pulse(self.pulse_home)
 
 
@@ -120,14 +120,14 @@ class PiServo:
         return p
 
 
-    def move(self, pos, v=None, quick=False):
+    def move1(self, pos, v=None, quick=False):
         self.logger.debug('pos=%s, v=%s, quick=%s', pos, v, quick)
         p = [pos[i] + self.pulse_home[i] for i in range(self.pin_n)]
         #p = self.pos2pulse(pos)
-        self.move0(p, v, quick)
+        self.move_p(p, v, quick)
 
 
-    def move0(self, pulse, v=None, quick=False):
+    def move_p(self, pulse, v=None, quick=False):
         self.logger.debug('pulse=%s, v=%s, quick=%s', pulse, v, quick)
 
         if v is None:
@@ -203,47 +203,54 @@ class Sample:
         self.servo = PiServo(self.pi, self.pin, SAMPLE_PULSE_HOME,
                              debug=self.debug)
 
-    def move(self, p1, p2, p3, p4, v=None, quick=False):
+    def move1(self, p1, p2, p3, p4, v=None, quick=False):
         self.logger.debug('')
 
-        self.servo.move([p1, p2, p3, p4], v, quick)
+        self.servo.move1([p1, p2, p3, p4], v, quick)
         self.servo.print_pulse()
 
 
     def home(self, v=None, quick=False):
-        self.move(0, 0, 0, 0, v, quick)
+        self.move1(0, 0, 0, 0, v, quick)
 
-    def walk(self, v=None, quick=False):
+    def walk1(self, v=None, quick=False):
         p1 = 250
         p2 = 200
         p3 = 600
         p4 = 260
         
-        self.move( p1,  p2,   0,  p3, v, quick)
-        self.move(  0,  p4,  p4,   0, v, quick)
-        #self.move(  0,   0,   0,   0, v, quick)
+        self.move1( p1,  p2,   0,  p3, v, quick)
+        self.move1(  0,  p4,  p4,   0, v, quick)
+        #self.move1(  0,   0,   0,   0, v, quick)
         
-        self.move(-p3,   0, -p2, -p1, v, quick)
-        self.move(  0, -p4, -p4,   0, v, quick)
-        #self.move(  0,   0,   0,   0, v, quick)
+        self.move1(-p3,   0, -p2, -p1, v, quick)
+        self.move1(  0, -p4, -p4,   0, v, quick)
+        #self.move1(  0,   0,   0,   0, v, quick)
         
 
     def main(self):
         self.logger.debug('')
 
         self.servo.home()
-        self.servo.print_pulse()
 
-        self.move( 100,  200,  200,  100)
-        self.move(-100, -200, -200, -100)
+        self.move1(-400,    0,    0,  100)
         self.servo.home()
-        time.sleep(2)
+        self.move1(-100,    0,    0,  400)
+        self.servo.home()
 
-        #self.move(0, 260, 260, 0, v=2)
-        self.walk()
-        self.walk()
-        self.walk()
-        self.walk()
+        time.sleep(1)
+
+        for i in range(4):
+            self.walk1()
+
+        self.servo.home()
+
+        time.sleep(1)
+        
+        self.move1(-400,    0,    0,  100)
+        self.servo.home()
+        self.move1(-100,    0,    0,  400)
+        self.servo.home()
 
         self.finish()
             
