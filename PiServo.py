@@ -33,11 +33,11 @@ PULSE_MIN  = 500
 PULSE_MAX  = 2500
 PULSE_HOME = 1500
 
-PULSE_STEP      = 25
-INTERVAL_FACTOR = 0.5
+PULSE_STEP      = 20
+INTERVAL_FACTOR = 0.4
 #INTERVAL_FACTOR = 1
 
-SAMPLE_PULSE_HOME = [1500, 1440, 1345, 1450]
+SAMPLE_PULSE_HOME = [1470, 1430, 1490, 1490]
 
 #####
 class PiServo:
@@ -68,18 +68,18 @@ class PiServo:
         self.logger.debug('pulse_max  = %s', self.pulse_max)
         self.logger.debug('pulse_home = %s', self.pulse_home)
 
-        self.pulse_stop = [0] * self.pin_n
-        self.logger.debug('pulse_stop = %s', self.pulse_home)
+        self.pulse_off = [0] * self.pin_n
+        self.logger.debug('pulse_off = %s', self.pulse_home)
 
         self.cur_pulse = [PULSE_HOME] * self.pin_n
 
         self.home()
-        self.stop()
+        self.off()
 
 
-    def stop(self):
+    def off(self):
         self.logger.debug('')
-        self.set_pulse(self.pulse_stop)
+        self.set_pulse(self.pulse_off)
         
 
     def set_pulse(self, pulse):
@@ -105,17 +105,15 @@ class PiServo:
     def home(self, v=None, quick=False):
         self.logger.debug('')
         
-        p = [0] * self.pin_n
-        self.move1(p, v, quick)
-        #self.set_pulse(self.pulse_home)
+        self.move1([0] * self.pin_n, v, quick)
 
 
-    def move(self, pos_list=[], interval=0, v=None, quick=False):
+    def move(self, pos_list=[], interval_msec=0, v=None, quick=False):
         self.logger.debug('pos_list=%s, v=%s, quick=%s', pos_list, v, quick)
 
         for p in pos_list:
-            move1(p, v, quick)
-            time.sleep(interval/1000)
+            self.move1(p, v, quick)
+            time.sleep(interval_msec/1000)
 
     def move1(self, pos, v=None, quick=False):
         self.logger.debug('pos=%s, v=%s, quick=%s', pos, v, quick)
@@ -152,6 +150,7 @@ class PiServo:
         if step_n == 0:
             interval_msec = 0
         else:
+            #interval_msec = d_max / step_n * v
             interval_msec = d_max / step_n * v
         self.logger.debug('interval_msec=%d', interval_msec)
 
@@ -200,7 +199,7 @@ class Sample:
                              debug=self.debug)
 
     def move(self, p_lst=[], interval=0, v=None, quick=False):
-        self.logger.debug('p_lst=%s, interval=%dmsec, v=%s, quick=%s',
+        self.logger.debug('p_lst=%s, interval=%d, v=%s, quick=%s',
                           p_lst, interval, v, quick)
 
         self.servo.move(p_lst, interval, v, quick)
@@ -211,7 +210,6 @@ class Sample:
                           (p1, p2, p3, p4), v, quick)
 
         self.servo.move1([p1, p2, p3, p4], v, quick)
-        self.servo.print_pulse()
 
 
     def home(self, v=None, quick=False):
@@ -242,20 +240,62 @@ class Sample:
         self.home()
         time.sleep(interval)
 
-    def walk1(self, v=None, quick=False):
-        p1 = 250
-        p2 = 200
-        p3 = 600
-        p4 = 260
+
+    def change_rl(self, rl=''):
+        self.logger.debug('rl=%s', rl)
+
+        if rl=='':
+            return ''
+
+        if rl[0] == 'right'[0]:
+            return 'left'
+        if rl[0] == 'left'[0]:
+            return 'right'
+        return ''
+
+
+    def walk2(self, rl='', move='f', v=None, quick=False):
+        self.logger.debug('move=%s, v=%s, quick=%s',
+                          move, str(v), quick)
+
+        self.walk1(rl, move, v, quick)
+        if move[0] == 'end'[0]:
+            return
+
+        rl = self.change_rl(rl)
+        self.walk1(rl, move, v, quick)
+
+    def walk1(self, rl='', move='f', v=None, quick=False):
+        self.logger.debug('rl=%s, move=%s, v=%s, quick=%s',
+                          rl,move,str(v), quick)
+
+        if rl == '':
+            return
+
+        p1 = (700, 300)
+        p2 = (400)
+
+        if rl[0] == 'right'[0]:
+            self.move1(p1[0],0,0,p1[1], v=v, quick=quick)
+        if rl[0] == 'left'[0]:
+            self.move1(-p1[1], 0, 0, -p1[0], v=v, quick=quick)
+
+        if move[0] == 'end'[0]:
+            self.home(v=v, quick=quick)
+            return
         
-        self.move1( p1,  p2,   0,  p3, v, quick)
-        self.move1(  0,  p4,  p4,   0, v, quick)
-        #self.move1(  0,   0,   0,   0, v, quick)
-        
-        self.move1(-p3,   0, -p2, -p1, v, quick)
-        self.move1(  0, -p4, -p4,   0, v, quick)
-        #self.move1(  0,   0,   0,   0, v, quick)
-        
+        if rl[0] == 'right'[0]:
+            if move[0] == 'forward'[0]:
+                self.move1(0, p2, p2, 0, v=v, quick=quick)
+            if move[0] == 'back'[0]:
+                self.move1(0,-p2,-p2, 0, v=v, quick=quick)
+            
+        if rl[0] == 'left'[0]:
+            if move[0] == 'forowar'[0]:
+                self.move1(0,-p2,-p2, 0, v=v, quick=quick)
+            if move[0] == 'back'[0]:
+                self.move1(0, p2, p2, 0, v=v, quick=quick)
+
 
     def main(self):
         self.logger.debug('')
@@ -297,7 +337,7 @@ class Sample:
         self.servo.home()
         self.servo.print_pulse()
         time.sleep(1)
-        self.servo.stop()
+        self.servo.off()
         self.pi.stop()
         
 #####
