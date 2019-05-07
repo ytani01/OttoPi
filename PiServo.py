@@ -198,135 +198,24 @@ class Sample:
         self.servo = PiServo(self.pi, self.pin, SAMPLE_PULSE_HOME,
                              debug=self.debug)
 
-    def move(self, p_lst=[], interval=0, v=None, quick=False):
-        self.logger.debug('p_lst=%s, interval=%d, v=%s, quick=%s',
-                          p_lst, interval, v, quick)
-
-        self.servo.move(p_lst, interval, v, quick)
-
-
-    def move1(self, p1, p2, p3, p4, v=None, quick=False):
-        self.logger.debug('(p1, p2, p3, p4)=%s, v=%s, quick=%s',
-                          (p1, p2, p3, p4), v, quick)
-
-        self.servo.move1([p1, p2, p3, p4], v, quick)
-
-
-    def home(self, v=None, quick=False):
-        self.move1(0, 0, 0, 0, v, quick)
-
- 
-    def turn_right1(self, interval=.3, v=None, quick=False):
-        self.home()
-        self.move1(-500, 0, -100, -230)
-        time.sleep(interval)
-        self.move1(   0, 0, -250, -230)
-        self.move1(   0, 0, -200, -100)
-        time.sleep(interval)
-        self.move1(   0, 0,    0, -100)
-        time.sleep(interval)
-        self.home()
-        time.sleep(interval)
-        
-    def turn_left1(self, interval=.3, v=None, quick=False):
-        self.home()
-        self.move1(230, 100, 0, 500)
-        time.sleep(interval)
-        self.move1(230, 250, 0,   0)
-        self.move1(100, 200, 0,   0)
-        time.sleep(interval)
-        self.move1(100,   0, 0,   0)
-        time.sleep(interval)
-        self.home()
-        time.sleep(interval)
-
-
-    def change_rl(self, rl=''):
-        self.logger.debug('rl=%s', rl)
-
-        if rl=='':
-            return ''
-
-        if rl[0] == 'right'[0]:
-            return 'left'
-        if rl[0] == 'left'[0]:
-            return 'right'
-        return ''
-
-
-    def walk2(self, rl='', move='f', v=None, quick=False):
-        self.logger.debug('move=%s, v=%s, quick=%s',
-                          move, str(v), quick)
-
-        self.walk1(rl, move, v, quick)
-        if move[0] == 'end'[0]:
-            return
-
-        rl = self.change_rl(rl)
-        self.walk1(rl, move, v, quick)
-
-    def walk1(self, rl='', move='f', v=None, quick=False):
-        self.logger.debug('rl=%s, move=%s, v=%s, quick=%s',
-                          rl,move,str(v), quick)
-
-        if rl == '':
-            return
-
-        p1 = (700, 300)
-        p2 = (400)
-
-        if rl[0] == 'right'[0]:
-            self.move1(p1[0],0,0,p1[1], v=v, quick=quick)
-        if rl[0] == 'left'[0]:
-            self.move1(-p1[1], 0, 0, -p1[0], v=v, quick=quick)
-
-        if move[0] == 'end'[0]:
-            self.home(v=v, quick=quick)
-            return
-        
-        if rl[0] == 'right'[0]:
-            if move[0] == 'forward'[0]:
-                self.move1(0, p2, p2, 0, v=v, quick=quick)
-            if move[0] == 'back'[0]:
-                self.move1(0,-p2,-p2, 0, v=v, quick=quick)
-            
-        if rl[0] == 'left'[0]:
-            if move[0] == 'forowar'[0]:
-                self.move1(0,-p2,-p2, 0, v=v, quick=quick)
-            if move[0] == 'back'[0]:
-                self.move1(0, p2, p2, 0, v=v, quick=quick)
-
-
     def main(self):
         self.logger.debug('')
 
         self.servo.home()
         time.sleep(1)
 
-        self.move1(-400,    0,    0,  100)
+        self.servo.move1([-300, 0, 0, -300])
         self.servo.home()
-        self.move1(-100,    0,    0,  400)
-        self.servo.home()
-
-        time.sleep(1)
-
-        self.turn_right1()
-        self.turn_right1()
-        self.walk1()
-        self.walk1()
-        self.turn_left1()
-        self.turn_left1()
-        self.walk1()
-        self.walk1()
-        
+        self.servo.move1([300, 0, 0, 300])
         self.servo.home()
 
         time.sleep(1)
         
-        self.move1(-400,    0,    0,  100)
-        self.servo.home()
-        self.move1(-100,    0,    0,  400)
-        self.servo.home()
+        self.servo.move([[300, 0, 0, -300],
+                         [0, 0, 0, 0],
+                         [300, 0, 0, -300],
+                         [0, 0, 0, 0]],
+                        interval_msec=100)
 
         self.finish()
             
