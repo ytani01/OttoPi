@@ -98,26 +98,30 @@ class OttoPi:
     def turn1(self, rl='r', v=None, q=False):
         self.logger.debug('rl=%s, v=%s, q=%s', rl, str(v), q)
 
-        p1 = (700, 300)
+        p1 = (700, 350)
         p2 = 300
-        p3 = 200
+        p3 = 300
 
         self.home()
         time.sleep(0.5)
         
         if rl[0] == 'left'[0]:
-            self.move([[p1[0], 0, p2, p1[1]],
-                       [0, -p2, p2, 0],
+            self.move([[0,0,0,0],
+                       [p1[0], p2, 0, p1[1]],
+                       [p1[0], p2, p2, p1[1]],
+                       [0, -p3, p2, 0],
                        [-p1[1], 0, 0, -p1[0]],
                        [0,0,0,0]],
-                      interval_msec=100, v=v, q=q)
+                      v=v, q=q)
 
         if rl[0] == 'right'[0]:
-            self.move([[-p1[1], -p2, 0, -p1[0]],
-                       [0, -p2, p2, 0],
+            self.move([[0,0,0,0],
+                       [-p1[1], 0, -p2, -p1[0]],
+                       [-p1[1], -p2, -p2, -p1[0]],
+                       [0, -p2, p3, 0],
                        [p1[0], 0, 0, p1[1]],
-                       [0, 0, 0, 0]],
-                      interval_msec=100, v=v, q=q)
+                       [0,0,0,0]],
+                      v=v, q=q)
 
 
         time.sleep(0.1)
@@ -155,13 +159,24 @@ class OttoPi:
         if rl == '':
             return
 
-        p1 = (700, 330)
+        p1 = (700, 350)
         p2 = (400)
 
         if rl[0] == 'right'[0]:
-            self.move1(p1[0],0,0,p1[1], v=v, q=q)
+            if mv[0] == 'forward'[0]:
+                self.move1( p1[0], p2,  0,  p1[1], v=v, q=q)
+            if mv[0] == 'backward'[0]:
+                self.move1( p1[0],  0,  0,  p1[1], v=v, q=q)
+            if mv[0] == 'end'[0]:
+                self.move1( p1[0], p2/2,  0,  p1[1], v=v, q=q)
+                
         if rl[0] == 'left'[0]:
-            self.move1(-p1[1], 0, 0, -p1[0], v=v, q=q)
+            if mv[0] == 'forward'[0]:
+                self.move1(-p1[1], 0, -p2, -p1[0], v=v, q=q)
+            if mv[0] == 'backward'[0]:
+                self.move1(-p1[1], 0,   0, -p1[0], v=v, q=q)
+            if mv[0] == 'end'[0]:
+                self.move1(-p1[1], 0, -p2/2, -p1[0], v=v, q=q)
 
         time.sleep(.1)
 
