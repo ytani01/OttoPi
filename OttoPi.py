@@ -32,38 +32,52 @@ def get_logger(name, debug):
 #####
 PULSE_HOME = [1470, 1430, 1490, 1490]
 
+DEF_PIN = [4, 17, 27, 22]
+
 #####
 class OttoPi:
-    def __init__(self, pi, pin1, pin2, pin3, pin4, debug=False):
+    def __init__(self, pi=None,
+                 pin1=DEF_PIN[0], pin2=DEF_PIN[1],
+                 pin3=DEF_PIN[2], pin4=DEF_PIN[3],
+                 debug=False):
         self.debug = debug
         self.logger = get_logger(__class__.__name__, debug)
         self.logger.debug('pin: %s', [pin1, pin2, pin3, pin4])
 
-        self.pi  = pi
+        
+        if type(pi) == pigpio.pi:
+            self.pi   = pi
+            self.mypi = False
+        else:
+            self.pi   =  pigpio.pi()
+            self.mypi = True
+            
         self.pin = [pin1, pin2, pin3, pin4]
 
         self.servo = PiServo.PiServo(self.pi, self.pin, PULSE_HOME,
                                      debug=self.debug)
 
-        self.home()
         self.off()
+        self.home()
 
 
     def off(self):
         self.servo.off()
 
-    def move(self, p_lst=[], interval_msec=0, v=None, q=False):
-        self.logger.debug('p_lst=%s, interval_msec=%d, v=%s, q=%s',
-                          p_lst, interval_msec, v, q)
+    def move(self, p_list=[], interval_msec=0, v=None, q=False):
+        self.logger.debug('p_list=%s, interval_msec=%d, v=%s, q=%s',
+                          p_list, interval_msec, v, q)
 
-        self.servo.move(p_lst, interval_msec, v, q)
+        for p in p_list:
+            self.move1(p[0], p[1], p[2], p[3], v, q)
+            time.sleep(interval_msec/1000)
 
 
     def move1(self, p1, p2, p3, p4, v=None, q=False):
         self.logger.debug('(p1, p2, p3, p4)=%s, v=%s, q=%s',
                           (p1, p2, p3, p4), v, q)
 
-        self.servo.move1([p1, p2, p3, p4], v, q)
+        self.servo.move1([p1*10, p2*10, p3*10, p4*10], v, q)
 
 
     def home(self, v=None, q=False):
@@ -83,46 +97,84 @@ class OttoPi:
         return ''
 
 
-    def turn_right(self, n=1, v=None, q=False):
-        self.logger.debug('n=%d, v=%s, q=%s', n, str(v), q)
+    def ojigi(self, n=1, interval_msec=1000, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
 
-        for i in range(n):
-            self.turn1('r', v=v, q=q)
 
-    def turn_left(self, n=1, v=None, q=False):
-        self.logger.debug('n=%d, v=%s, q=%s', n, str(v), q)
-
-        for i in range(n):
-            self.turn1('l', v=v, q=q)
-
-    def turn1(self, rl='r', v=None, q=False):
-        self.logger.debug('rl=%s, v=%s, q=%s', rl, str(v), q)
-
-        p1 = (700, 350)
-        p2 = 300
-        p3 = 300
+        p1 = [10, 25, 15]
+        p2 = 90
 
         self.home()
-        time.sleep(0.5)
+        time.sleep(0.3)
+
+        for i in range(n):
+            self.move([[-p1[0], -p2, 0, 0],
+                       [-p1[0], -p2, p2, p1[0]]], v=v, q=q)
+            self.move([[-p1[1], -p2, p2, p1[1]],
+                       [-p1[2], -p2, p2, p1[1]]],
+                      interval_msec=500, v=v, q=q)
+            self.move([[-p1[0], -p2, 0, 0],
+                       [0,0,0,0]],v=v,q=q)
+            time.sleep(interval_msec/1000)
+        
+    def happy(self, n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+
+        p1 = 70
+        p2 = 10
+
+        self.home()
+        time.sleep(0.3)
+
+        for i in range(n):
+            self.move([[p1,0,0,-p2],
+                       [0,0,0,0],
+                       [p2,0,0,-p1],
+                       [0,0,0,0]],
+                      v=v, q=q)
+            time.sleep(interval_msec/1000)
+                      
+
+    def turn_right(self, n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+
+        for i in range(n):
+            self.turn1('r', interval_msec=interval_msec, v=v, q=q)
+
+    def turn_left(self, n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+
+        for i in range(n):
+            self.turn1('l', interval_msec=interval_msec, v=v, q=q)
+
+    def turn1(self, rl='r', interval_msec=0, v=None, q=False):
+        self.logger.debug('rl=%s, v=%s, q=%s', rl, str(v), q)
+
+        p1 = (65, 35)
+        p2 = 30
+
+        self.home()
+        time.sleep(0.3)
         
         if rl[0] == 'left'[0]:
-            self.move([[0,0,0,0],
-                       [p1[0], p2, 0, p1[1]],
-                       [p1[0], p2, p2, p1[1]],
-                       [0, -p3, p2, 0],
-                       [-p1[1], 0, 0, -p1[0]],
+            self.move([[p1[0],   p2, p2,   p1[1]],
+                       [0,      -p2, p2, p1[1]/2],
+                       [0,      -p2, p2,       0],
+                       [-p1[1],   0,  0,  -p1[0]],
                        [0,0,0,0]],
-                      v=v, q=q)
+                      interval_msec=interval_msec, v=v, q=q)
 
         if rl[0] == 'right'[0]:
-            self.move([[0,0,0,0],
-                       [-p1[1], 0, -p2, -p1[0]],
-                       [-p1[1], -p2, -p2, -p1[0]],
-                       [0, -p2, p3, 0],
+            self.move([[-p1[1], -p2, -p2, -p1[0]],
+                       [-p1[1]/2, -p2, p2, 0],
+                       [0, -p2, p2, 0],
                        [p1[0], 0, 0, p1[1]],
                        [0,0,0,0]],
-                      v=v, q=q)
-
+                      interval_msec=interval_msec, v=v, q=q)
 
         time.sleep(0.1)
             
@@ -159,8 +211,8 @@ class OttoPi:
         if rl == '':
             return
 
-        p1 = (700, 350)
-        p2 = (400)
+        p1 = (65, 35)
+        p2 = (40)
 
         if rl[0] == 'right'[0]:
             if mv[0] == 'forward'[0]:
@@ -203,6 +255,8 @@ class OttoPi:
         self.servo.home()
         time.sleep(1)
         self.servo.off()
+        if self.mypi:
+            self.pi.stop()
         
 #####
 class Sample:
