@@ -102,18 +102,18 @@ class OttoPi:
         p2 = 300
         p3 = 200
 
+        self.home()
+        time.sleep(0.5)
+        
         if rl[0] == 'left'[0]:
-            self.move([[p1[0], 0, 0, p1[1]],
-                       [p1[0], 0, p2/2, p1[1]],
-                       [p1[0], 0, p2, p1[1]],
+            self.move([[p1[0], 0, p2, p1[1]],
                        [0, -p2, p2, 0],
                        [-p1[1], 0, 0, -p1[0]],
                        [0,0,0,0]],
                       interval_msec=100, v=v, q=q)
 
         if rl[0] == 'right'[0]:
-            self.move([[-p1[1], 0, 0, -p1[0]],
-                       [-p1[1], -p2, 0, -p1[0]],
+            self.move([[-p1[1], -p2, 0, -p1[0]],
                        [0, -p2, p2, 0],
                        [p1[0], 0, 0, p1[1]],
                        [0, 0, 0, 0]],
@@ -139,6 +139,9 @@ class OttoPi:
         self.logger.debug('n=%d, mv=%s rl=%s, v=%s, q=%s',
                           n, mv, rl, str(v), q)
 
+        self.home()
+        time.sleep(0.5)
+
         for i in range(n):
             self.walk1(mv, rl, v=v, q=q)
             rl = self.change_rl(rl)
@@ -152,7 +155,7 @@ class OttoPi:
         if rl == '':
             return
 
-        p1 = (700, 350)
+        p1 = (700, 330)
         p2 = (400)
 
         if rl[0] == 'right'[0]:
@@ -184,7 +187,7 @@ class OttoPi:
 
         self.servo.home()
         time.sleep(1)
-        self.servo.stop()
+        self.servo.off()
         
 #####
 class Sample:
