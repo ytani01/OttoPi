@@ -2,7 +2,7 @@
 #
 # (c) 2019 Yoichi Tanibayashi
 #
-import PiServo
+from PiServo import PiServo
 
 import pigpio
 import time
@@ -32,19 +32,22 @@ def get_logger(name, debug):
 #####
 PULSE_HOME = [1470, 1430, 1490, 1490]
 
-DEF_PIN = [4, 17, 27, 22]
+DEF_PIN1 = 4
+DEF_PIN2 = 17
+DEF_PIN3 = 27
+DEF_PIN4 = 22
 
 #####
 class OttoPi:
     def __init__(self, pi=None,
-                 pin1=DEF_PIN[0], pin2=DEF_PIN[1],
-                 pin3=DEF_PIN[2], pin4=DEF_PIN[3],
+                 pin1=DEF_PIN1, pin2=DEF_PIN2,
+                 pin3=DEF_PIN3, pin4=DEF_PIN4,
                  debug=False):
         self.debug = debug
         self.logger = get_logger(__class__.__name__, debug)
+        self.logger.debug('pi:  %s', str(pi))
         self.logger.debug('pin: %s', [pin1, pin2, pin3, pin4])
 
-        
         if type(pi) == pigpio.pi:
             self.pi   = pi
             self.mypi = False
@@ -54,8 +57,8 @@ class OttoPi:
             
         self.pin = [pin1, pin2, pin3, pin4]
 
-        self.servo = PiServo.PiServo(self.pi, self.pin, PULSE_HOME,
-                                     debug=self.debug)
+        self.servo = PiServo(self.pi, self.pin, PULSE_HOME,
+                             debug=logger.propagate)
 
         self.off()
         self.home()
@@ -211,12 +214,12 @@ class OttoPi:
         if rl == '':
             return
 
-        p1 = (65, 35)
+        p1 = (65, 40)
         p2 = (40)
 
         if rl[0] == 'right'[0]:
             if mv[0] == 'forward'[0]:
-                self.move1( p1[0], p2,  0,  p1[1], v=v, q=q)
+                self.move1( p1[0], p2/2,  0,  p1[1], v=v, q=q)
             if mv[0] == 'backward'[0]:
                 self.move1( p1[0],  0,  0,  p1[1], v=v, q=q)
             if mv[0] == 'end'[0]:
@@ -224,7 +227,7 @@ class OttoPi:
                 
         if rl[0] == 'left'[0]:
             if mv[0] == 'forward'[0]:
-                self.move1(-p1[1], 0, -p2, -p1[0], v=v, q=q)
+                self.move1(-p1[1], 0, -p2/2, -p1[0], v=v, q=q)
             if mv[0] == 'backward'[0]:
                 self.move1(-p1[1], 0,   0, -p1[0], v=v, q=q)
             if mv[0] == 'end'[0]:
@@ -249,7 +252,7 @@ class OttoPi:
                 self.move1(0, p2, p2, 0, v=v, q=q)
 
 
-    def finish(self):
+    def end(self):
         self.logger.debug('')
 
         self.servo.home()
@@ -257,37 +260,3 @@ class OttoPi:
         self.servo.off()
         if self.mypi:
             self.pi.stop()
-        
-#####
-class Sample:
-    def __init__(self, pin1, pin2, pin3, pin4, debug=False):
-        self.debug = debug
-        self.logger = get_logger(__class__.__name__, debug)
-
-        self.pin = [pin1, pin2, pin3, pin4]
-
-        self.pi = pigpio.pi()
-        self.ottopi = OttoPi(self.pi, self.pin, debug=debug)
-
-#####
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
-@click.command(context_settings=CONTEXT_SETTINGS)
-@click.argument('pin1', type=int, default=4)
-@click.argument('pin2', type=int, default=17)
-@click.argument('pin3', type=int, default=27)
-@click.argument('pin4', type=int, default=22)
-@click.option('--debug', '-d', 'debug', is_flag=True, default=False,
-              help='debug flag')
-def main(pin1, pin2, pin3, pin4, debug):
-    logger = get_logger('', debug)
-    logger.debug('pins: %d, %d, %d, %d', pin1, pin2, pin3, pin4)
-
-    obj = Sample(pin1, pin2, pin3, pin4, debug=debug)
-    try:
-        obj.main()
-    finally:
-        print('finally')
-        obj.finish()
-
-if __name__ == '__main__':
-    main()

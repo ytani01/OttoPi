@@ -217,10 +217,10 @@ class Sample:
                          [0, 0, 0, 0]],
                         interval_msec=100)
 
-        self.finish()
+        self.end()
             
 
-    def finish(self):
+    def end(self):
         self.logger.debug('')
 
         self.servo.home()
@@ -247,7 +247,7 @@ def main(pin1, pin2, pin3, pin4, debug):
         obj.main()
     finally:
         print('finally')
-        obj.finish()
+        obj.end()
 
 if __name__ == '__main__':
     main()
