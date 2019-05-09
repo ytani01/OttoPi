@@ -161,7 +161,7 @@ class OttoPi:
         p2 = 30
 
         self.home()
-        time.sleep(0.3)
+        time.sleep(0.2)
         
         if rl[0] == 'left'[0]:
             self.move([[p1[0],   p2, p2,   p1[1]],
@@ -214,7 +214,7 @@ class OttoPi:
         if rl == '':
             return
 
-        p1 = (65, 40)
+        p1 = (65, 35)
         p2 = (40)
 
         if rl[0] == 'right'[0]:
