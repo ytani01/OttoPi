@@ -55,16 +55,18 @@ class OttoPiCtrl(threading.Thread):
             self.mypi = True
             
         self.op = OttoPi(self.pi, pin1, pin2, pin3, pin4,
-                         debug=logger.propagate)
+                         debug=logger.propagate and debug)
 
         self.cmd_func = {
-            'f': self.op.forward,
-            'b': self.op.backward,
-            'r': self.op.turn_right,
-            'l': self.op.turn_left,
-            'h': self.op.happy,
-            'o': self.op.ojigi,
-            '' : None }
+            'f': {'func': self.op.forward, 'priority': False},
+            'b': {'func': self.op.backward, 'priority': False},
+            'r': {'func': self.op.turn_right, 'priority': False},
+            'l': {'func': self.op.turn_left, 'priority': False},
+            'h': {'func': self.op.happy, 'priority': False},
+            'o': {'func': self.op.ojigi, 'priority': False},
+            's': {'func': self.op.stop, 'priority': True},
+            'g': {'func': self.op.go, 'priority': False},
+            '' : {'func': None, 'priority': False}}
 
 
         self.cmdq = queue.Queue()
@@ -88,6 +90,19 @@ class OttoPiCtrl(threading.Thread):
 
     def send_cmd(self, cmd):
         self.logger.debug('cmd=%s', cmd)
+
+        if not cmd.isnumeric() and not cmd in self.cmd_func.keys():
+            self.logger.warn('invalid cmd:%s: ignored', cmd)
+            
+        if not cmd.isnumeric() and self.cmd_func[cmd]['priority']:
+            self.logger.warn('cmd:%s is priority command', cmd)
+            while not self.cmdq.empty():
+                c = self.cmdq.get()
+                self.logger.warn('%s: ignored', c)
+            self.exec_cmd1(cmd)
+            self.cmdq.put('g')
+            return
+
         self.cmdq.put(cmd)
 
     def recv_cmd(self):
@@ -136,7 +151,7 @@ class OttoPiCtrl(threading.Thread):
             return True
         
         self.logger.debug('func=%s, n=%d', self.cmd_func[cmd], n)
-        self.cmd_func[cmd](n=n)
+        self.cmd_func[cmd]['func'](n=n)
         #time.sleep(2)
         return True
         
@@ -179,8 +194,13 @@ class Sample:
 
         while True:
             cmdline = input()
+            self.logger.debug('cmdline=%s', cmdline)
             if cmdline == '':
+                self.opc.send_cmd('s')
                 break
+            if len(cmdline) == 1 and not cmdline[0].isnumeric():
+                self.opc.send_cmd('s')
+                self.opc.send_cmd('0')
             while cmdline != '':
                 cmd = cmdline[0]
                 cmdline = cmdline[1:]

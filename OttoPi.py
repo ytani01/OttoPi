@@ -6,6 +6,7 @@ from PiServo import PiServo
 
 import pigpio
 import time
+import random
 
 import click
 
@@ -37,6 +38,8 @@ DEF_PIN2 = 17
 DEF_PIN3 = 27
 DEF_PIN4 = 22
 
+N_CONTINUOUS = 99999
+
 #####
 class OttoPi:
     def __init__(self, pi=None,
@@ -60,12 +63,26 @@ class OttoPi:
         self.servo = PiServo(self.pi, self.pin, PULSE_HOME,
                              debug=logger.propagate)
 
+        self.stop_flag = False
+
         self.off()
         self.home()
 
-
     def off(self):
+        self.logger.debug('')
         self.servo.off()
+
+
+    def stop(self, n=1):
+        self.logger.debug('')
+
+        self.stop_flag = True
+
+    def go(self, n=1):
+        self.logger.debug('')
+
+        self.stop_flag = False
+            
 
     def move(self, p_list=[], interval_msec=0, v=None, q=False):
         self.logger.debug('p_list=%s, interval_msec=%d, v=%s, q=%s',
@@ -104,7 +121,10 @@ class OttoPi:
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
 
-
+        if n == 0:
+            n = N_CONTINUOUS
+            self.logger.info('n=%d!', n)
+            
         p1 = [10, 25, 15]
         p2 = 90
 
@@ -112,6 +132,9 @@ class OttoPi:
         time.sleep(0.3)
 
         for i in range(n):
+            if self.stop_flag:
+                break
+            
             self.move([[-p1[0], -p2, 0, 0],
                        [-p1[0], -p2, p2, p1[0]]], v=v, q=q)
             self.move([[-p1[1], -p2, p2, p1[1]],
@@ -125,6 +148,10 @@ class OttoPi:
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
 
+        if n == 0:
+            n = N_CONTINUOUS
+            self.logger.info('n=%d!', n)
+            
         p1 = 70
         p2 = 10
 
@@ -132,6 +159,9 @@ class OttoPi:
         time.sleep(0.3)
 
         for i in range(n):
+            if self.stop_flag:
+                break
+            
             self.move([[p1,0,0,-p2],
                        [0,0,0,0],
                        [p2,0,0,-p1],
@@ -144,14 +174,28 @@ class OttoPi:
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
 
+        if n == 0:
+            n = N_CONTINUOUS
+            self.logger.info('n=%d!', n)
+            
         for i in range(n):
+            if self.stop_flag:
+                break
+            
             self.turn1('r', interval_msec=interval_msec, v=v, q=q)
 
     def turn_left(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
 
+        if n == 0:
+            n = N_CONTINUOUS
+            self.logger.info('n=%d!', n)
+            
         for i in range(n):
+            if self.stop_flag:
+                break
+            
             self.turn1('l', interval_msec=interval_msec, v=v, q=q)
 
     def turn1(self, rl='r', interval_msec=0, v=None, q=False):
@@ -182,26 +226,37 @@ class OttoPi:
         time.sleep(0.1)
             
 
-    def forward(self, n=1, rl='r', v=None, q=False):
+    def forward(self, n=1, rl='', v=None, q=False):
         self.logger.debug('n=%d, rl=%s, v=%s, q=%s',
                           n, rl, str(v), q)
 
         self.walk(n, 'f', rl, v=v, q=q)
         
-    def backward(self, n=1, rl='r', v=None, q=False):
+    def backward(self, n=1, rl='', v=None, q=False):
         self.logger.debug('n=%d, rl=%s, v=%s, q=%s',
                           n, rl, str(v), q)
 
         self.walk(n, 'b', rl, v=v, q=q)
         
-    def walk(self, n=1, mv='f', rl='r', v=None, q=False):
+    def walk(self, n=1, mv='f', rl='', v=None, q=False):
         self.logger.debug('n=%d, mv=%s rl=%s, v=%s, q=%s',
                           n, mv, rl, str(v), q)
+
+        if n == 0:
+            n = N_CONTINUOUS
+            self.logger.info('n=%d!', n)
+            
+        if rl == '':
+            rl = 'rl'[random.randint(0,1)]
+            self.logger.debug('rl=%s', rl)
 
         self.home()
         time.sleep(0.5)
 
         for i in range(n):
+            if self.stop_flag:
+                break
+            
             self.walk1(mv, rl, v=v, q=q)
             rl = self.change_rl(rl)
 
