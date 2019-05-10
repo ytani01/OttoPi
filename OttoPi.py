@@ -170,6 +170,55 @@ class OttoPi:
             time.sleep(interval_msec/1000)
                       
 
+    def side_right(self, n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+
+        if n == 0:
+            n = N_CONTINUOUS
+            self.logger.info('n=%d!', n)
+
+        for i in range(n):
+            if self.stop_flag:
+                break
+
+            self.side1('r', interval_msec=interval_msec, v=v, q=q)
+
+    def side_left(self, n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+
+        if n == 0:
+            n = N_CONTINUOUS
+            self.logger.info('n=%d!', n)
+
+        for i in range(n):
+            if self.stop_flag:
+                break
+
+            self.side1('l', interval_msec=interval_msec, v=v, q=q)
+
+    def side1(self, rl='r', interval_msec=0, v=None, q=False):
+        self.logger.debug('rl=%s, interval_msec=%d, v=%s, q=%s',
+                          rl, interval_msec, str(v), q)
+
+        p1 = (80, 30)
+        p2 = (-10, -60)
+
+        self.home()
+        time.sleep(interval_msec/1000)
+
+        if rl[0] == 'left'[0]:
+            self.move([(p1[0], 0, 0, p1[1]),
+                       (p2[0], 0, 0, p2[1]),
+                       (0,0,0,0)], interval_msec=interval_msec, v=v, q=q)
+
+        if rl[0] == 'right'[0]:
+            self.move([(-p1[1], 0, 0, -p1[0]),
+                       (-p2[1], 0, 0, -p2[0]),
+                       (0,0,0,0)], interval_msec=interval_msec, v=v, q=q)
+
+
     def turn_right(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
@@ -199,21 +248,21 @@ class OttoPi:
             self.turn1('l', interval_msec=interval_msec, v=v, q=q)
 
     def turn1(self, rl='r', interval_msec=0, v=None, q=False):
-        self.logger.debug('rl=%s, v=%s, q=%s', rl, str(v), q)
+        self.logger.debug('rl=%s, interval_msec=%d, v=%s, q=%s',
+                          rl, interval_msec, str(v), q)
 
         p1 = (65, 35)
         p2 = 30
 
         self.home()
-        time.sleep(0.2)
+        time.sleep(interval_msec/1000)
         
         if rl[0] == 'left'[0]:
             self.move([[p1[0],   p2, p2,   p1[1]],
                        [0,      -p2, p2, p1[1]/2],
                        [0,      -p2, p2,       0],
                        [-p1[1],   0,  0,  -p1[0]],
-                       [0,0,0,0]],
-                      interval_msec=interval_msec, v=v, q=q)
+                       [0,0,0,0]], interval_msec=interval_msec, v=v, q=q)
 
         if rl[0] == 'right'[0]:
             self.move([[-p1[1], -p2, -p2, -p1[0]],
@@ -223,8 +272,6 @@ class OttoPi:
                        [0,0,0,0]],
                       interval_msec=interval_msec, v=v, q=q)
 
-        time.sleep(0.1)
-            
 
     def forward(self, n=1, rl='', v=None, q=False):
         self.logger.debug('n=%d, rl=%s, v=%s, q=%s',

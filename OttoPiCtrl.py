@@ -62,6 +62,8 @@ class OttoPiCtrl(threading.Thread):
             'b': {'func': self.op.backward, 'priority': False},
             'r': {'func': self.op.turn_right, 'priority': False},
             'l': {'func': self.op.turn_left, 'priority': False},
+            'R': {'func': self.op.side_right, 'priority': False},
+            'L': {'func': self.op.side_left, 'priority': False},
             'h': {'func': self.op.happy, 'priority': False},
             'o': {'func': self.op.ojigi, 'priority': False},
             's': {'func': self.op.stop, 'priority': True},
