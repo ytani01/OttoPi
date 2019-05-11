@@ -2,7 +2,7 @@
 #
 # (c) 2019 Yoichi Tanibayashi
 #
-from OttoPi import OttoPi
+from OttoPiMotion import OttoPiMotion
 
 import pigpio
 import time
@@ -54,8 +54,8 @@ class OttoPiCtrl(threading.Thread):
             self.pi   =  pigpio.pi()
             self.mypi = True
             
-        self.op = OttoPi(self.pi, pin1, pin2, pin3, pin4,
-                         debug=logger.propagate and debug)
+        self.op = OttoPiMotion(self.pi, pin1, pin2, pin3, pin4,
+                               debug=logger.propagate and debug)
 
         self.cmd_func = {
             'f': {'func': self.op.forward, 'priority': False},

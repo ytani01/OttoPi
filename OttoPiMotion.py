@@ -41,7 +41,7 @@ DEF_PIN4 = 22
 N_CONTINUOUS = 99999
 
 #####
-class OttoPi:
+class OttoPiMotion:
     def __init__(self, pi=None,
                  pin1=DEF_PIN1, pin2=DEF_PIN2,
                  pin3=DEF_PIN3, pin4=DEF_PIN4,
