@@ -1,4 +1,4 @@
-# Ottotto
+# OttoPi
 
 OTTO like robot for Raspberry Pi Zero
 
