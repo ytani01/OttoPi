@@ -235,10 +235,10 @@ class Sample:
 #####
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(context_settings=CONTEXT_SETTINGS)
-@click.argument('pin1', type=int, default=4)
-@click.argument('pin2', type=int, default=17)
-@click.argument('pin3', type=int, default=27)
-@click.argument('pin4', type=int, default=22)
+@click.argument('pin1', type=int, default=DEF_PIN1)
+@click.argument('pin2', type=int, default=DEF_PIN2)
+@click.argument('pin3', type=int, default=DEF_PIN3)
+@click.argument('pin4', type=int, default=DEF_PIN4)
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(pin1, pin2, pin3, pin4, debug):
