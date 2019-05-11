@@ -58,18 +58,17 @@ class OttoPiCtrl(threading.Thread):
                                debug=logger.propagate and debug)
 
         self.cmd_func = {
-            'f': {'func': self.op.forward, 'priority': False},
-            'b': {'func': self.op.backward, 'priority': False},
-            'r': {'func': self.op.turn_right, 'priority': False},
-            'l': {'func': self.op.turn_left, 'priority': False},
-            'R': {'func': self.op.side_right, 'priority': False},
-            'L': {'func': self.op.side_left, 'priority': False},
-            'h': {'func': self.op.happy, 'priority': False},
-            'o': {'func': self.op.ojigi, 'priority': False},
-            's': {'func': self.op.stop, 'priority': True},
-            'g': {'func': self.op.go, 'priority': False},
-            '' : {'func': None, 'priority': False}}
-
+            'f': {'func': self.op.forward, 'preemptive': False},
+            'b': {'func': self.op.backward, 'preemptive': False},
+            'r': {'func': self.op.turn_right, 'preemptive': False},
+            'l': {'func': self.op.turn_left, 'preemptive': False},
+            'R': {'func': self.op.side_right, 'preemptive': False},
+            'L': {'func': self.op.side_left, 'preemptive': False},
+            'h': {'func': self.op.happy, 'preemptive': False},
+            'o': {'func': self.op.ojigi, 'preemptive': False},
+            's': {'func': self.op.stop, 'preemptive': True},
+            'g': {'func': self.op.go, 'preemptive': False},
+            '' : {'func': None, 'preemptive': False}}
 
         self.cmdq = queue.Queue()
         self.cmd_n = 1
@@ -88,24 +87,32 @@ class OttoPiCtrl(threading.Thread):
         time.sleep(0.5)
         if self.mypi:
             self.pi.stop()
+            self.mypi = False
         
 
     def send_cmd(self, cmd):
         self.logger.debug('cmd=%s', cmd)
 
-        if not cmd.isnumeric() and not cmd in self.cmd_func.keys():
-            self.logger.warn('invalid cmd:%s: ignored', cmd)
-            
-        if not cmd.isnumeric() and self.cmd_func[cmd]['priority']:
-            self.logger.warn('cmd:%s is priority command', cmd)
-            while not self.cmdq.empty():
-                c = self.cmdq.get()
-                self.logger.warn('%s: ignored', c)
-            self.exec_cmd1(cmd)
-            self.cmdq.put('g')
+        if cmd.isnumeric():
+            self.cmdq.put(cmd)
             return
 
-        self.cmdq.put(cmd)
+        if not cmd in self.cmd_func.keys():
+            self.logger.warn('invalid cmd:%s: ignored', cmd)
+            return
+            
+        if not self.cmd_func[cmd]['preemptive']:
+            self.cmdq.put(cmd)
+            return
+        
+        # preemptive command
+        self.logger.warn('cmd:%s is preemptive', cmd)
+        while not self.cmdq.empty():
+            c = self.cmdq.get()
+            self.logger.warn('%s: ignored', c)
+        self.exec_cmd1(cmd)
+        self.cmdq.put('g')
+
 
     def recv_cmd(self):
         self.logger.debug('')
@@ -196,13 +203,21 @@ class Sample:
 
         while True:
             cmdline = input()
-            self.logger.debug('cmdline=%s', cmdline)
+            self.logger.info('cmdline=%s', cmdline)
             if cmdline == '':
                 self.opc.send_cmd('s')
                 break
+
+            if cmdline.isnumeric():
+                self.opc.send_cmd(cmdline)
+                continue
+            
             if len(cmdline) == 1 and not cmdline[0].isnumeric():
                 self.opc.send_cmd('s')
                 self.opc.send_cmd('0')
+                self.opc.send_cmd(cmdline)
+                continue
+            
             while cmdline != '':
                 cmd = cmdline[0]
                 cmdline = cmdline[1:]

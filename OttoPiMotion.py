@@ -68,6 +68,20 @@ class OttoPiMotion:
         self.off()
         self.home()
 
+    def __del__(self):
+        self.logger.debug('')
+        self.end()
+
+    def end(self):
+        self.logger.debug('')
+        self.servo.home()
+        time.sleep(1)
+        self.servo.off()
+        if self.mypi:
+            self.pi.stop()
+            self.mypi = False
+
+
     def off(self):
         self.logger.debug('')
         self.servo.off()
@@ -352,13 +366,3 @@ class OttoPiMotion:
                 self.move1(0,-p2,-p2, 0, v=v, q=q)
             if mv[0] == 'back'[0]:
                 self.move1(0, p2, p2, 0, v=v, q=q)
-
-
-    def end(self):
-        self.logger.debug('')
-
-        self.servo.home()
-        time.sleep(1)
-        self.servo.off()
-        if self.mypi:
-            self.pi.stop()
