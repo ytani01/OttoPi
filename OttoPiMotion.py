@@ -89,12 +89,10 @@ class OttoPiMotion:
 
     def stop(self, n=1):
         self.logger.debug('')
-
         self.stop_flag = True
 
     def go(self, n=1):
         self.logger.debug('')
-
         self.stop_flag = False
             
 
@@ -321,7 +319,7 @@ class OttoPiMotion:
             self.walk1(mv, rl, v=v, q=q)
             rl = self.change_rl(rl)
 
-        self.walk1('e', rl, v=v, q=q)
+        self.walk1('end', rl, v=v, q=q)
 
     def walk1(self, mv='f', rl='r', v=None, q=False):
         self.logger.debug('mv=%s, rl=%s, v=%s, q=%s',

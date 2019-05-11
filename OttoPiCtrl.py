@@ -58,20 +58,19 @@ class OttoPiCtrl(threading.Thread):
                                debug=logger.propagate and debug)
 
         self.cmd_func = {
-            'f': {'func': self.op.forward, 'preemptive': False},
-            'b': {'func': self.op.backward, 'preemptive': False},
-            'r': {'func': self.op.turn_right, 'preemptive': False},
-            'l': {'func': self.op.turn_left, 'preemptive': False},
-            'R': {'func': self.op.side_right, 'preemptive': False},
-            'L': {'func': self.op.side_left, 'preemptive': False},
-            'h': {'func': self.op.happy, 'preemptive': False},
-            'o': {'func': self.op.ojigi, 'preemptive': False},
-            's': {'func': self.op.stop, 'preemptive': True},
-            'g': {'func': self.op.go, 'preemptive': False},
-            '' : {'func': None, 'preemptive': False}}
-
+            'f': {'func':self.op.forward,    'continuous':True},
+            'b': {'func':self.op.backward,   'continuous': True},
+            'r': {'func':self.op.turn_right, 'continuous': True},
+            'l': {'func':self.op.turn_left,  'continuous': True},
+            'R': {'func':self.op.side_right, 'continuous': True},
+            'L': {'func':self.op.side_left,  'continuous': True},
+            'h': {'func':self.op.happy,      'continuous': False},
+            'o': {'func':self.op.ojigi,      'continuous': False},
+            's': {'func':self.op.stop,       'continuous': False},
+            'g': {'func':self.op.go,         'continuous': False},
+            '' : {'func':None,               'continuous': False}}
+        
         self.cmdq = queue.Queue()
-        self.cmd_n = 1
         
         super().__init__(daemon=True)
 
@@ -90,10 +89,11 @@ class OttoPiCtrl(threading.Thread):
             self.mypi = False
         
 
+    # cmd: numeric string or one char command
     def send_cmd(self, cmd):
         self.logger.debug('cmd=%s', cmd)
 
-        if cmd.isnumeric():
+        if cmd == '':
             self.cmdq.put(cmd)
             return
 
@@ -101,18 +101,12 @@ class OttoPiCtrl(threading.Thread):
             self.logger.warn('invalid cmd:%s: ignored', cmd)
             return
             
-        if not self.cmd_func[cmd]['preemptive']:
-            self.cmdq.put(cmd)
-            return
-        
-        # preemptive command
-        self.logger.warn('cmd:%s is preemptive', cmd)
+        self.op.stop()
         while not self.cmdq.empty():
             c = self.cmdq.get()
             self.logger.warn('%s: ignored', c)
-        self.exec_cmd1(cmd)
         self.cmdq.put('g')
-
+        self.cmdq.put(cmd)
 
     def recv_cmd(self):
         self.logger.debug('')
@@ -120,66 +114,34 @@ class OttoPiCtrl(threading.Thread):
         self.logger.debug('cmd=%s', cmd)
         return cmd
 
-    def cmd_empty(self):
-        self.logger.debug('')
-        ret = self.cmdq.empty()
-        self.logger.debug('ret=%s', ret)
-        return ret
+    def exec_cmd(self, cmd):
+        self.logger.debug('cmd=%s', cmd)
 
-    def exec_cmd(self, cmds):
-        self.logger.debug('cmds=%s', cmds)
-
-        ret = True
-
-        while cmds != []:
-            cmd = cmds.pop(0)
-            self.logger.debug('cmd=\'%s\', cmds=%s', cmd, cmds)
-
-            if cmd.isnumeric():
-                self.cmd_n = int(cmd)
-                self.logger.debug('cmd_n=%d', self.cmd_n)
-                continue
-
-            ret = self.exec_cmd1(cmd, self.cmd_n)
-            self.cmd_n = 1
-            if ret == False:
-                break
-
-        self.logger.debug('ret=%s', ret)
-        return ret
-
-            
-    def exec_cmd1(self, cmd, n=1):
-        self.logger.debug('cmd=\'%s\'', cmd)
-        
         if cmd == '':
+            # finish
             return False
-
+        
         if cmd not in self.cmd_func.keys():
-            self.logger.error('\'%s\': no such command', cmd)
+            self.logger.error('\'%s\': no such commdnd', cmd)
             return True
         
-        self.logger.debug('func=%s, n=%d', self.cmd_func[cmd], n)
-        self.cmd_func[cmd]['func'](n=n)
-        #time.sleep(2)
-        return True
+        n = 1
+        if self.cmd_func[cmd]['continuous']:
+            n = 0
+        self.logger.debug('n=%d', n)
         
-
+        self.cmd_func[cmd]['func'](n=n)
+        return True
+            
     # Thread
     def run(self):
         self.logger.debug('')
 
         run_flag = True
         while run_flag:
-            cmds = []
-            cmds.append(self.recv_cmd())
-            self.logger.debug('cmds = %s', cmds)
-            
-            while not self.cmd_empty():
-                cmds.append(self.recv_cmd())
-                self.logger.debug('cmds = %s', cmds)
-
-            run_flag = self.exec_cmd(cmds)
+            cmd = self.recv_cmd()
+            self.logger.debug('cmd=\'%s\'', cmd)
+            run_flag = self.exec_cmd(cmd)
 
         self.logger.debug('done')
             
@@ -203,25 +165,12 @@ class Sample:
 
         while True:
             cmdline = input()
-            self.logger.info('cmdline=%s', cmdline)
+            self.logger.info('cmdline=\'%s\'', cmdline)
             if cmdline == '':
-                self.opc.send_cmd('s')
+                self.logger.info('Bye!')
                 break
 
-            if cmdline.isnumeric():
-                self.opc.send_cmd(cmdline)
-                continue
-            
-            if len(cmdline) == 1 and not cmdline[0].isnumeric():
-                self.opc.send_cmd('s')
-                self.opc.send_cmd('0')
-                self.opc.send_cmd(cmdline)
-                continue
-            
-            while cmdline != '':
-                cmd = cmdline[0]
-                cmdline = cmdline[1:]
-                self.opc.send_cmd(cmd)
+            self.opc.send_cmd(cmdline[0])
         
     def end(self):
         self.logger.debug('')

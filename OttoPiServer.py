@@ -83,6 +83,8 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
         #  0x22 LINEMODE
         self.net_write(b'\xff\xfd\x22')
 
+        self.robot.send_cmd('h')
+
         self.net_write('# Ready\r\n'.encode('utf-8'))
 
         flag_continue = True
@@ -91,41 +93,41 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                 net_data = self.request.recv(512)
                 self.logger.debug('net_data:\'%s\'', net_data)
             except KeyboardInterrupt:
-                self.reboto_send_cmd('s')
+                self.robot.send_cmd('s')
                 return
             
             except ConnectionResetError:
-                self.reboto_send_cmd('s')
+                self.robot.send_cmd('s')
                 return
 
             if len(net_data) == 0:
-                self.robot_send_cmd('s')
-                self.robot_send_cmd('')
                 break
 
             try:
+                ch_n = 0
                 for ch in net_data.decode('utf-8'):
                     self.net_write('\r\n'.encode('utf-8'))
 
-                    if ord(ch) > 0x20:
-                        if ch.isnumeric():
-                            self.robot.send_cmd(ch)
-                            continue
+                    self.logger.debug('ch=\'%s\'', ch)
 
+                    if ord(ch) > 0x20:
+                        ch_n += 1
                         if not ch in self.cmd.keys():
                             self.robot.send_cmd('s')
                             continue
                         
-                        self.robot.send_cmd('s')
-                        self.robot.send_cmd('0')
                         self.robot.send_cmd(self.cmd[ch])
-                        
-                    else:
-                        self.robot.send_cmd('s')
-                        flag_continue = False
+
+                if ch_n == 0:
+                    break
+
             except UnicodeDecodeError:
                 pass
 
+        self.robot.send_cmd('o')
+        #self.robot.send_cmd('')
+        self.logger.debug('done')
+        
     def finish(self):
         self.logger.debug('')
         return super().finish()
