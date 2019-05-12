@@ -29,3 +29,14 @@ $ pipenv --rm
 ## 3. run command in virtualenv
 
 $ pipenv run COMMAND [ARG] ..
+
+
+## 4. enter into virtualenv
+
+$ pipenv shell
+(venv) $
+
+### 4.1 exit from virtualenv
+
+(venv) $ exit
+$
