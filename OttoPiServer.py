@@ -2,8 +2,6 @@
 #
 # (c) 2019 Yoichi Tanibayashi
 #
-import sys
-
 from OttoPiCtrl import OttoPiCtrl
 
 import pigpio
