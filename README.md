@@ -2,14 +2,14 @@
 
 OTTO like robot for Raspberry Pi Zero
 
-## Install
+## 1. Install
 
-### start pigpiod
+### 1.1 start pigpiod
 
 $ sudo pigpiod
 
 
-### install pipenv
+### 1.2 install pipenv
 
 $ sudo pip3 install -U pip
 $ hash -r
@@ -19,13 +19,13 @@ $ sudo pip3 install pipenv
 $ pipenv install
 
 
-## run command in virtualenv
+## 2. Uninstall
 
-$ pipenv run <command> <arg> ..
-
-
-## uninstall
-
-### remove virtualenv
+### 2.1 remove virtualenv
 
 $ pipenv --rm
+
+
+## 3. run command in virtualenv
+
+$ pipenv run COMMAND [ARG] ..
