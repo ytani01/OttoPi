@@ -2,6 +2,8 @@
 #
 # (c) 2019 Yoichi Tanibayashi
 #
+import sys
+
 from OttoPiCtrl import OttoPiCtrl
 
 import pigpio
@@ -47,7 +49,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
         
         self.robot = server.robot
 
-        self.cmd = {
+        self.cmd_key = {
             'w': 'f',
             'x': 'b',
             'a': 'l',
@@ -91,41 +93,46 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
         while flag_continue:
             try:
                 net_data = self.request.recv(512)
-                self.logger.debug('net_data:\'%s\'', net_data)
-            except KeyboardInterrupt:
+            except BaseException as e:
+                self.logger.info('BaseException:%s:%s.', type(e), e)
                 self.robot.send_cmd('s')
                 return
-            
-            except ConnectionResetError:
-                self.robot.send_cmd('s')
-                return
-
-            if len(net_data) == 0:
-                break
+            else:
+                self.logger.debug('net_data:%a', net_data)
 
             try:
-                ch_n = 0
-                for ch in net_data.decode('utf-8'):
-                    self.net_write('\r\n'.encode('utf-8'))
+                decoded_data = net_data.decode('utf-8')
+            except UnicodeDecodeError as e:
+                self.logger.warn('%s:%s .. ignored', type(e), e)
+                continue
+            else:
+                self.logger.debug('decoded_data:%a', decoded_data)
 
-                    self.logger.debug('ch=\'%s\'', ch)
+            self.net_write('\r\n'.encode('utf-8'))
+            
+            data = ''
+            for ch in decoded_data:
+                if ord(ch) >= 0x20:
+                    data += ch
+            self.logger.debug('data=\'%a\'', data)
+            if len(data) == 0:
+                self.logger.debug('No data .. disconnect')
+                self.net_write('No data .. disconnect\r\n'.encode('utf-8'))
+                break
 
-                    if ord(ch) > 0x20:
-                        ch_n += 1
-                        if not ch in self.cmd.keys():
-                            self.robot.send_cmd('s')
-                            continue
-                        
-                        self.robot.send_cmd(self.cmd[ch])
+            for ch in data:
+                self.logger.debug('ch=\'%a\'', ch)
 
-                if ch_n == 0:
-                    break
+                if not ch in self.cmd_key.keys():
+                    self.robot.send_cmd('s')
+                    self.logger.debug('invalid command:\'%a\' .. stop', ch)
+                    self.net_write('NG .. stop\r\n'.encode('utf-8'))
+                    continue
 
-            except UnicodeDecodeError:
-                pass
+                self.net_write('OK\r\n'.encode('utf-8'))
+                self.robot.send_cmd(self.cmd_key[ch])
 
         self.robot.send_cmd('o')
-        #self.robot.send_cmd('')
         self.logger.debug('done')
         
     def finish(self):
@@ -202,10 +209,10 @@ class Sample:
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(context_settings=CONTEXT_SETTINGS)
 @click.argument('port', type=int, default=DEF_PORT)
-@click.argument('pin1', type=int, default=4)
-@click.argument('pin2', type=int, default=17)
-@click.argument('pin3', type=int, default=27)
-@click.argument('pin4', type=int, default=22)
+@click.argument('pin1', type=int, default=DEF_PIN1)
+@click.argument('pin2', type=int, default=DEF_PIN2)
+@click.argument('pin3', type=int, default=DEF_PIN3)
+@click.argument('pin4', type=int, default=DEF_PIN4)
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(port, pin1, pin2, pin3, pin4, debug):
