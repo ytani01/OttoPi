@@ -48,16 +48,16 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
         self.robot = server.robot
 
         self.cmd_key = {
-            'w': 'f',
-            'x': 'b',
-            'a': 'l',
-            'd': 'r',
-            'A': 'L',
-            'D': 'R',
-            'h': 'h',
-            'o': 'o',
-            's': 's',
-            '' : ''}
+            'w': 'forward',
+            'x': 'backward',
+            'a': 'turn_left',
+            'd': 'turn_right',
+            'A': 'slide_left',
+            'D': 'slide_right',
+            'h': 'happy',
+            'o': 'ojigi',
+            's': OttoPiCtrl.CMD_STOP,
+            '' : OttoPiCtrl.CMD_END}
 
         return super().__init__(request, client_address, server)
 
@@ -83,7 +83,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
         #  0x22 LINEMODE
         self.net_write(b'\xff\xfd\x22')
 
-        self.robot.send_cmd('h')
+        #self.robot.send_cmd('happy')
 
         self.net_write('# Ready\r\n'.encode('utf-8'))
 
@@ -93,7 +93,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                 net_data = self.request.recv(512)
             except BaseException as e:
                 self.logger.info('BaseException:%s:%s.', type(e), e)
-                self.robot.send_cmd('s')
+                self.robot.send_cmd(OttoPiCtrl.CMD_STOP)
                 return
             else:
                 self.logger.debug('net_data:%a', net_data)
@@ -112,7 +112,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             for ch in decoded_data:
                 if ord(ch) >= 0x20:
                     data += ch
-            self.logger.debug('data=\'%a\'', data)
+            self.logger.debug('data=%a', data)
             if len(data) == 0:
                 self.logger.debug('No data .. disconnect')
                 self.net_write('No data .. disconnect\r\n'.encode('utf-8'))
@@ -122,7 +122,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                 self.logger.debug('ch=\'%a\'', ch)
 
                 if not ch in self.cmd_key.keys():
-                    self.robot.send_cmd('s')
+                    self.robot.send_cmd(OttoPiCtrl.CMD_STOP)
                     self.logger.debug('invalid command:\'%a\' .. stop', ch)
                     self.net_write('NG .. stop\r\n'.encode('utf-8'))
                     continue
@@ -130,7 +130,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                 self.net_write('OK\r\n'.encode('utf-8'))
                 self.robot.send_cmd(self.cmd_key[ch])
 
-        self.robot.send_cmd('o')
+        #self.robot.send_cmd('ojigi')
         self.logger.debug('done')
         
     def finish(self):
@@ -139,12 +139,26 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
     
 
 class OttoPiServer(socketserver.TCPServer):
-    def __init__(self, robot, port=DEF_PORT, debug=False):
+    def __init__(self, pi=None, pin=(DEF_PIN1, DEF_PIN2, DEF_PIN3, DEF_PIN4),
+                 port=DEF_PORT, debug=False):
         self.debug = debug
         self.logger = get_logger(__class__.__name__, debug)
+        self.logger.debug('pi = %s', pi)
+        self.logger.debug('pin=%s', (pin))
         self.logger.debug('port=%d', port)
 
-        self.robot = robot
+        if type(pi) == pigpio.pi:
+            self.pi   = pi
+            self.mypi = False
+        else:
+            self.pi   = pigpio.pi()
+            self.mypi = True
+
+        self.robot = OttoPiCtrl(self.pi, pin, debug=self.debug)
+        self.logger.debug('start robot')
+        self.robot.start()
+        time.sleep(1)
+
         self.port  = port
 
         try:
@@ -156,38 +170,45 @@ class OttoPiServer(socketserver.TCPServer):
         self.logger.debug('')
         super().serve_forever()
 
-    def _del__(self):
+    def end(self):
         self.logger.debug('')
 
+        #if self.robot.is_running():
         if self.robot.is_alive():
-            self.robot.send_cmd('')
+            self.logger.debug('stop robot')
+            self.robot.send_cmd(OttoPiCtrl.CMD_END)
             self.robot.join()
+
+        if self.mypi:
+            self.logger.debug('clean up pigpio')
+            self.pi.stop()
+            self.mypi = False
+            
         self.logger.debug('done')
         
+    def _del_(self):
+        self.logger.debug('')
+        self.end()
         
 #####
 class Sample:
-    def __init__(self, port, pin1, pin2, pin3, pin4, debug=False):
+    def __init__(self, port, pin, debug=False):
         self.debug = debug
         self.logger = get_logger(__class__.__name__, debug)
-        self.logger.debug('port=%d, (pin1,pin2,pin3,pin4)=%s',
-                          port, (pin1, pin2, pin3, pin4))
+        self.logger.debug('port=%d, pin=%s', port, pin)
 
-        self.port = port
-
-        self.pi = pigpio.pi()
-        self.mypi = True
-        
-        self.opc = OttoPiCtrl(self.pi, pin1, pin2, pin3, pin4,
-                              debug=self.debug)
-        self.server = OttoPiServer(self.opc, self.port, debug=self.debug)
+        self.port   = port
+        '''
+        self.pi     = pigpio.pi()
+        self.mypi   = True
+        self.server = OttoPiServer(self.pi, pin, self.port,
+                                   debug=self.debug)
+        '''
+        self.server = OttoPiServer(None, pin, self.port,
+                                   debug=self.debug)
         
     def main(self):
         self.logger.debug('')
-
-        self.logger.debug('start robot')
-        self.opc.start()
-        time.sleep(2)
 
         self.logger.debug('start server')
         self.server.serve_forever()
@@ -195,11 +216,14 @@ class Sample:
     def end(self):
         self.logger.debug('')
 
-        self.opc.send_cmd('')
-        self.opc.join()
+        self.server.end()
+
+        '''
         if self.mypi:
+            self.logger.debug('clean up pigpio')
             self.pi.stop()
             self.mypi = False
+        '''
         self.logger.debug('done')
         
         
@@ -217,7 +241,7 @@ def main(port, pin1, pin2, pin3, pin4, debug):
     logger = get_logger('', debug)
     logger.info('port=%d, pins:%d,%d,%d,%d', port, pin1, pin2, pin3, pin4)
 
-    obj = Sample(port, pin1, pin2, pin3, pin4, debug=debug)
+    obj = Sample(port, (pin1, pin2, pin3, pin4), debug=debug)
     try:
         obj.main()
     finally:

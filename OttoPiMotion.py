@@ -42,23 +42,20 @@ N_CONTINUOUS = 99999
 
 #####
 class OttoPiMotion:
-    def __init__(self, pi=None,
-                 pin1=DEF_PIN1, pin2=DEF_PIN2,
-                 pin3=DEF_PIN3, pin4=DEF_PIN4,
-                 debug=False):
+    def __init__(self, pi=None, pin=(DEF_PIN1, DEF_PIN2, DEF_PIN3, DEF_PIN4), debug=False):
         self.debug = debug
         self.logger = get_logger(__class__.__name__, debug)
-        self.logger.debug('pi:  %s', str(pi))
-        self.logger.debug('pin: %s', [pin1, pin2, pin3, pin4])
+        self.logger.debug('pi  = %s', str(pi))
+        self.logger.debug('pin = %s', pin)
 
         if type(pi) == pigpio.pi:
             self.pi   = pi
             self.mypi = False
         else:
-            self.pi   =  pigpio.pi()
+            self.pi   = pigpio.pi()
             self.mypi = True
             
-        self.pin = [pin1, pin2, pin3, pin4]
+        self.pin = pin
 
         self.servo = PiServo(self.pi, self.pin, PULSE_HOME,
                              debug=logger.propagate)
@@ -91,7 +88,7 @@ class OttoPiMotion:
         self.logger.debug('')
         self.stop_flag = True
 
-    def go(self, n=1):
+    def resume(self, n=1):
         self.logger.debug('')
         self.stop_flag = False
             
@@ -182,7 +179,7 @@ class OttoPiMotion:
             time.sleep(interval_msec/1000)
                       
 
-    def side_right(self, n=1, interval_msec=0, v=None, q=False):
+    def slide_right(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
 
@@ -194,9 +191,9 @@ class OttoPiMotion:
             if self.stop_flag:
                 break
 
-            self.side1('r', interval_msec=interval_msec, v=v, q=q)
+            self.slide1('r', interval_msec=interval_msec, v=v, q=q)
 
-    def side_left(self, n=1, interval_msec=0, v=None, q=False):
+    def slide_left(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
 
@@ -208,9 +205,9 @@ class OttoPiMotion:
             if self.stop_flag:
                 break
 
-            self.side1('l', interval_msec=interval_msec, v=v, q=q)
+            self.slide1('l', interval_msec=interval_msec, v=v, q=q)
 
-    def side1(self, rl='r', interval_msec=0, v=None, q=False):
+    def slide1(self, rl='r', interval_msec=0, v=None, q=False):
         self.logger.debug('rl=%s, interval_msec=%d, v=%s, q=%s',
                           rl, interval_msec, str(v), q)
 
