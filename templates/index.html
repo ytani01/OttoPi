@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <title>OttoPi</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=devicewidth,initial-scale=1,maximum-scale=3">
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+    <script type="text/javascript">
+      function post(val) {
+      var data = {"cmd": val};
+      $.post("/action", data);
+      }
+    </script>
+  </head>
+  <body>
+    {% if ipaddr %}
+    <div align="center">
+      {% if video == "on" %}
+      <img src="http://{{ipaddr}}:9000/?action=streaming", width="80%">
+      {% else %}
+      <h1>{{ipaddr}}</h1>
+      {% endif %}
+    </div>
+    {% endif %}
+    <div align="center">
+      <table>
+	<tbody>
+	  <tr>
+	    <td></td>
+	    <td>
+	      <input type="image" src="/static/images/button_blue2.png" width="60px"
+		     onClick="post('h');">
+	    </td>
+	    <td>
+	      <input type="image" src="/static/images/button_yellow2.png" width="60px"
+		     onClick="post('o');">
+	    </td>
+	    <td>
+	      <input type="image" src="/static/images/button_red2.png" width="60px"
+		     onClick="post('s');">
+	    </td>
+	    <td></td>
+	  </tr>
+	  <tr>
+	    <td></td>
+	    <td>
+	      <input type="image" src="/static/images/button_up.png" width="60px"
+		     onClick="post('w');">
+	    </td>
+	    <td>
+	      <input type="image" src="/static/images/button_up.png" width="60px"
+		     onClick="post('w');">
+	    </td>
+	    <td>
+	      <input type="image" src="/static/images/button_up.png" width="60px"
+		     onClick="post('w');">
+	    </td>
+	    <td></td>
+	  </tr>
+	  <tr>
+	    <td>
+	      <input type="image" src="/static/images/button_left.png" width="60px"
+		     onClick="post('A');">
+	    </td>
+	    <td>
+	      <input type="image" src="/static/images/button_left.png" width="60px"
+		     onClick="post('a');">
+	    </td>
+	    <td>
+	      <input type="image" src="/static/images/button_red1.png" width="60px"
+		     onClick="post('s');">
+	    </td>
+	    <td>
+	      <input type="image" src="/static/images/button_right.png" width="60px"
+		     onClick="post('d');">
+	    </td>
+	    <td>
+	      <input type="image" src="/static/images/button_right.png" width="60px"
+		     onClick="post('D');">
+	    </td>
+	  </tr>
+	  <tr>
+	    <td></td>
+	    <td>
+	      <input type="image" src="/static/images/button_down.png" width="60px"
+		     onClick="post('x');">
+	    </td>
+	    <td>
+	      <input type="image" src="/static/images/button_down.png" width="60px"
+		     onClick="post('x');">
+	    </td>
+	    <td>
+	      <input type="image" src="/static/images/button_down.png" width="60px "
+		     onClick="post('x');">
+	    </td>
+	    <td></td>
+	  </tr>
+	</tbody>
+      </table>
+      <hr />
+      <table>
+	<tbody>
+	  <tr>
+	    <td>
+	      <input type="image" src="/static/images/button_up.png" width="40px"
+		     onClick="post('d');">
+	    </td>
+	    <td>&nbsp;&nbsp;</td>
+	    <td>
+	      <input type="image" src="/static/images/button_up.png" width="40px "
+		     onClick="post('a');">
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+	      <input type="image" src="/static/images/button_down.png" width="40px"
+		     onClick="post('a');">
+	    </td>
+	    <td></td>
+	    <td>
+	      <input type="image" src="/static/images/button_down.png" width="40px "
+		     onClick="post('d');">
+	    </td>
+	  </tr>
+	</tbody>
+      </table>
+    </div>
+    <hr />
+  </body>
+</html>
