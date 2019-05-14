@@ -58,18 +58,18 @@ class OttoPiCtrl(threading.Thread):
         self.op = OttoPiMotion(self.pi, pin, debug=logger.propagate and debug)
 
         self.cmd_func = {
-            'forward':       {'func':self.op.forward,    'continuous': True},
-            'backward':      {'func':self.op.backward,   'continuous': True},
-            'turn_rith':     {'func':self.op.turn_right, 'continuous': True},
-            'turn_left':     {'func':self.op.turn_left,  'continuous': True},
+            'forward':       {'func':self.op.forward,     'continuous': True},
+            'backward':      {'func':self.op.backward,    'continuous': True},
+            'turn_right':    {'func':self.op.turn_right,  'continuous': True},
+            'turn_left':     {'func':self.op.turn_left,   'continuous': True},
             'slide_right':   {'func':self.op.slide_right, 'continuous': True},
             'slide_left':    {'func':self.op.slide_left,  'continuous': True},
-            'happy':         {'func':self.op.happy,      'continuous': False},
-            'ojigi':         {'func':self.op.ojigi,      'continuous': False},
+            'happy':         {'func':self.op.happy,       'continuous': False},
+            'ojigi':         {'func':self.op.ojigi,       'continuous': False},
 
-            self.CMD_STOP:   {'func':self.op.stop,       'continuous': False},
-            self.CMD_RESUME: {'func':self.op.resume,         'continuous': False},
-            self.CMD_END :   {'func':None,     'continuous': False}}
+            self.CMD_STOP:   {'func':self.op.stop,        'continuous': False},
+            self.CMD_RESUME: {'func':self.op.resume,      'continuous': False},
+            self.CMD_END :   {'func':None,                'continuous': False}}
         
         self.cmdq = queue.Queue()
 
