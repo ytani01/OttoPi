@@ -33,10 +33,10 @@ def get_logger(name, debug):
 #####
 PULSE_HOME = [1470, 1430, 1490, 1490]
 
-DEF_PIN1 = 4
-DEF_PIN2 = 17
-DEF_PIN3 = 27
-DEF_PIN4 = 22
+DEF_PIN1 = 17
+DEF_PIN2 = 27
+DEF_PIN3 = 22
+DEF_PIN4 = 23
 
 N_CONTINUOUS = 99999
 

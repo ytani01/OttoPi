@@ -31,10 +31,10 @@ def get_logger(name, debug):
 
 
 #####
-DEF_PIN1 = 4
-DEF_PIN2 = 17
-DEF_PIN3 = 27
-DEF_PIN4 = 22
+DEF_PIN1 = 17
+DEF_PIN2 = 27
+DEF_PIN3 = 22
+DEF_PIN4 = 24
 
 #####
 class OttoPiCtrl(threading.Thread):
