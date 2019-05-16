@@ -42,7 +42,8 @@ class OttoPiCtrl(threading.Thread):
     CMD_RESUME = 'resume'
     CMD_END    = 'end'
 
-    def __init__(self, pi=None, pin=(DEF_PIN1, DEF_PIN2, DEF_PIN3, DEF_PIN4), debug=False):
+    def __init__(self, pi=None, pin=(DEF_PIN1, DEF_PIN2, DEF_PIN3, DEF_PIN4),
+                 debug=False):
         self.debug = debug
         self.logger = get_logger(__class__.__name__, debug)
         self.logger.debug('pi  = %s', str(pi))
@@ -66,7 +67,6 @@ class OttoPiCtrl(threading.Thread):
             'slide_left':    {'func':self.op.slide_left,  'continuous': True},
             'happy':         {'func':self.op.happy,       'continuous': False},
             'ojigi':         {'func':self.op.ojigi,       'continuous': False},
-
             self.CMD_STOP:   {'func':self.op.stop,        'continuous': False},
             self.CMD_RESUME: {'func':self.op.resume,      'continuous': False},
             self.CMD_END :   {'func':None,                'continuous': False}}
@@ -92,6 +92,12 @@ class OttoPiCtrl(threading.Thread):
             self.mypi = False
         
 
+    def clear_cmdq(self):
+        self.logger.info('')
+        while not self.cmdq.empty():
+            c = self.cmdq.get()
+            self.logger.info('%s: ignored', c)
+
     # cmd: numeric string or one char command
     def send_cmd(self, cmd):
         self.logger.debug('cmd=\'%s\'', cmd)
@@ -101,12 +107,8 @@ class OttoPiCtrl(threading.Thread):
             return
             
         self.op.stop() # stop continuous motion (Don't self.op.go() immediately)
-
-        while not self.cmdq.empty():  # clean up command queue
-            c = self.cmdq.get()
-            self.logger.warn('%s: ignored', c)
-
-        self.cmdq.put('resume') 
+        self.clear_cmdq()
+        self.cmdq.put(self.CMD_RESUME) 
         self.cmdq.put(cmd)
 
     def recv_cmd(self):
@@ -116,7 +118,7 @@ class OttoPiCtrl(threading.Thread):
         return cmd
 
     def exec_cmd(self, cmd):
-        self.logger.debug('cmd=%s', cmd)
+        self.logger.debug('cmd=\'%s\'', cmd)
 
         if cmd not in self.cmd_func.keys():
             self.logger.error('\'%s\': no such commdnd', cmd)
@@ -148,7 +150,7 @@ class OttoPiCtrl(threading.Thread):
             self.running = self.exec_cmd(cmd)
             self.logger.debug('running=%s', self.running)
 
-        self.logger.debug('done')
+        self.logger.debug('done(running=%s)', self.running)
             
         
 #####

@@ -198,32 +198,16 @@ class Sample:
         self.logger.debug('port=%d, pin=%s', port, pin)
 
         self.port   = port
-        '''
-        self.pi     = pigpio.pi()
-        self.mypi   = True
-        self.server = OttoPiServer(self.pi, pin, self.port,
-                                   debug=self.debug)
-        '''
-        self.server = OttoPiServer(None, pin, self.port,
-                                   debug=self.debug)
+        self.server = OttoPiServer(None, pin, self.port, debug=self.debug)
         
     def main(self):
         self.logger.debug('')
-
         self.logger.debug('start server')
         self.server.serve_forever()
         
     def end(self):
         self.logger.debug('')
-
         self.server.end()
-
-        '''
-        if self.mypi:
-            self.logger.debug('clean up pigpio')
-            self.pi.stop()
-            self.mypi = False
-        '''
         self.logger.debug('done')
         
         
