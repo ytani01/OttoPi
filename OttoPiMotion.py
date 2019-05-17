@@ -20,6 +20,7 @@ handler_fmt = Formatter(
     datefmt='%H:%M:%S')
 console_handler.setFormatter(handler_fmt)
 logger.addHandler(console_handler)
+#logger.propagate = True
 logger.propagate = False
 def get_logger(name, debug):
     l = logger.getChild(name)
@@ -31,18 +32,21 @@ def get_logger(name, debug):
 
 
 #####
-PULSE_HOME = [1470, 1430, 1490, 1490]
-
 DEF_PIN1 = 17
 DEF_PIN2 = 27
 DEF_PIN3 = 22
 DEF_PIN4 = 23
 
+DEF_PULSE_HOME = [1470, 1430, 1490, 1490]
+DEF_PULSE_MIN  = [ 500,  500,  500,  500]
+DEF_PULSE_MAX  = [2500, 2500, 2500, 2500]
+
 N_CONTINUOUS = 99999
 
 #####
 class OttoPiMotion:
-    def __init__(self, pi=None, pin=(DEF_PIN1, DEF_PIN2, DEF_PIN3, DEF_PIN4), debug=False):
+    def __init__(self, pi=None, pin=(DEF_PIN1, DEF_PIN2, DEF_PIN3, DEF_PIN4),
+                 debug=False):
         self.debug = debug
         self.logger = get_logger(__class__.__name__, debug)
         self.logger.debug('pi  = %s', str(pi))
@@ -54,26 +58,39 @@ class OttoPiMotion:
         else:
             self.pi   = pigpio.pi()
             self.mypi = True
+        self.logger.debug('mypi = %s', self.mypi)
             
         self.pin = pin
 
-        self.servo = PiServo(self.pi, self.pin, PULSE_HOME,
-                             debug=logger.propagate)
+        self.pulse_home = DEF_PULSE_HOME
+        self.pulse_min  = DEF_PULSE_MIN
+        self.pulse_max  = DEF_PULSE_MAX
 
         self.stop_flag = False
 
-        self.off()
+        self.servo = None
+        self.reset_servo()
+
         self.home()
 
     def __del__(self):
         self.logger.debug('')
-        self.end()
+        #self.end()
+
+    def reset_servo(self):
+        self.logger.debug('')
+        del(self.servo)
+        self.servo = PiServo(self.pi, self.pin,
+                             self.pulse_home, self.pulse_min, self.pulse_max,
+                             debug=self.debug & logger.propagate)
 
     def end(self):
         self.logger.debug('')
-        self.servo.home()
+
+        self.home()
         time.sleep(1)
-        self.servo.off()
+        self.off()
+
         if self.mypi:
             self.pi.stop()
             self.mypi = False
@@ -93,6 +110,11 @@ class OttoPiMotion:
         self.stop_flag = False
             
 
+    def home(self, v=None, q=False):
+        self.logger.debug('v=%s, q=%s', v, q)
+        self.move1(0, 0, 0, 0, v=v, q=q)
+
+
     def move(self, p_list=[], interval_msec=0, v=None, q=False):
         self.logger.debug('p_list=%s, interval_msec=%d, v=%s, q=%s',
                           p_list, interval_msec, v, q)
@@ -108,10 +130,6 @@ class OttoPiMotion:
 
         self.servo.move1([p1*10, p2*10, p3*10, p4*10], v, q)
 
-
-    def home(self, v=None, q=False):
-        self.logger.debug('v=%s, q=%s', v, q)
-        self.move1(0, 0, 0, 0, v=v, q=q)
 
     def change_rl(self, rl=''):
         self.logger.debug('rl=%s', rl)
@@ -361,3 +379,5 @@ class OttoPiMotion:
                 self.move1(0,-p2,-p2, 0, v=v, q=q)
             if mv[0] == 'back'[0]:
                 self.move1(0, p2, p2, 0, v=v, q=q)
+
+#####

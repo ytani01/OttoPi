@@ -46,32 +46,43 @@ class PiServo:
                  debug=False):
         self.debug = debug
         self.logger = get_logger(__class__.__name__, debug)
+        self.logger.debug('pi         = %s', pi)
+        self.logger.debug('pins       = %s', pins)
+        self.logger.debug('pulse_home = %s', pulse_home)
+        self.logger.debug('pulse_min  = %s', pulse_min)
+        self.logger.debug('pulse_max  = %s', pulse_max)
 
-        self.pi    = pigpio.pi()
-        self.pin  = pins
+        if type(pi) == pigpio.pi:
+            self.pi   = pi
+            self.mypi = False
+        else:
+            self.pi   = pigpio.pi()
+            self.mypi = True
+        self.logger.debug('mypi = %s', self.mypi)
+            
+        self.pin   = pins
         self.pin_n = len(self.pin)
 
         self.pulse_min  = pulse_min
         self.pulse_max  = pulse_max
         self.pulse_home = pulse_home
 
+        if self.pulse_home is None:
+            self.pulse_home = [PULSE_HOME] * self.pin_n
+            self.logger.debug('pulse_home = %s', self.pulse_home)
+
         if self.pulse_min is None:
             self.pulse_min = [PULSE_MIN] * self.pin_n
+            self.logger.debug('pulse_min  = %s', self.pulse_min)
 
         if self.pulse_max is None:
             self.pulse_max = [PULSE_MAX] * self.pin_n
+            self.logger.debug('pulse_max  = %s', self.pulse_max)
 
-        if self.pulse_home is None:
-            self.pulse_home = [PULSE_HOME] * self.pin_n
+        self.pulse_off = [PULSE_OFF] * self.pin_n
+        self.logger.debug('pulse_off  = %s', self.pulse_off)
 
-        self.logger.debug('pulse_min  = %s', self.pulse_min)
-        self.logger.debug('pulse_max  = %s', self.pulse_max)
-        self.logger.debug('pulse_home = %s', self.pulse_home)
-
-        self.pulse_off = [0] * self.pin_n
-        self.logger.debug('pulse_off = %s', self.pulse_home)
-
-        self.cur_pulse = [PULSE_HOME] * self.pin_n
+        self.cur_pulse = [0] * self.pin_n
 
         self.home()
         self.off()
@@ -102,10 +113,9 @@ class PiServo:
             self.pi.set_servo_pulsewidth(self.pin[i], pulse[i])
 
 
-    def home(self, v=None, quick=False):
+    def home(self):
         self.logger.debug('')
-        
-        self.move1([0] * self.pin_n, v, quick)
+        self.set_pulse(self.pulse_home)
 
 
     def move(self, pos_list=[], interval_msec=0, v=None, quick=False):
@@ -150,7 +160,6 @@ class PiServo:
         if step_n == 0:
             interval_msec = 0
         else:
-            #interval_msec = d_max / step_n * v
             interval_msec = d_max / step_n * v
         self.logger.debug('interval_msec=%d', interval_msec)
 
@@ -201,24 +210,18 @@ class Sample:
     def main(self):
         self.logger.debug('')
 
-        self.servo.home()
-        time.sleep(1)
-
-        self.servo.move1([-300, 0, 0, -300])
-        self.servo.home()
-        self.servo.move1([300, 0, 0, 300])
-        self.servo.home()
+        self.servo.move1([-200, 0, 0, -200])
+        self.servo.move1([0,0,0,0])
+        self.servo.move1([200, 0, 0, 200])
+        self.servo.move1([0,0,0,0])
 
         time.sleep(1)
         
-        self.servo.move([[300, 0, 0, -300],
+        self.servo.move([[200, 0, 0, -200],
                          [0, 0, 0, 0],
-                         [300, 0, 0, -300],
+                         [-200, 0, 0, 200],
                          [0, 0, 0, 0]],
                         interval_msec=100)
-
-        self.end()
-            
 
     def end(self):
         self.logger.debug('')
@@ -232,10 +235,10 @@ class Sample:
 #####
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(context_settings=CONTEXT_SETTINGS)
-@click.argument('pin1', type=int, default=4)
-@click.argument('pin2', type=int, default=17)
-@click.argument('pin3', type=int, default=27)
-@click.argument('pin4', type=int, default=22)
+@click.argument('pin1', type=int, default=17)
+@click.argument('pin2', type=int, default=27)
+@click.argument('pin3', type=int, default=22)
+@click.argument('pin4', type=int, default=23)
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(pin1, pin2, pin3, pin4, debug):
@@ -246,7 +249,7 @@ def main(pin1, pin2, pin3, pin4, debug):
     try:
         obj.main()
     finally:
-        print('finally')
+        logger.debug('finally')
         obj.end()
 
 if __name__ == '__main__':

@@ -33,11 +33,6 @@ def get_logger(name, debug):
 #####
 DEF_PORT = 12345
 
-DEF_PIN1 = 17
-DEF_PIN2 = 27
-DEF_PIN3 = 22
-DEF_PIN4 = 23
-
 #####
 class OttoPiHandler(socketserver.StreamRequestHandler):
     def __init__(self, request, client_address, server):
@@ -139,13 +134,11 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
     
 
 class OttoPiServer(socketserver.TCPServer):
-    def __init__(self, pi=None, pin=(DEF_PIN1, DEF_PIN2, DEF_PIN3, DEF_PIN4),
-                 port=DEF_PORT, debug=False):
+    def __init__(self, pi=None, port=DEF_PORT, debug=False):
         self.debug = debug
         self.logger = get_logger(__class__.__name__, debug)
-        self.logger.debug('pi = %s', pi)
-        self.logger.debug('pin=%s', (pin))
-        self.logger.debug('port=%d', port)
+        self.logger.debug('pi   = %s', pi)
+        self.logger.debug('port = %d', port)
 
         if type(pi) == pigpio.pi:
             self.pi   = pi
@@ -153,8 +146,9 @@ class OttoPiServer(socketserver.TCPServer):
         else:
             self.pi   = pigpio.pi()
             self.mypi = True
+        self.logger.debug('mypi = %s', self.mypi)
 
-        self.robot = OttoPiCtrl(self.pi, pin, debug=self.debug)
+        self.robot = OttoPiCtrl(self.pi, debug=self.debug)
         self.logger.debug('start robot')
         self.robot.start()
         time.sleep(1)
@@ -168,7 +162,7 @@ class OttoPiServer(socketserver.TCPServer):
 
     def serve_forever(self):
         self.logger.debug('')
-        super().serve_forever()
+        return super().serve_forever()
 
     def end(self):
         self.logger.debug('')
@@ -177,7 +171,9 @@ class OttoPiServer(socketserver.TCPServer):
         if self.robot.is_alive():
             self.logger.debug('stop robot')
             self.robot.send_cmd(OttoPiCtrl.CMD_END)
+            self.logger.debug('join()')
             self.robot.join()
+            self.logger.debug('join():done')
 
         if self.mypi:
             self.logger.debug('clean up pigpio')
@@ -192,13 +188,13 @@ class OttoPiServer(socketserver.TCPServer):
         
 #####
 class Sample:
-    def __init__(self, port, pin, debug=False):
+    def __init__(self, port, debug=False):
         self.debug = debug
         self.logger = get_logger(__class__.__name__, debug)
-        self.logger.debug('port=%d, pin=%s', port, pin)
+        self.logger.debug('port=%d', port)
 
         self.port   = port
-        self.server = OttoPiServer(None, pin, self.port, debug=self.debug)
+        self.server = OttoPiServer(None, self.port, debug=self.debug)
         
     def main(self):
         self.logger.debug('')
@@ -215,17 +211,13 @@ class Sample:
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(context_settings=CONTEXT_SETTINGS)
 @click.argument('port', type=int, default=DEF_PORT)
-@click.argument('pin1', type=int, default=DEF_PIN1)
-@click.argument('pin2', type=int, default=DEF_PIN2)
-@click.argument('pin3', type=int, default=DEF_PIN3)
-@click.argument('pin4', type=int, default=DEF_PIN4)
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
-def main(port, pin1, pin2, pin3, pin4, debug):
+def main(port, debug):
     logger = get_logger('', debug)
-    logger.info('port=%d, pins:%d,%d,%d,%d', port, pin1, pin2, pin3, pin4)
+    logger.info('port=%d', port)
 
-    obj = Sample(port, (pin1, pin2, pin3, pin4), debug=debug)
+    obj = Sample(port, debug=debug)
     try:
         obj.main()
     finally:

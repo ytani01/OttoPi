@@ -31,23 +31,15 @@ def get_logger(name, debug):
 
 
 #####
-DEF_PIN1 = 17
-DEF_PIN2 = 27
-DEF_PIN3 = 22
-DEF_PIN4 = 23
-
-#####
 class OttoPiCtrl(threading.Thread):
     CMD_STOP   = 'stop'
     CMD_RESUME = 'resume'
     CMD_END    = 'end'
 
-    def __init__(self, pi=None, pin=(DEF_PIN1, DEF_PIN2, DEF_PIN3, DEF_PIN4),
-                 debug=False):
+    def __init__(self, pi=None, debug=False):
         self.debug = debug
         self.logger = get_logger(__class__.__name__, debug)
         self.logger.debug('pi  = %s', str(pi))
-        self.logger.debug('pin = %s', pin)
 
         if type(pi) == pigpio.pi:
             self.pi   = pi
@@ -55,8 +47,9 @@ class OttoPiCtrl(threading.Thread):
         else:
             self.pi   =  pigpio.pi()
             self.mypi = True
+        self.logger.debug('mypi = %s', self.mypi)
             
-        self.op = OttoPiMotion(self.pi, pin, debug=logger.propagate and debug)
+        self.op = OttoPiMotion(self.pi, debug=logger.propagate and debug)
 
         self.cmd_func = {
             'forward':       {'func':self.op.forward,     'continuous': True},
@@ -80,7 +73,7 @@ class OttoPiCtrl(threading.Thread):
 
     def __del__(self):
         self.logger.debug('')
-        self.end()
+        #self.end()
 
     def end(self):
         self.logger.debug('')
@@ -106,7 +99,7 @@ class OttoPiCtrl(threading.Thread):
             self.logger.warn('invalid cmd:%s: ignored', cmd)
             return
             
-        self.op.stop() # stop continuous motion (Don't self.op.go() immediately)
+        self.op.stop() # stop continuous motion (Don't op.go() immediately)
         self.clear_cmdq()
         self.cmdq.put(self.CMD_RESUME) 
         self.cmdq.put(cmd)
@@ -150,19 +143,19 @@ class OttoPiCtrl(threading.Thread):
             self.running = self.exec_cmd(cmd)
             self.logger.debug('running=%s', self.running)
 
-        self.logger.debug('done(running=%s)', self.running)
+        self.logger.debug('ending(running=%s)', self.running)
+        self.end()
+        self.logger.debug('done')
             
         
 #####
 class Sample:
-    def __init__(self, pin1, pin2, pin3, pin4, debug=False):
+    def __init__(self, debug=False):
         self.debug = debug
         self.logger = get_logger(__class__.__name__, debug)
-        self.logger.debug('(pin1,pin2,pin3,pin4)=%s',
-                          (pin1, pin2, pin3, pin4))
 
         self.pi = pigpio.pi()
-        self.opc = OttoPiCtrl(self.pi, (pin1, pin2, pin3, pin4), debug=debug)
+        self.opc = OttoPiCtrl(self.pi, debug=debug)
         self.opc.start()
 
     def main(self):
@@ -192,17 +185,12 @@ class Sample:
 #####
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(context_settings=CONTEXT_SETTINGS)
-@click.argument('pin1', type=int, default=DEF_PIN1)
-@click.argument('pin2', type=int, default=DEF_PIN2)
-@click.argument('pin3', type=int, default=DEF_PIN3)
-@click.argument('pin4', type=int, default=DEF_PIN4)
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
-def main(pin1, pin2, pin3, pin4, debug):
+def main(debug):
     logger = get_logger('', debug)
-    logger.debug('pins: %d, %d, %d, %d', pin1, pin2, pin3, pin4)
 
-    obj = Sample(pin1, pin2, pin3, pin4, debug=debug)
+    obj = Sample(debug=debug)
     try:
         obj.main()
     finally:

@@ -18,7 +18,7 @@
       {% if video == "on" %}
       <img src="http://{{ipaddr}}:9000/?action=streaming", width="80%">
       {% else %}
-      <h1>{{ipaddr}}</h1>
+      <h3>{{ipaddr}}</h3>
       {% endif %}
     </div>
     {% endif %}
@@ -43,18 +43,12 @@
 	  </tr>
 	  <tr>
 	    <td></td>
+	    <td></td>
 	    <td>
 	      <input type="image" src="/static/images/button_up.png" width="60px"
 		     onClick="post('w');">
 	    </td>
-	    <td>
-	      <input type="image" src="/static/images/button_up.png" width="60px"
-		     onClick="post('w');">
-	    </td>
-	    <td>
-	      <input type="image" src="/static/images/button_up.png" width="60px"
-		     onClick="post('w');">
-	    </td>
+	    <td></td>
 	    <td></td>
 	  </tr>
 	  <tr>
@@ -81,18 +75,12 @@
 	  </tr>
 	  <tr>
 	    <td></td>
+	    <td></td>
 	    <td>
 	      <input type="image" src="/static/images/button_down.png" width="60px"
 		     onClick="post('x');">
 	    </td>
-	    <td>
-	      <input type="image" src="/static/images/button_down.png" width="60px"
-		     onClick="post('x');">
-	    </td>
-	    <td>
-	      <input type="image" src="/static/images/button_down.png" width="60px "
-		     onClick="post('x');">
-	    </td>
+	    <td></td>
 	    <td></td>
 	  </tr>
 	</tbody>
@@ -105,7 +93,14 @@
 	      <input type="image" src="/static/images/button_up.png" width="40px"
 		     onClick="post('d');">
 	    </td>
-	    <td>&nbsp;&nbsp;</td>
+	    <td>
+	      <input type="image" src="/static/images/button_up.png" width="40px "
+		     onClick="post('a');">
+	    </td>
+	    <td>
+	      <input type="image" src="/static/images/button_up.png" width="40px"
+		     onClick="post('d');">
+	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_up.png" width="40px "
 		     onClick="post('a');">
@@ -116,7 +111,14 @@
 	      <input type="image" src="/static/images/button_down.png" width="40px"
 		     onClick="post('a');">
 	    </td>
-	    <td></td>
+	    <td>
+	      <input type="image" src="/static/images/button_down.png" width="40px "
+		     onClick="post('d');">
+	    </td>
+	    <td>
+	      <input type="image" src="/static/images/button_down.png" width="40px"
+		     onClick="post('a');">
+	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_down.png" width="40px "
 		     onClick="post('d');">
