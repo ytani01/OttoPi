@@ -10,6 +10,13 @@
       var data = {"cmd": val};
       $.post("/action", data);
       }
+      function speak() {
+      var data = {"msg": document.f1.msg.value};
+      $.post("/speak", data);
+      }
+      function clear_msg() {
+      document.f1.msg.value = "";
+      }
     </script>
   </head>
   <body>
@@ -77,7 +84,8 @@
 	    <td></td>
 	    <td></td>
 	    <td>
-	      <input type="image" src="/static/images/button_down.png" width="60px"
+	      <input type="image" src="/static/images/button_down.png"
+		     width="60px"
 		     onClick="post('x');">
 	    </td>
 	    <td></td>
@@ -85,6 +93,12 @@
 	  </tr>
 	</tbody>
       </table>
+      <hr />
+      <form method="POST" name="f1">
+	<input type="text" name="msg" value="">
+      </form>
+      <input type="submit" value="speak" onClick="speak()">
+      <input type="submit" value="clear" onClick="clear_msg()">
       <hr />
       <table>
 	<tbody>

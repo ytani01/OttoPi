@@ -2,6 +2,7 @@
 #
 from flask import Flask, render_template, request
 from OttoPiClient import OttoPiClient
+from SpeakClient import SpeakClient
 
 import netifaces
 import sys
@@ -65,6 +66,7 @@ def get_ipaddr():
 
 def index0(video_sw):
     ipaddr = get_ipaddr()
+    Flag_Video = video_sw
     return render_template('index.html', ipaddr=ipaddr, video=video_sw)
     
 #####
@@ -73,7 +75,7 @@ def index():
     return index0('off')
 
 @app.route('/video')
-def video_movde():
+def video_mode():
     return index0('on')
         
 @app.route('/action', methods=['POST'])
@@ -84,7 +86,7 @@ def action():
         return
 
     cmd = str(request.form['cmd'])
-    #print(MyName + ': cmd = \'' + cmd + '\'')
+    print(MyName + ': cmd = \'' + cmd + '\'')
 
     rc = OttoPiClient(RobotHost, RobotPort)
     rc.send_cmd(cmd)
@@ -92,6 +94,20 @@ def action():
 
     return ''
     
+@app.route('/speak', methods=['POST'])
+def speak():
+    print('speak():request=%s' % request)
+    if request.method != 'POST':
+        return
+
+    msg = request.form['msg']
+    print('msg = %s' % msg)
+    sc = SpeakClient()
+    sc.speak(msg)
+    sc.close()
+
+    return index0(Flag_Video)
+    #return ''
 
 #####
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
