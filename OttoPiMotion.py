@@ -32,11 +32,7 @@ def get_logger(name, debug):
 
 
 #####
-DEF_PIN1 = 17
-DEF_PIN2 = 27
-DEF_PIN3 = 22
-DEF_PIN4 = 23
-
+DEF_PIN        = [17, 27, 22, 23]
 DEF_PULSE_HOME = [1470, 1430, 1490, 1490]
 DEF_PULSE_MIN  = [ 500,  500,  500,  500]
 DEF_PULSE_MAX  = [2500, 2500, 2500, 2500]
@@ -45,12 +41,18 @@ N_CONTINUOUS = 99999
 
 #####
 class OttoPiMotion:
-    def __init__(self, pi=None, pin=(DEF_PIN1, DEF_PIN2, DEF_PIN3, DEF_PIN4),
+    def __init__(self, pi=None, pin=DEF_PIN,
+                 pulse_home=DEF_PULSE_HOME,
+                 pulse_min=DEF_PULSE_MIN,
+                 pulse_max=DEF_PULSE_MAX,
                  debug=False):
         self.debug = debug
         self.logger = get_logger(__class__.__name__, debug)
         self.logger.debug('pi  = %s', str(pi))
         self.logger.debug('pin = %s', pin)
+        self.logger.debug('pulse_home = %s', pulse_home)
+        self.logger.debug('pulse_min = %s', pulse_min)
+        self.logger.debug('pulse_max = %s', pulse_max)
 
         if type(pi) == pigpio.pi:
             self.pi   = pi
@@ -61,17 +63,15 @@ class OttoPiMotion:
         self.logger.debug('mypi = %s', self.mypi)
             
         self.pin = pin
-
-        self.pulse_home = DEF_PULSE_HOME
-        self.pulse_min  = DEF_PULSE_MIN
-        self.pulse_max  = DEF_PULSE_MAX
+        self.pulse_home = pulse_home
+        self.pulse_min  = pulse_min
+        self.pulse_max  = pulse_max
 
         self.stop_flag = False
 
         self.servo = None
         self.reset_servo()
 
-        self.home()
 
     def __del__(self):
         self.logger.debug('')
@@ -83,6 +83,7 @@ class OttoPiMotion:
         self.servo = PiServo(self.pi, self.pin,
                              self.pulse_home, self.pulse_min, self.pulse_max,
                              debug=self.debug & logger.propagate)
+        self.servo.home()
 
     def end(self):
         self.logger.debug('')
@@ -102,17 +103,56 @@ class OttoPiMotion:
 
 
     def stop(self, n=1):
-        self.logger.debug('')
+        self.logger.debug('n = %d', n)
         self.stop_flag = True
 
     def resume(self, n=1):
-        self.logger.debug('')
+        self.logger.debug('n = %d', n)
         self.stop_flag = False
             
 
-    def home(self, v=None, q=False):
-        self.logger.debug('v=%s, q=%s', v, q)
+    def home(self, n=1, v=None, q=False):
+        self.logger.debug('n=%d, v=%s, q=%s', n, v, q)
         self.move1(0, 0, 0, 0, v=v, q=q)
+
+
+    def adjust_home(self, i, v):
+        self.logger.debug('i = %d, v = %d', i, v)
+        self.pulse_home[i] += v
+        self.logger.debug('pulse_home = %s', self.pulse_home)
+        self.reset_servo()
+
+    def home_up0(self, n=1):
+        self.logger.debug('n = %d', n)
+        self.adjust_home(0, 5)
+
+    def home_down0(self, n=1):
+        self.logger.debug('n = %d', n)
+        self.adjust_home(0, -5)
+
+    def home_up1(self, n=1):
+        self.logger.debug('n = %d', n)
+        self.adjust_home(1, 5)
+
+    def home_down1(self, n=1):
+        self.logger.debug('n = %d', n)
+        self.adjust_home(1, -5)
+
+    def home_up2(self, n=1):
+        self.logger.debug('n = %d', n)
+        self.adjust_home(2, 5)
+
+    def home_down2(self, n=1):
+        self.logger.debug('n = %d', n)
+        self.adjust_home(2, -5)
+
+    def home_up3(self, n=1):
+        self.logger.debug('n = %d', n)
+        self.adjust_home(3, 5)
+
+    def home_down3(self, n=1):
+        self.logger.debug('n = %d', n)
+        self.adjust_home(3, -5)
 
 
     def move(self, p_list=[], interval_msec=0, v=None, q=False):

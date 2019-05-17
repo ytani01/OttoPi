@@ -50,8 +50,18 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             'A': 'slide_left',
             'D': 'slide_right',
             'h': 'happy',
-            'o': 'ojigi',
+            'j': 'ojigi',
+            'H': 'home',
+            'u': 'home_up0',
+            'U': 'home_down0',
+            'i': 'home_up1',
+            'I': 'home_down1',
+            'o': 'home_up2',
+            'O': 'home_down2',
+            'p': 'home_up3',
+            'P': 'home_down3',
             's': OttoPiCtrl.CMD_STOP,
+            'S': OttoPiCtrl.CMD_STOP,
             '' : OttoPiCtrl.CMD_END}
 
         return super().__init__(request, client_address, server)

@@ -37,7 +37,10 @@ PULSE_STEP      = 10
 INTERVAL_FACTOR = 0.25
 #INTERVAL_FACTOR = 1
 
-SAMPLE_PULSE_HOME = [1470, 1430, 1490, 1490]
+DEF_PIN = [17, 27, 22, 23]
+DEF_PULSE_HOME = [1470, 1430, 1490, 1490]
+DEF_PULSE_MIN  = [ 500,  500,  500,  500]
+DEF_PULSE_MAX  = [2500, 2500, 2500, 2500]
 
 #####
 class PiServo:
@@ -63,9 +66,9 @@ class PiServo:
         self.pin   = pins
         self.pin_n = len(self.pin)
 
+        self.pulse_home = pulse_home
         self.pulse_min  = pulse_min
         self.pulse_max  = pulse_max
-        self.pulse_home = pulse_home
 
         if self.pulse_home is None:
             self.pulse_home = [PULSE_HOME] * self.pin_n
@@ -204,7 +207,7 @@ class Sample:
         self.pin = pins
 
         self.pi  = pigpio.pi()
-        self.servo = PiServo(self.pi, self.pin, SAMPLE_PULSE_HOME,
+        self.servo = PiServo(self.pi, self.pin, DEF_PULSE_HOME,
                              debug=self.debug)
 
     def main(self):
