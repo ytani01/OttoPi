@@ -93,29 +93,30 @@
 	</tbody>
       </table>
       <hr />
-      <form method="POST" name="f1">
+      <form action="./" method="POST" name="f1">
 	<input type="text" name="msg" value="">
+	<input type="button" value="speak" onClick="speak()">
+	<input type="button" value="clear" onClick="clear_msg()">
       </form>
-      <input type="submit" value="speak" onClick="speak()">
-      <input type="submit" value="clear" onClick="clear_msg()">
       <hr />
+      個別モーター
       <table>
 	<tbody>
 	  <tr>
 	    <td>
 	      <input type="image" src="/static/images/button_up.png"
-		     width="40px" onClick="post('h');">
+		     width="40px" onClick="post('H');">
 	    </td>
 	    <td>
-	      <input type="image" src="/static/images/button_up.png"
+	      <input type="image" src="/static/images/button_left.png"
 		     width="40px" onClick="post('j');">
 	    </td>
-	    <td>
-	      &nbsp;
+	    <td align="center">
+	      HOME
 	    </td>
 	    <td>
-	      <input type="image" src="/static/images/button_up.png"
-		     width="40px" onClick="post('k');">
+	      <input type="image" src="/static/images/button_right.png"
+		     width="40px" onClick="post('K');">
 	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_up.png"
@@ -125,10 +126,10 @@
 	  <tr>
 	    <td>
 	      <input type="image" src="/static/images/button_down.png"
-		     width="40px" onClick="post('H');">
+		     width="40px" onClick="post('h');">
 	    </td>
 	    <td>
-	      <input type="image" src="/static/images/button_down.png"
+	      <input type="image" src="/static/images/button_right.png"
 		     width="40px" onClick="post('J');">
 	    </td>
 	    <td>
@@ -136,8 +137,8 @@
 		     width="40px" onClick="post('0');">
 	    </td>
 	    <td>
-	      <input type="image" src="/static/images/button_down.png"
-		     width="40px" onClick="post('K');">
+	      <input type="image" src="/static/images/button_left.png"
+		     width="40px" onClick="post('k');">
 	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_down.png"
@@ -154,19 +155,19 @@
 	    <td>
 	      &nbsp;
 	      <input type="image" src="/static/images/button_up.png"
-		     width="30px" onClick="post('u');">
+		     width="30px" onClick="post('U');">
 	      &nbsp;
 	    </td>
 	    <td>
 	      &nbsp;
-	      <input type="image" src="/static/images/button_up.png"
+	      <input type="image" src="/static/images/button_left.png"
 		     width="30px" onClick="post('i');">
 	      &nbsp;
 	    </td>
 	    <td>
 	      &nbsp;
-	      <input type="image" src="/static/images/button_up.png"
-		     width="30px" onClick="post('o');">
+	      <input type="image" src="/static/images/button_right.png"
+		     width="30px" onClick="post('O');">
 	      &nbsp;
 	    </td>
 	    <td>
@@ -180,19 +181,19 @@
 	    <td>
 	      &nbsp;
 	      <input type="image" src="/static/images/button_down.png"
-		     width="30px" onClick="post('U');">
+		     width="30px" onClick="post('u');">
 	      &nbsp;
 	    </td>
 	    <td>
 	      &nbsp;
-	      <input type="image" src="/static/images/button_down.png"
+	      <input type="image" src="/static/images/button_right.png"
 		     width="30px" onClick="post('I');">
 	      &nbsp;
 	    </td>
 	    <td>
 	      &nbsp;
-	      <input type="image" src="/static/images/button_down.png"
-		     width="30px" onClick="post('O');">
+	      <input type="image" src="/static/images/button_left.png"
+		     width="30px" onClick="post('o');">
 	      &nbsp;
 	    </td>
 	    <td>

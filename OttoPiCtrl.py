@@ -52,7 +52,7 @@ class OttoPiCtrl(threading.Thread):
             
         self.opm = OttoPiMotion(self.pi, debug=logger.propagate and debug)
 
-        self.cmd_func = {
+        self.cmd_func= {
             'forward':      {'func':self.opm.forward,    'continuous': True},
             'backward':     {'func':self.opm.backward,   'continuous': True},
             'turn_right':   {'func':self.opm.turn_right, 'continuous': True},
