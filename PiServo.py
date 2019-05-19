@@ -96,6 +96,13 @@ class PiServo:
         self.set_pulse(self.pulse_off)
         
 
+    def get_cur_position(self):
+        self.logger.debug('')
+        cur_pos = [(self.cur_pulse[i] - self.pulse_home[i]) for i in range(self.pin_n)]
+        self.logger.debug('cur_pos = %s', cur_pos)
+        return cur_pos
+
+
     def set_pulse(self, pulse):
         self.logger.debug('pulse=%s', pulse)
 

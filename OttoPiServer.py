@@ -49,9 +49,19 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             'd': 'turn_right',
             'A': 'slide_left',
             'D': 'slide_right',
-            'h': 'happy',
-            'j': 'ojigi',
-            'H': 'home',
+            '1': 'happy',
+            '2': 'ojigi',
+            '0': 'home',
+
+            'h': 'move_up0',
+            'H': 'move_down0',
+            'j': 'move_up1',
+            'J': 'move_down1',
+            'k': 'move_up2',
+            'K': 'move_down2',
+            'l': 'move_up3',
+            'L': 'move_down3',
+
             'u': 'home_up0',
             'U': 'home_down0',
             'i': 'home_up1',
@@ -60,6 +70,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             'O': 'home_down2',
             'p': 'home_up3',
             'P': 'home_down3',
+
             's': OttoPiCtrl.CMD_STOP,
             'S': OttoPiCtrl.CMD_STOP,
             '' : OttoPiCtrl.CMD_END}
@@ -106,7 +117,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             try:
                 decoded_data = net_data.decode('utf-8')
             except UnicodeDecodeError as e:
-                self.logger.warn('%s:%s .. ignored', type(e), e)
+                self.logger.debug('%s:%s .. ignored', type(e), e)
                 continue
             else:
                 self.logger.debug('decoded_data:%a', decoded_data)

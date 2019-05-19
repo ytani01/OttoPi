@@ -28,7 +28,7 @@ def get_logger(name, debug):
 
 #####
 DEF_CONF_FILE = 'OttoPi.conf'
-DEF_SECTION   = 'DEFAULT'
+DEF_SECTION   = 'OttoPi'
 KEY_PIN       = 'pin'
 KEY_HOME      = 'home'
 
@@ -102,6 +102,7 @@ class Sample:
         self.c.set_intlist('pin', [1 , 2, 3, 4])
         self.c.change_home(1, 10)
         self.c.change_home(2, -10)
+        self.c.save()
 
     def __del__(self):
         self.logger.debug('')

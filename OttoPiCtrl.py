@@ -61,6 +61,16 @@ class OttoPiCtrl(threading.Thread):
             'slide_left':   {'func':self.opm.slide_left, 'continuous': True},
             'happy':        {'func':self.opm.happy,      'continuous': False},
             'ojigi':        {'func':self.opm.ojigi,      'continuous': False},
+
+            'move_up0':     {'func':self.opm.move_up0,   'continuous': False},
+            'move_down0':   {'func':self.opm.move_down0, 'continuous': False},
+            'move_up1':     {'func':self.opm.move_up1,   'continuous': False},
+            'move_down1':   {'func':self.opm.move_down1, 'continuous': False},
+            'move_up2':     {'func':self.opm.move_up2,   'continuous': False},
+            'move_down2':   {'func':self.opm.move_down2, 'continuous': False},
+            'move_up3':     {'func':self.opm.move_up3,   'continuous': False},
+            'move_down3':   {'func':self.opm.move_down3, 'continuous': False},
+
             'home_up0':     {'func':self.opm.home_up0,   'continuous': False},
             'home_down0':   {'func':self.opm.home_down0, 'continuous': False},
             'home_up1':     {'func':self.opm.home_up1,   'continuous': False},
@@ -69,6 +79,7 @@ class OttoPiCtrl(threading.Thread):
             'home_down2':   {'func':self.opm.home_down2, 'continuous': False},
             'home_up3':     {'func':self.opm.home_up3,   'continuous': False},
             'home_down3':   {'func':self.opm.home_down3, 'continuous': False},
+
             self.CMD_HOME:  {'func':self.opm.home,       'continuous': False},
             self.CMD_STOP:  {'func':self.opm.stop,       'continuous': False},
             self.CMD_RESUME:{'func':self.opm.resume,     'continuous': False},
@@ -96,7 +107,7 @@ class OttoPiCtrl(threading.Thread):
         
 
     def clear_cmdq(self):
-        self.logger.info('')
+        self.logger.debug('')
         while not self.cmdq.empty():
             c = self.cmdq.get()
             self.logger.info('%s: ignored', c)

@@ -3,6 +3,7 @@
 # (c) 2019 Yoichi Tanibayashi
 #
 from PiServo import PiServo
+from OttoPiConfig import OttoPiConfig
 
 import pigpio
 import time
@@ -41,8 +42,8 @@ N_CONTINUOUS = 99999
 
 #####
 class OttoPiMotion:
-    def __init__(self, pi=None, pin=DEF_PIN,
-                 pulse_home=DEF_PULSE_HOME,
+    def __init__(self, pi=None, pin=[],
+                 pulse_home=[],
                  pulse_min=DEF_PULSE_MIN,
                  pulse_max=DEF_PULSE_MAX,
                  debug=False):
@@ -51,8 +52,8 @@ class OttoPiMotion:
         self.logger.debug('pi  = %s', str(pi))
         self.logger.debug('pin = %s', pin)
         self.logger.debug('pulse_home = %s', pulse_home)
-        self.logger.debug('pulse_min = %s', pulse_min)
-        self.logger.debug('pulse_max = %s', pulse_max)
+        self.logger.debug('pulse_min  = %s', pulse_min)
+        self.logger.debug('pulse_max  = %s', pulse_max)
 
         if type(pi) == pigpio.pi:
             self.pi   = pi
@@ -62,8 +63,20 @@ class OttoPiMotion:
             self.mypi = True
         self.logger.debug('mypi = %s', self.mypi)
             
-        self.pin = pin
-        self.pulse_home = pulse_home
+        self.cnf = OttoPiConfig()
+
+        if pin != []:
+            self.pin = pin
+        else:
+            self.pin = self.cnf.get_pin()
+            self.logger.debug('pin = %s', self.pin)
+            
+        if pulse_home != []:
+            self.pulse_home = pulse_home
+        else:
+            self.pulse_home = self.cnf.get_home()
+            self.logger.debug('pulse_home = %s', self.pulse_home)
+            
         self.pulse_min  = pulse_min
         self.pulse_max  = pulse_max
 
@@ -76,6 +89,7 @@ class OttoPiMotion:
     def __del__(self):
         self.logger.debug('')
         #self.end()
+
 
     def reset_servo(self):
         self.logger.debug('')
@@ -96,11 +110,9 @@ class OttoPiMotion:
             self.pi.stop()
             self.mypi = False
 
-
     def off(self):
         self.logger.debug('')
         self.servo.off()
-
 
     def stop(self, n=1):
         self.logger.debug('n = %d', n)
@@ -109,18 +121,61 @@ class OttoPiMotion:
     def resume(self, n=1):
         self.logger.debug('n = %d', n)
         self.stop_flag = False
-            
 
     def home(self, n=1, v=None, q=False):
         self.logger.debug('n=%d, v=%s, q=%s', n, v, q)
         self.move1(0, 0, 0, 0, v=v, q=q)
 
+    def change_pos(self, i, d_pos, v=None, q=False):
+        self.logger.debug('i=%d, d_pos=%d', i, d_pos)
+        cur_pos = self.get_cur_position()
+        cur_pos[i] += d_pos
+        self.logger.info('cur_pos = %s', cur_pos)
+        self.move1(cur_pos[0], cur_pos[1], cur_pos[2], cur_pos[3],
+                   v=v, q=q)
+
+    def move_up0(self, n=1, v=None, q=False):
+        self.logger.debug('n=%d, v=%s, q=%s', n, str(v), q)
+        self.change_pos(0, 5)
+
+    def move_down0(self, n=1, v=None, q=False):
+        self.logger.debug('n=%d, v=%s, q=%s', n, str(v), q)
+        self.change_pos(0, -5)
+
+    def move_up1(self, n=1, v=None, q=False):
+        self.logger.debug('n=%d, v=%s, q=%s', n, str(v), q)
+        self.change_pos(1, 5)
+
+    def move_down1(self, n=1, v=None, q=False):
+        self.logger.debug('n=%d, v=%s, q=%s', n, str(v), q)
+        self.change_pos(1, -5)
+
+    def move_up2(self, n=1, v=None, q=False):
+        self.logger.debug('n=%d, v=%s, q=%s', n, str(v), q)
+        self.change_pos(2, 5)
+
+    def move_down2(self, n=1, v=None, q=False):
+        self.logger.debug('n=%d, v=%s, q=%s', n, str(v), q)
+        self.change_pos(2, -5)
+
+    def move_up3(self, n=1, v=None, q=False):
+        self.logger.debug('n=%d, v=%s, q=%s', n, str(v), q)
+        self.change_pos(3, 5)
+
+    def move_down3(self, n=1, v=None, q=False):
+        self.logger.debug('n=%d, v=%s, q=%s', n, str(v), q)
+        self.change_pos(3, -5)
+
 
     def adjust_home(self, i, v):
         self.logger.debug('i = %d, v = %d', i, v)
         self.pulse_home[i] += v
-        self.logger.debug('pulse_home = %s', self.pulse_home)
+        self.logger.info('pulse_home = %s', self.pulse_home)
+        cnf = OttoPiConfig(debug=self.debug)
+        cnf.set_intlist('home', self.pulse_home)
+        cnf.save()
         self.reset_servo()
+
 
     def home_up0(self, n=1):
         self.logger.debug('n = %d', n)
@@ -155,10 +210,18 @@ class OttoPiMotion:
         self.adjust_home(3, -5)
 
 
+    def get_cur_position(self):
+        self.logger.debug('')
+        cur_pulse = self.servo.get_cur_position()
+        self.logger.debug('cur_pulse = %s', cur_pulse)
+        cur_pos = [(cur_pulse[i] / 10) for i in range(len(cur_pulse))]
+        self.logger.debug('cur_pos = %s', cur_pos)
+        return cur_pos
+
+
     def move(self, p_list=[], interval_msec=0, v=None, q=False):
         self.logger.debug('p_list=%s, interval_msec=%d, v=%s, q=%s',
                           p_list, interval_msec, v, q)
-
         for p in p_list:
             self.move1(p[0], p[1], p[2], p[3], v, q)
             time.sleep(interval_msec/1000)
@@ -167,7 +230,6 @@ class OttoPiMotion:
     def move1(self, p1, p2, p3, p4, v=None, q=False):
         self.logger.debug('(p1, p2, p3, p4)=%s, v=%s, q=%s',
                           (p1, p2, p3, p4), v, q)
-
         self.servo.move1([p1*10, p2*10, p3*10, p4*10], v, q)
 
 
