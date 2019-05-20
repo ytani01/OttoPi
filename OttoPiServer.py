@@ -40,7 +40,8 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
         self.logger = get_logger(__class__.__name__, self.debug)
         self.logger.debug('client_address: %s', client_address)
         
-        self.robot = server.robot
+        self.server = server
+        self.robot  = server.robot
 
         self.cmd_key = {
             'w': 'forward',
@@ -99,8 +100,6 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
         #  0x22 LINEMODE
         self.net_write(b'\xff\xfd\x22')
 
-        #self.robot.send_cmd('happy')
-
         self.net_write('#Ready\r\n'.encode('utf-8'))
 
         flag_continue = True
@@ -137,6 +136,14 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                 self.net_write('No data .. disconnect\r\n'.encode('utf-8'))
                 break
 
+            # 制御スレッドが動いていない場合は(異常終了など?)、再起動
+            if not self.robot.is_running():
+                self.logger.warn('robot control thread is dead !? .. restart')
+                self.server.robot = OttoPiCtrl(self.server.pi,
+                                               debug=self.server.debug)
+                self.robot = self.server.robot
+                self.robot.start()
+
             # ダイレクトコマンド
             if data[0] == ':':
                 self.logger.debug('direct command:%s', data[1:])
@@ -157,7 +164,6 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                 self.net_write('#OK\r\n'.encode('utf-8'))
                 self.robot.send_cmd(self.cmd_key[ch])
 
-        #self.robot.send_cmd('ojigi')
         self.logger.debug('done')
         
     def finish(self):

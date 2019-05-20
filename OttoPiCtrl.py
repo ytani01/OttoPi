@@ -141,7 +141,7 @@ class OttoPiCtrl(threading.Thread):
 
         # cmd_name: コマンド名
         if len(cmdline) == 0:
-            (cmd_name, cmd_n) = (self.CMD_END, '')
+            (cmd_name, cmd_n) = ('NULL', '')
         elif len(cmdline) == 1:
             (cmd_name, cmd_n) = (cmdline[0], '')
         else:
@@ -185,9 +185,9 @@ class OttoPiCtrl(threading.Thread):
             self.logger.debug('running=%s', self.running)
 
         # スレッド終了処理
-        self.logger.debug('ending(running=%s)', self.running)
+        self.logger.info('ending(running=%s)', self.running)
         self.end()
-        self.logger.debug('done')
+        self.logger.info('done')
             
         
 #####
