@@ -236,9 +236,6 @@ class OttoPiMotion:
     def change_rl(self, rl=''):
         self.logger.debug('rl=%s', rl)
 
-        if rl=='':
-            return ''
-
         if rl[0] == 'right'[0]:
             return 'left'
         if rl[0] == 'left'[0]:

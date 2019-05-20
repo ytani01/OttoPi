@@ -105,6 +105,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
 
         flag_continue = True
         while flag_continue:
+            # データー受信
             try:
                 net_data = self.request.recv(512)
             except BaseException as e:
@@ -114,6 +115,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             else:
                 self.logger.debug('net_data:%a', net_data)
 
+            # デコード(UTF-8)
             try:
                 decoded_data = net_data.decode('utf-8')
             except UnicodeDecodeError as e:
@@ -124,6 +126,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
 
             self.net_write('\r\n'.encode('utf-8'))
             
+            # 文字列抽出(コントロールキャラクター削除)
             data = ''
             for ch in decoded_data:
                 if ord(ch) >= 0x20:
@@ -134,6 +137,14 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                 self.net_write('No data .. disconnect\r\n'.encode('utf-8'))
                 break
 
+            # ダイレクトコマンド
+            if data[0] == ':':
+                self.logger.debug('direct command:%s', data[1:])
+                self.net_write('#OK\r\n'.encode('utf-8'))
+                self.robot.send_cmd(data[1:])
+                continue
+                
+            # ワンキーコマンド
             for ch in data:
                 self.logger.debug('ch=\'%a\'', ch)
 

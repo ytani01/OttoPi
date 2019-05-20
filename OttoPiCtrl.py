@@ -149,7 +149,7 @@ class OttoPiCtrl(threading.Thread):
         self.logger.debug('cmd_name=%s, cmd_n=%s', cmd_name, cmd_n)
 
         if cmd_name not in self.cmd_func.keys():
-            self.logger.error('\'%s\': no such command ignore', cmd_name)
+            self.logger.error('\'%s\': no such command .. ignore', cmd_name)
             return True
         
         if cmd_name == self.CMD_END:

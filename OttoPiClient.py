@@ -63,6 +63,16 @@ class OttoPiClient:
         if len(in_data) > 0:
             self.logger.debug('in_data:%a', in_data)
 
+        if cmd[0] == ':':
+            self.tn.write(cmd.encode('utf-8'))
+
+            time.sleep(0.1)
+
+            in_data = self.tn.read_very_eager()
+            if len(in_data) > 0:
+                self.logger.debug('in_data:%a', in_data)
+            return
+        
         for ch in cmd:
             self.logger.debug('ch=%a(0x%02x)', ch, ord(ch))
 
@@ -87,20 +97,26 @@ class Sample:
         self.command = command
 
     def main(self):
-        self.logger.debug('command:%s', self.command)
+        self.logger.debug('command:\'%s\'', self.command)
         
         if self.command != '':
-            for ch in self.command:
-                self.logger.debug('ch=%a', ch)
-                self.cl.send_cmd(ch)
+            if self.command[0] == ':':
+                self.cl.send_cmd(self.command)
                 time.sleep(3)
-            self.cl.send_cmd('s')
+            else:
+                for ch in self.command:
+                    self.logger.debug('ch=%a', ch)
+                    self.cl.send_cmd(ch)
+                    time.sleep(3)
+
+            self.cl.send_cmd(':stop')
+
         else:
-            self.cl.send_cmd('1')
+            self.cl.send_cmd(':happy')
             time.sleep(3)
-            self.cl.send_cmd('2')
+            self.cl.send_cmd(':ojigi')
             time.sleep(3)
-            self.cl.send_cmd('s')
+            self.cl.send_cmd(':stop')
 
     def end(self):
         self.logger.debug('')
