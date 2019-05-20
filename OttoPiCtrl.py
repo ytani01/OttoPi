@@ -52,7 +52,9 @@ class OttoPiCtrl(threading.Thread):
             
         self.opm = OttoPiMotion(self.pi, debug=logger.propagate and debug)
 
+        # コマンド名とモーション関数の対応づけ
         self.cmd_func= {
+            # モーション
             'forward':      {'func':self.opm.forward,    'continuous': True},
             'backward':     {'func':self.opm.backward,   'continuous': True},
             'turn_right':   {'func':self.opm.turn_right, 'continuous': True},
@@ -62,6 +64,7 @@ class OttoPiCtrl(threading.Thread):
             'happy':        {'func':self.opm.happy,      'continuous': False},
             'ojigi':        {'func':self.opm.ojigi,      'continuous': False},
 
+            # サーボモーター個別操作
             'move_up0':     {'func':self.opm.move_up0,   'continuous': False},
             'move_down0':   {'func':self.opm.move_down0, 'continuous': False},
             'move_up1':     {'func':self.opm.move_up1,   'continuous': False},
@@ -71,6 +74,7 @@ class OttoPiCtrl(threading.Thread):
             'move_up3':     {'func':self.opm.move_up3,   'continuous': False},
             'move_down3':   {'func':self.opm.move_down3, 'continuous': False},
 
+            # ホームポジションの調整
             'home_up0':     {'func':self.opm.home_up0,   'continuous': False},
             'home_down0':   {'func':self.opm.home_down0, 'continuous': False},
             'home_up1':     {'func':self.opm.home_up1,   'continuous': False},
@@ -80,6 +84,7 @@ class OttoPiCtrl(threading.Thread):
             'home_up3':     {'func':self.opm.home_up3,   'continuous': False},
             'home_down3':   {'func':self.opm.home_down3, 'continuous': False},
 
+            # 基本コマンド
             self.CMD_HOME:  {'func':self.opm.home,       'continuous': False},
             self.CMD_STOP:  {'func':self.opm.stop,       'continuous': False},
             self.CMD_RESUME:{'func':self.opm.resume,     'continuous': False},
@@ -112,15 +117,11 @@ class OttoPiCtrl(threading.Thread):
             c = self.cmdq.get()
             self.logger.info('%s: ignored', c)
 
-    # cmd: numeric string or one char command
+    # cmd: "[コマンド名] [実行回数]"
     def send_cmd(self, cmd):
         self.logger.debug('cmd=\'%s\'', cmd)
 
-        if not cmd in self.cmd_func.keys():
-            self.logger.warn('invalid cmd:%s: ignored', cmd)
-            return
-            
-        self.opm.stop() # stop continuous motion (Don't op.go() immediately)
+        self.opm.stop() # stop continuous motion
         self.clear_cmdq()
         self.cmdq.put(self.CMD_RESUME) 
         self.cmdq.put(cmd)
@@ -134,20 +135,37 @@ class OttoPiCtrl(threading.Thread):
     def exec_cmd(self, cmd):
         self.logger.debug('cmd=\'%s\'', cmd)
 
-        if cmd not in self.cmd_func.keys():
-            self.logger.error('\'%s\': no such commdnd', cmd)
+        # コマンドライン分割
+        cmdline = cmd.split()
+        self.logger.debug('cmdline=%s', cmdline)
+
+        # cmd_name: コマンド名
+        if len(cmdline) == 0:
+            (cmd_name, cmd_n) = (self.CMD_END, '')
+        elif len(cmdline) == 1:
+            (cmd_name, cmd_n) = (cmdline[0], '')
+        else:
+            (cmd_name, cmd_n) = (cmdline[0], cmdline[1])
+        self.logger.debug('cmd_name=%s, cmd_n=%s', cmd_name, cmd_n)
+
+        if cmd_name not in self.cmd_func.keys():
+            self.logger.error('\'%s\': no such command ignore', cmd_name)
             return True
         
-        if cmd == self.CMD_END:
-            # finish
+        if cmd_name == self.CMD_END:
+            self.logger.debug('finish')
             return False
         
+        # cmd_n: 実行回数(0=連続実行)
         n = 1
-        if self.cmd_func[cmd]['continuous']:
-            n = 0
+        if cmd_n.isnumeric():
+            n = int(cmd_n)
+        elif self.cmd_func[cmd_name]['continuous']:
+            n = 0 # continuous move
         self.logger.debug('n=%d', n)
-        
-        self.cmd_func[cmd]['func'](n=n)
+
+        # コマンド実行
+        self.cmd_func[cmd_name]['func'](n=n)
         return True
             
     def is_running(self):
@@ -159,11 +177,14 @@ class OttoPiCtrl(threading.Thread):
 
         self.running = True
         while self.running:
+            # コマンドライン受信
             cmd = self.recv_cmd()
             self.logger.debug('cmd=\'%s\'', cmd)
+            # コマンドライン実行
             self.running = self.exec_cmd(cmd)
             self.logger.debug('running=%s', self.running)
 
+        # スレッド終了処理
         self.logger.debug('ending(running=%s)', self.running)
         self.end()
         self.logger.debug('done')
@@ -187,17 +208,19 @@ class Sample:
         while True:
             cmdline = input()
             self.logger.info('cmdline=\'%s\'', cmdline)
-            if cmdline == '':
-                self.logger.info('Bye!')
+            if not self.opc.is_running():
                 break
-
+            if cmdline == '':
+                break
             self.opc.send_cmd(cmdline)
+
+        self.logger.info('Bye')
         
     def end(self):
         self.logger.debug('')
 
         self.opc.send_cmd('ojigi')
-        time.sleep(3)
+        time.sleep(1)
         self.opc.send_cmd(OttoPiCtrl.CMD_END)
         self.opc.join()
         self.logger.debug('done')

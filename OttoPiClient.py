@@ -96,9 +96,9 @@ class Sample:
                 time.sleep(3)
             self.cl.send_cmd('s')
         else:
-            self.cl.send_cmd('h')
+            self.cl.send_cmd('1')
             time.sleep(3)
-            self.cl.send_cmd('o')
+            self.cl.send_cmd('2')
             time.sleep(3)
             self.cl.send_cmd('s')
 

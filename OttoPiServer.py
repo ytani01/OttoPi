@@ -101,7 +101,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
 
         #self.robot.send_cmd('happy')
 
-        self.net_write('# Ready\r\n'.encode('utf-8'))
+        self.net_write('#Ready\r\n'.encode('utf-8'))
 
         flag_continue = True
         while flag_continue:
@@ -140,10 +140,10 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                 if not ch in self.cmd_key.keys():
                     self.robot.send_cmd(OttoPiCtrl.CMD_STOP)
                     self.logger.debug('invalid command:\'%a\' .. stop', ch)
-                    self.net_write('NG .. stop\r\n'.encode('utf-8'))
+                    self.net_write('#NG .. stop\r\n'.encode('utf-8'))
                     continue
 
-                self.net_write('OK\r\n'.encode('utf-8'))
+                self.net_write('#OK\r\n'.encode('utf-8'))
                 self.robot.send_cmd(self.cmd_key[ch])
 
         #self.robot.send_cmd('ojigi')
