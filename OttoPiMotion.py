@@ -249,7 +249,7 @@ class OttoPiMotion:
 
         if n == 0:
             n = N_CONTINUOUS
-            self.logger.info('n=%d!', n)
+            self.logger.debug('n=%d!', n)
             
         p1 = [10, 25, 15]
         p2 = 90
@@ -276,7 +276,7 @@ class OttoPiMotion:
 
         if n == 0:
             n = N_CONTINUOUS
-            self.logger.info('n=%d!', n)
+            self.logger.debug('n=%d!', n)
             
         p1 = 70
         p2 = 10
@@ -302,7 +302,7 @@ class OttoPiMotion:
 
         if n == 0:
             n = N_CONTINUOUS
-            self.logger.info('n=%d!', n)
+            self.logger.debug('n=%d!', n)
 
         for i in range(n):
             if self.stop_flag:
@@ -316,7 +316,7 @@ class OttoPiMotion:
 
         if n == 0:
             n = N_CONTINUOUS
-            self.logger.info('n=%d!', n)
+            self.logger.debug('n=%d!', n)
 
         for i in range(n):
             if self.stop_flag:
@@ -351,7 +351,7 @@ class OttoPiMotion:
 
         if n == 0:
             n = N_CONTINUOUS
-            self.logger.info('n=%d!', n)
+            self.logger.debug('n=%d!', n)
             
         for i in range(n):
             if self.stop_flag:
@@ -365,7 +365,7 @@ class OttoPiMotion:
 
         if n == 0:
             n = N_CONTINUOUS
-            self.logger.info('n=%d!', n)
+            self.logger.debug('n=%d!', n)
             
         for i in range(n):
             if self.stop_flag:
@@ -417,7 +417,7 @@ class OttoPiMotion:
 
         if n == 0:
             n = N_CONTINUOUS
-            self.logger.info('n=%d!', n)
+            self.logger.debug('n=%d!', n)
             
         if rl == '':
             rl = 'rl'[random.randint(0,1)]
