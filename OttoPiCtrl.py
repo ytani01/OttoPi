@@ -99,7 +99,6 @@ class OttoPiCtrl(threading.Thread):
 
     def __del__(self):
         self.logger.debug('')
-        #self.end()
 
     def end(self):
         self.logger.debug('')
@@ -238,7 +237,7 @@ def main(debug):
     try:
         obj.main()
     finally:
-        print('finally')
+        self.logger.info('finally')
         obj.end()
 
 if __name__ == '__main__':
