@@ -20,7 +20,8 @@ handler_fmt = Formatter(
     datefmt='%H:%M:%S')
 console_handler.setFormatter(handler_fmt)
 logger.addHandler(console_handler)
-logger.propagate = True
+#logger.propagate = True
+logger.propagate = False
 def get_logger(name, debug):
     l = logger.getChild(name)
     if debug:
@@ -103,6 +104,9 @@ class OttoPiCtrl(threading.Thread):
     def end(self):
         self.logger.debug('')
 
+        self.send_cmd(self.CMD_END)
+        self.join()
+
         self.opm.end()
         time.sleep(0.5)
         if self.mypi:
@@ -116,6 +120,10 @@ class OttoPiCtrl(threading.Thread):
             c = self.cmdq.get()
             self.logger.info('%s: ignored', c)
 
+    def is_valid_cmd(self, cmd=''):
+        self.logger.debug('cmd = \'%s\'', cmd)
+        return cmd in self.cmd_func.keys()
+    
     # cmd: "[コマンド名] [実行回数]"
     def send_cmd(self, cmd):
         self.logger.debug('cmd=\'%s\'', cmd)
@@ -147,7 +155,7 @@ class OttoPiCtrl(threading.Thread):
             (cmd_name, cmd_n) = (cmdline[0], cmdline[1])
         self.logger.debug('cmd_name=%s, cmd_n=%s', cmd_name, cmd_n)
 
-        if cmd_name not in self.cmd_func.keys():
+        if not self.is_valid_cmd(cmd_name):
             self.logger.error('\'%s\': no such command .. ignore', cmd_name)
             return True
         
@@ -184,9 +192,7 @@ class OttoPiCtrl(threading.Thread):
             self.logger.debug('running=%s', self.running)
 
         # スレッド終了処理
-        self.logger.info('ending(running=%s)', self.running)
-        self.end()
-        self.logger.info('done')
+        self.logger.info('done(running=%s)', self.running)
             
         
 #####
