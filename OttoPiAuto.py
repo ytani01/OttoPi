@@ -144,7 +144,6 @@ class OttoPiAuto(threading.Thread):
                 else:
                     self.logger.error('%s: invalid command .. ignore', cmd)
 
-            self.logger.debug('on=%s', self.on)
             if not self.on:
                 continue
                 
@@ -154,6 +153,7 @@ class OttoPiAuto(threading.Thread):
             self.prev_stat = self.stat
 
             if d <= self.D_TOO_NEAR:
+                self.logger.warn('TOO_NEAR')
                 self.stat = self.STAT_NEAR
                 if self.prev_stat != self.STAT_NEAR:
                     self.robot_ctrl.send('happy')
@@ -162,6 +162,7 @@ class OttoPiAuto(threading.Thread):
                 time.sleep(2)
 
             elif d <= self.D_NEAR:
+                self.logger.warn('NEAR')
                 self.stat = self.STAT_NEAR
                 if self.prev_stat != self.STAT_NEAR:
                     if random.random() < 0.5:
@@ -176,6 +177,7 @@ class OttoPiAuto(threading.Thread):
                 time.sleep(2)
 
             elif d >= self.D_FAR:
+                self.logger.info('FAR')
                 self.stat = self.STAT_FAR
                 if self.prev_stat == self.STAT_NEAR:
                     self.robot_ctrl.send('forward')
@@ -185,7 +187,7 @@ class OttoPiAuto(threading.Thread):
                 if self.prev_stat == self.STAT_NEAR:
                     self.robot_ctrl.send('forward')
 
-            self.logger.info('stat=%s', self.stat)
+            self.logger.debug('stat=%s', self.stat)
 
         self.logger.info('done(alive=%s)', self.alive)
 

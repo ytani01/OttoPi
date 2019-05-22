@@ -126,11 +126,16 @@ class OttoPiCtrl(threading.Thread):
         self.logger.debug('cmd = \'%s\'', cmd)
         return cmd in self.cmd_func.keys()
     
+    # 連続実行中断
+    def interrupt_continuous(self):
+        self.logger.info('')
+        self.opm.stop()
+
     # cmd: "[コマンド名] [実行回数]"
     def send(self, cmd):
         self.logger.debug('cmd=\'%s\'', cmd)
 
-        self.opm.stop() # stop continuous motion
+        self.interrupt_continuous()
         self.clear_cmdq()
         self.cmdq.put(self.CMD_RESUME) 
         self.cmdq.put(cmd)
@@ -149,23 +154,25 @@ class OttoPiCtrl(threading.Thread):
         self.logger.debug('cmdline=%s', cmdline)
 
         # cmd_name: コマンド名
+        # cmd_n:    実行回数
         if len(cmdline) == 0:
             (cmd_name, cmd_n) = ('NULL', '')
         elif len(cmdline) == 1:
             (cmd_name, cmd_n) = (cmdline[0], '')
         else:
             (cmd_name, cmd_n) = (cmdline[0], cmdline[1])
-        self.logger.debug('cmd_name=%s, cmd_n=%s', cmd_name, cmd_n)
+        self.logger.info('cmd_name,cmd_n=\'%s\',\'%s\'', cmd_name,cmd_n)
 
         if not self.is_valid_cmd(cmd_name):
             self.logger.error('\'%s\': no such command .. ignore', cmd_name)
             return True
         
+        # 終了確認
         if cmd_name == self.CMD_END:
             self.logger.debug('finish')
             return False
         
-        # cmd_n: 実行回数(0=連続実行)
+        # cmd_n -> n: 実行回数(0=連続実行)
         n = 1
         if cmd_n.isnumeric():
             n = int(cmd_n)

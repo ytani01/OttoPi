@@ -155,12 +155,12 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             if data[0] == ':':
                 self.logger.debug('direct command:%s', data[1:])
                 self.net_write('#OK\r\n'.encode('utf-8'))
+
                 if data[1:].startswith('auto_on'):
                     self.robot_auto.send('on')
                 elif data[1:].startswith('auto_off'):
                     self.robot_auto.send('off')
                 else:
-                    #self.robot_auto.send('off')
                     self.robot_ctrl.send(data[1:])
                 continue
                 
@@ -178,12 +178,12 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
 
                 cmd = self.cmd_key[ch]
                 self.logger.debug('cmd=\'%s\'', cmd)
+
                 if cmd.startswith('auto_on'):
                     self.robot_auto.send('on')
                 elif cmd.startswith('auto_off'):
                     self.robot_auto.send('off')
                 else:
-                    #self.robot_auto.send('off')
                     self.robot_ctrl.send(cmd)
 
         self.logger.debug('done')
