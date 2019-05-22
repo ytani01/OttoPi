@@ -34,7 +34,7 @@ PULSE_MAX  = 2500
 PULSE_HOME = 1500
 
 PULSE_STEP      = 20
-INTERVAL_FACTOR = 0.3
+INTERVAL_FACTOR = 0.4
 #INTERVAL_FACTOR = 1
 
 DEF_PIN = [17, 27, 22, 23]
@@ -97,8 +97,8 @@ class PiServo:
         
 
     def get_cur_position(self):
-        self.logger.debug('')
-        cur_pos = [(self.cur_pulse[i] - self.pulse_home[i]) for i in range(self.pin_n)]
+        cur_pos = [(self.cur_pulse[i] - self.pulse_home[i])
+                   for i in range(self.pin_n)]
         self.logger.debug('cur_pos = %s', cur_pos)
         return cur_pos
 
