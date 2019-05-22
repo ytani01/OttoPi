@@ -34,8 +34,8 @@ SPEAK_LOG="${LOGDIR}/speak.log"
 
 #SPEAK_CMD="Speak.py"
 #SPEAK_CMD="speak"
-#SPEAK_CMD="SpeakClient.py"
-SPEAK_CMD="speak2.sh"
+SPEAK_CMD="SpeakClient.py"
+#SPEAK_CMD="speak2.sh"
 
 SPEAKIPADDR_CMD="speakipaddr2.sh"
 
@@ -59,7 +59,8 @@ if which ${SPEAK_SERVER}; then
     fi
     ${SPEAK_SERVER} -d > ${SPEAK_LOG} 2>&1 &
     sleep 10
-    ${SPEAK_CMD} "私は二足歩行ロボット"
+    #${SPEAK_CMD} "私は二足歩行ロボット"
+    ${SPEAK_CMD} "私は二そくほこうロボット"
     ${SPEAK_CMD} "${MY_NAME} です"
 fi
 

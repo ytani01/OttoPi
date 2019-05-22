@@ -29,29 +29,24 @@
       {% endif %}
     </div>
     {% endif %}
+    <hr />
     <div align="center">
-      <table>
+      <table width="90%">
 	<tbody>
 	  <tr>
-	    <td>
-	      <input type="image" src="/static/images/button_blue2.png"
-		     width="60px" onClick="post(':auto_on');">
+	    <td align="left">
+	      <input type="button" value="AUTO" onClick="post(':auto_on');">
 	    </td>
-	    <td>
-	      <input type="image" src="/static/images/button_red2.png"
-		     width="60px" onClick="post(':auto_off');">
-	    </td>
-	    <td>
-	    </td>
-	    <td>
-	      <input type="image" src="/static/images/button_yellow2.png"
-		     width="60px" onClick="post(':happy');">
-	    </td>
-	    <td>
-	      <input type="image" src="/static/images/button_yellow2.png"
-		     width="60px" onClick="post(':ojigi');">
+	    <td align="right">
+	      <input type="button" value="happy" onClick="post(':happy');">
+	      <input type="button" value="ojigi" onClick="post(':ojigi');">
 	    </td>
 	  </tr>
+	</tbody>
+      </table>
+      <hr />
+      <table>
+	<tbody>
 	  <tr>
 	    <td></td>
 	    <td></td>
