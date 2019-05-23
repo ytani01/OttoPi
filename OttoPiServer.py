@@ -55,9 +55,6 @@ def get_logger(name, debug):
 
 
 #####
-DEF_PORT = 12345
-
-#####
 class OttoPiHandler(socketserver.StreamRequestHandler):
     def __init__(self, request, client_address, server):
         self.debug = server.debug
@@ -217,6 +214,8 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
     
 
 class OttoPiServer(socketserver.TCPServer):
+    DEF_PORT = 12345
+
     def __init__(self, pi=None, port=DEF_PORT, debug=False):
         self.debug = debug
         self.logger = get_logger(__class__.__name__, debug)
@@ -296,7 +295,7 @@ class Sample:
 #####
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(context_settings=CONTEXT_SETTINGS)
-@click.argument('port', type=int, default=DEF_PORT)
+@click.argument('port', type=int, default=OttoPiServer.DEF_PORT)
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(port, debug):
