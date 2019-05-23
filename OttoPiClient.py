@@ -2,6 +2,29 @@
 #
 # (c) 2019 Yoichi Tanibayashi
 #
+'''
+ロボット制御クライアント
+
+OttoPiServerにコマンドを送信する
+
+OttoPiClient -- ロボット制御クライアント
+|
+|(TCP/IP)
+|
+OttoPiServer -- ロボット制御サーバ (ネットワーク送受信スレッド)
+ |
+ +- OttoPiAuto -- ロボットの自動運転 (自動運転スレッド)
+ |   |
+ +---+- OttoPiCtrl -- コマンド制御 (動作実行スレッド)
+         |
+         + OttoPiMotion -- 動作定義
+            |
+            +- PiServo -- 複数サーボの同期制御
+            +- OttoPiConfig -- 設定ファイルの読み込み・保存
+
+'''
+__author__ = 'Yoichi Tanibayashi'
+__date__   = '2019'
 
 import telnetlib
 import time

@@ -2,9 +2,29 @@
 #
 # (c) 2019 Yoichi Tanibayashi
 #
+'''
+ロボットの自動運転
+
+距離センサーで障害物からの距離を認識し、
+OttoPiCtrlを利用して、ロボットを自動運転する。
+
+send()で、自動運転のON/OFFを制御できる。
+
+OttoPiAuto -- ロボットの自動運転 (自動運転スレッド)
+ |
+ +- OttoPiCtrl -- コマンド制御 (動作実行スレッド)
+     |
+     +- OttoPiMotion -- 動作定義
+         |
+         +- PiServo -- 複数サーボの同期制御
+         +- OttoPiConfig -- 設定ファイルの読み込み・保存
+
+'''
+__author__ = 'Yoichi Tanibayashi'
+__date__   = '2019'
 
 from OttoPiCtrl import OttoPiCtrl
-import VL53L0X
+import VL53L0X as VL53L0X
 import pigpio
 import time
 import random

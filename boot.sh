@@ -51,6 +51,8 @@ HTTP_LOG="${LOGDIR}/http.log"
 
 ROBOT_CLIENT="${BINDIR}/OttoPiClient.py"
 
+MJPG_STREAMER="${BINDIR}/mjpg-streamer.sh"
+MJPG_STREAMER_LOG="${LOGDIR}/mjpg-streamer.log"
 
 if which ${SPEAK_SERVER}; then
     SPEAK=ON
@@ -74,6 +76,10 @@ if [ -x ${ROBOT_SERVER} ]; then
     cd ${BINDIR}
     ${ROBOT_SERVER} ${ROBOT_OPT} > ${ROBOT_LOG} 2>&1 &
     sleep 10
+fi
+
+if [ -x ${MJPG_STREAMER} ]; then
+    ${MJPG_STREAMER} > ${MJPG_STREAMER_LOG} 2>&1 &
 fi
 
 if [ -x ${HTTP_SERVER} ]; then

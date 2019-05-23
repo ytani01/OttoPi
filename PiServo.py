@@ -2,6 +2,12 @@
 #
 # (c) 2019 Yoichi Tanibayashi
 #
+'''
+複数のサーボモーターを同期をとりながら制御する(個数は任意)
+'''
+__author__ = 'Yoichi Tanibayashi'
+__date__   = '2019'
+
 import pigpio
 import time
 

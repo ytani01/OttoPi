@@ -2,6 +2,29 @@
 #
 # (c) 2019 Yoichi Tanibayashi
 #
+'''
+ロボット制御サーバ
+
+ネットワークからコマンド(短縮文字、またはコマンド文字列)を受信し、
+ロボットを制御する
+
+自動運転のON/OFF、マニュアル操作が行える。
+
+OttoPiServer -- ロボット制御サーバ (ネットワーク送受信スレッド)
+ |
+ +- OttoPiAuto -- ロボットの自動運転 (自動運転スレッド)
+ |   |
+ +---+- OttoPiCtrl -- コマンド制御 (動作実行スレッド)
+         |
+         + OttoPiMotion -- 動作定義
+            |
+            +- PiServo -- 複数サーボの同期制御
+            +- OttoPiConfig -- 設定ファイルの読み込み・保存
+
+'''
+__author__ = 'Yoichi Tanibayashi'
+__date__   = '2019'
+
 from OttoPiCtrl import OttoPiCtrl
 from OttoPiAuto import OttoPiAuto
 
