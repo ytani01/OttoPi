@@ -3,9 +3,9 @@
 # (c) 2019 Yoichi Tanibayashi
 #
 '''
-PiServo を利用し、4個のサーボを制御して、歩行やダンスなどの動作をさせる。
+PiServo を利用して、4個のサーボを制御し、歩行やダンスなどの動作をさせる。
 
-OttoPiConfig を利用して、設定ファイルから、GPIOピン番号とサーボの初期値を読み込む。
+また、OttoPiConfigで、設定ファイルから、GPIOピン番号とサーボの初期値を読み込む。
 
 OttoPiMotion -- 動作定義
  |
