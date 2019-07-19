@@ -29,27 +29,9 @@ __date__   = '2019'
 import telnetlib
 import time
 
-import click
-
-from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO, WARN
-logger = getLogger(__name__)
-logger.setLevel(INFO)
-console_handler = StreamHandler()
-console_handler.setLevel(DEBUG)
-handler_fmt = Formatter(
-    '%(asctime)s %(levelname)s %(name)s.%(funcName)s> %(message)s',
-    datefmt='%H:%M:%S')
-console_handler.setFormatter(handler_fmt)
-logger.addHandler(console_handler)
-logger.propagate = False
-def get_logger(name, debug):
-    l = logger.getChild(name)
-    if debug:
-        l.setLevel(DEBUG)
-    else:
-        l.setLevel(INFO)
-    return l
-
+#####
+from MyLogger import MyLogger
+my_logger = MyLogger(__file__)
 
 #####
 DEF_HOST = 'localhost'
@@ -59,7 +41,7 @@ DEF_PORT = 12345
 class OttoPiClient:
     def __init__(self, svr_host=DEF_HOST, svr_port=DEF_PORT, debug=False):
         self.debug = debug
-        self.logger = get_logger(__class__.__name__, debug)
+        self.logger = my_logger.get_logger(__class__.__name__, debug)
         self.logger.debug('svr_host=%s, svr_port=%d', svr_host, svr_port)
 
         self.svr_host = svr_host
@@ -112,7 +94,7 @@ class OttoPiClient:
 class Sample:
     def __init__(self, svr_host, svr_port, command='', debug=False):
         self.debug = debug
-        self.logger = get_logger(__class__.__name__, debug)
+        self.logger = my_logger.get_logger(__class__.__name__, debug)
         self.logger.debug('svr_host=%s, svr_port=%d', svr_host, svr_port)
         self.logger.debug('command=%s', command)
 
@@ -146,6 +128,7 @@ class Sample:
         self.cl.close()
 
 #####
+import click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(context_settings=CONTEXT_SETTINGS)
 @click.argument('svr_host', type=str, default="localhost")
@@ -155,7 +138,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(svr_host, svr_port, command, debug):
-    logger = get_logger('', debug)
+    logger = my_logger.get_logger(__name__, debug)
     logger.info('svr_host=%s, svr_port=%d', svr_host, svr_port)
     
     obj = Sample(svr_host, svr_port, command, debug=debug)

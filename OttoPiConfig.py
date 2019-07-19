@@ -4,27 +4,9 @@
 #
 import configparser
 
-import click
-
-from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO, WARN
-logger = getLogger(__name__)
-logger.setLevel(INFO)
-console_handler = StreamHandler()
-console_handler.setLevel(DEBUG)
-handler_fmt = Formatter(
-    '%(asctime)s %(levelname)s %(name)s.%(funcName)s> %(message)s',
-    datefmt='%H:%M:%S')
-console_handler.setFormatter(handler_fmt)
-logger.addHandler(console_handler)
-logger.propagate = False
-def get_logger(name, debug):
-    l = logger.getChild(name)
-    if debug:
-        l.setLevel(DEBUG)
-    else:
-        l.setLevel(INFO)
-    return l
-
+#####
+from MyLogger import MyLogger
+my_logger = MyLogger(__file__)
 
 #####
 DEF_CONF_FILE = 'OttoPi.conf'
@@ -36,7 +18,7 @@ KEY_HOME      = 'home'
 class OttoPiConfig:
     def __init__(self, conf_file=DEF_CONF_FILE, debug=False):
         self.debug = debug
-        self.logger = get_logger(__class__.__name__, debug)
+        self.logger = my_logger.get_logger(__class__.__name__, debug)
         self.logger.debug('conf_file = %s', conf_file)
 
         self.conf_file = conf_file
@@ -90,7 +72,7 @@ class OttoPiConfig:
 class Sample:
     def __init__(self, conf_file='', debug=False):
         self.debug = debug
-        self.logger = get_logger(__class__.__name__, debug)
+        self.logger = my_logger.get_logger(__class__.__name__, debug)
         self.logger.debug('conf_file=%s', conf_file)
 
         self.c = OttoPiConfig(debug=self.debug)
@@ -113,13 +95,14 @@ class Sample:
         self.c.save('a.conf')
 
 #####
+import click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(context_settings=CONTEXT_SETTINGS)
 @click.argument('conf_file', type=str, default=DEF_CONF_FILE)
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(conf_file, debug):
-    logger = get_logger('', debug)
+    logger = my_logger.get_logger(__name__, debug)
     logger.debug('conf_file=%s', conf_file)
 
     obj = Sample(conf_file, debug=debug)

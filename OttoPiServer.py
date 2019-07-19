@@ -32,33 +32,15 @@ import pigpio
 import socketserver
 import time
 
-import click
-
-from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO, WARN
-logger = getLogger(__name__)
-logger.setLevel(INFO)
-console_handler = StreamHandler()
-console_handler.setLevel(DEBUG)
-handler_fmt = Formatter(
-    '%(asctime)s %(levelname)s %(name)s.%(funcName)s> %(message)s',
-    datefmt='%H:%M:%S')
-console_handler.setFormatter(handler_fmt)
-logger.addHandler(console_handler)
-logger.propagate = False
-def get_logger(name, debug):
-    l = logger.getChild(name)
-    if debug:
-        l.setLevel(DEBUG)
-    else:
-        l.setLevel(INFO)
-    return l
-
+#####
+from MyLogger import MyLogger
+my_logger = MyLogger(__file__)
 
 #####
 class OttoPiHandler(socketserver.StreamRequestHandler):
     def __init__(self, request, client_address, server):
         self.debug = server.debug
-        self.logger = get_logger(__class__.__name__, self.debug)
+        self.logger = my_logger.get_logger(__class__.__name__, self.debug)
         self.logger.debug('client_address: %s', client_address)
         
         self.server     = server
@@ -218,7 +200,7 @@ class OttoPiServer(socketserver.TCPServer):
 
     def __init__(self, pi=None, port=DEF_PORT, debug=False):
         self.debug = debug
-        self.logger = get_logger(__class__.__name__, debug)
+        self.logger = my_logger.get_logger(__class__.__name__, debug)
         self.logger.debug('pi   = %s', pi)
         self.logger.debug('port = %d', port)
 
@@ -275,7 +257,7 @@ class OttoPiServer(socketserver.TCPServer):
 class Sample:
     def __init__(self, port, debug=False):
         self.debug = debug
-        self.logger = get_logger(__class__.__name__, debug)
+        self.logger = my_logger.get_logger(__class__.__name__, debug)
         self.logger.debug('port=%d', port)
 
         self.port   = port
@@ -293,20 +275,21 @@ class Sample:
         
         
 #####
+import click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(context_settings=CONTEXT_SETTINGS)
 @click.argument('port', type=int, default=OttoPiServer.DEF_PORT)
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(port, debug):
-    logger = get_logger('', debug)
+    logger = my_logger.get_logger(__name__, debug)
     logger.info('port=%d', port)
 
     obj = Sample(port, debug=debug)
     try:
         obj.main()
     finally:
-        print('finally')
+        logger.info('finally')
         obj.end()
 
 if __name__ == '__main__':

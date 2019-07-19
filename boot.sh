@@ -40,7 +40,7 @@ SPEAK_CMD="SpeakClient.py"
 SPEAKIPADDR_CMD="speakipaddr2.sh"
 
 ROBOT_SERVER="${BINDIR}/OttoPiServer.py"
-ROBOT_OPT=""
+ROBOT_OPT="12345"
 #ROBOT_OPT="-d"
 ROBOT_LOG="${LOGDIR}/robot.log"
 

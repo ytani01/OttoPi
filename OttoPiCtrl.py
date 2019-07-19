@@ -12,7 +12,7 @@ send()でコマンドを送り、動作をコントロールする。
 実行(モーター制御)は独立したスレッドで行う。
 
 send()メソッドでコマンドを送信すると、
-動作を「キリのいいところで」中断し、割り込む。
+現在の動作を「キリのいいところで」中断し、割り込む。
 
 
 OttoPiCtrl -- コマンド制御 (動作実行スレッド)
@@ -32,28 +32,9 @@ import pigpio
 import time
 import queue, threading
 
-import click
-
-from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO, WARN
-logger = getLogger(__name__)
-logger.setLevel(INFO)
-console_handler = StreamHandler()
-console_handler.setLevel(DEBUG)
-handler_fmt = Formatter(
-    '%(asctime)s %(levelname)s %(name)s.%(funcName)s> %(message)s',
-    datefmt='%H:%M:%S')
-console_handler.setFormatter(handler_fmt)
-logger.addHandler(console_handler)
-#logger.propagate = True
-logger.propagate = False
-def get_logger(name, debug):
-    l = logger.getChild(name)
-    if debug:
-        l.setLevel(DEBUG)
-    else:
-        l.setLevel(INFO)
-    return l
-
+#####
+from MyLogger import MyLogger
+my_logger = MyLogger(__file__)
 
 #####
 class OttoPiCtrl(threading.Thread):
@@ -64,7 +45,7 @@ class OttoPiCtrl(threading.Thread):
 
     def __init__(self, pi=None, debug=False):
         self.debug = debug
-        self.logger = get_logger(__class__.__name__, debug)
+        self.logger = my_logger.get_logger(__class__.__name__, debug)
         self.logger.debug('pi  = %s', str(pi))
 
         if type(pi) == pigpio.pi:
@@ -75,7 +56,7 @@ class OttoPiCtrl(threading.Thread):
             self.mypi = True
         self.logger.debug('mypi = %s', self.mypi)
             
-        self.opm = OttoPiMotion(self.pi, debug=logger.propagate and debug)
+        self.opm = OttoPiMotion(self.pi, debug=my_logger.logger.propagate and debug)
 
         # コマンド名とモーション関数の対応づけ
         self.cmd_func= {
@@ -232,7 +213,7 @@ class OttoPiCtrl(threading.Thread):
 class Sample:
     def __init__(self, debug=False):
         self.debug = debug
-        self.logger = get_logger(__class__.__name__, debug)
+        self.logger = my_logger.get_logger(__class__.__name__, debug)
 
         self.pi = pigpio.pi()
         self.robot_ctrl = OttoPiCtrl(self.pi, debug=debug)
@@ -264,12 +245,13 @@ class Sample:
         
         
 #####
+import click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(context_settings=CONTEXT_SETTINGS)
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(debug):
-    logger = get_logger('', debug)
+    logger = my_logger.get_logger(__name__, debug)
 
     app = Sample(debug=debug)
     try:

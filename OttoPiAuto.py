@@ -30,27 +30,10 @@ import pigpio
 import time
 import random
 import queue, threading
-import click
 
-from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO, WARN
-logger = getLogger(__name__)
-logger.setLevel(INFO)
-console_handler = StreamHandler()
-console_handler.setLevel(DEBUG)
-handler_fmt = Formatter(
-    '%(asctime)s %(levelname)s %(name)s.%(funcName)s> %(message)s',
-    datefmt='%H:%M:%S')
-console_handler.setFormatter(handler_fmt)
-logger.addHandler(console_handler)
-logger.propagate = True
-def get_logger(name, debug):
-    l = logger.getChild(name)
-    if debug:
-        l.setLevel(DEBUG)
-    else:
-        l.setLevel(INFO)
-    return l
-
+#####
+from MyLogger import MyLogger
+my_logger = MyLogger(__file__)
 
 #####
 class OttoPiAuto(threading.Thread):
@@ -71,7 +54,7 @@ class OttoPiAuto(threading.Thread):
 
     def __init__(self, robot_ctrl=None, debug=False):
         self.debug = debug
-        self.logger = get_logger(__class__.__name__, self.debug)
+        self.logger = my_logger.get_logger(__class__.__name__, self.debug)
         self.logger.debug('')
 
         self.cmd_func = {self.CMD_ON:  self.cmd_on,
@@ -174,7 +157,7 @@ class OttoPiAuto(threading.Thread):
             self.prev_stat = self.stat
 
             if d <= self.D_TOO_NEAR:
-                self.logger.warn('TOO_NEAR')
+                self.logger.warn('TOO_NEAR(<= %d)', self.D_TOO_NEAR)
                 self.stat = self.STAT_NEAR
                 if self.prev_stat != self.STAT_NEAR:
                     self.robot_ctrl.send('happy')
@@ -183,7 +166,7 @@ class OttoPiAuto(threading.Thread):
                 time.sleep(2)
 
             elif d <= self.D_NEAR:
-                self.logger.warn('NEAR')
+                self.logger.warn('NEAR(<= %d)', self.D_TOO_NEAR)
                 self.stat = self.STAT_NEAR
                 if self.prev_stat != self.STAT_NEAR:
                     if random.random() < 0.5:
@@ -195,10 +178,10 @@ class OttoPiAuto(threading.Thread):
                         self.robot_ctrl.send('turn_right')
                     else:
                         self.robot_ctrl.send('turn_left')
-                time.sleep(2)
+                time.sleep(3)
 
             elif d >= self.D_FAR:
-                self.logger.info('FAR')
+                self.logger.info('FAR(>= %d)', self.D_FAR)
                 self.stat = self.STAT_FAR
                 if self.prev_stat == self.STAT_NEAR:
                     self.robot_ctrl.send('forward')
@@ -217,7 +200,7 @@ class OttoPiAuto(threading.Thread):
 class Sample:
     def __init__(self, debug=False):
         self.debug = debug
-        self.logger = get_logger(__class__.__name__, debug)
+        self.logger = my_logger.get_logger(__class__.__name__, debug)
         self.logger.debug('')
 
         self.pi = pigpio.pi()
@@ -259,12 +242,13 @@ class Sample:
         self.logger.info('done')
 
 #####
+import click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(context_settings=CONTEXT_SETTINGS)
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(debug):
-    logger = get_logger('', debug)
+    logger = my_logger.get_logger(__name__, debug)
 
     app = Sample(debug=debug)
     try:
@@ -275,5 +259,3 @@ def main(debug):
 
 if __name__ == '__main__':
     main()
-    
-        

@@ -35,27 +35,9 @@ import netifaces
 import sys
 import os
 
-import click
-
-from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO, WARN
-logger = getLogger(__name__)
-logger.setLevel(INFO)
-console_handler = StreamHandler()
-console_handler.setLevel(DEBUG)
-handler_fmt = Formatter(
-    '%(asctime)s %(levelname)s %(name)s.%(funcName)s> %(message)s',
-    datefmt='%H:%M:%S')
-console_handler.setFormatter(handler_fmt)
-logger.addHandler(console_handler)
-logger.propagate = False
-def get_logger(name, debug):
-    l = logger.getChild(name)
-    if debug:
-        l.setLevel(DEBUG)
-    else:
-        l.setLevel(INFO)
-    return l
-
+#####
+from MyLogger import MyLogger
+my_logger = MyLogger(__file__)
 
 #####
 MyName = os.path.basename(sys.argv[0])
@@ -137,6 +119,7 @@ def speak():
     #return ''
 
 #####
+import click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(context_settings=CONTEXT_SETTINGS)
 @click.argument('robot_host', type=str, default=DEF_HOST)
@@ -146,7 +129,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 def main(robot_host, robot_port, debug):
     global RobotHost, RobotPort
 
-    logger = get_logger('', debug)
+    logger = my_logger.get_logger('', debug)
     logger.info('robot_host=%s, robot_port=%d', robot_host, robot_port)
 
     RobotHost = robot_host
@@ -159,4 +142,3 @@ def main(robot_host, robot_port, debug):
     
 if __name__ == '__main__':
     main()
-    

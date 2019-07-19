@@ -23,28 +23,9 @@ import pigpio
 import time
 import random
 
-import click
-
-from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO, WARN
-logger = getLogger(__name__)
-logger.setLevel(INFO)
-console_handler = StreamHandler()
-console_handler.setLevel(DEBUG)
-handler_fmt = Formatter(
-    '%(asctime)s %(levelname)s %(name)s.%(funcName)s> %(message)s',
-    datefmt='%H:%M:%S')
-console_handler.setFormatter(handler_fmt)
-logger.addHandler(console_handler)
-#logger.propagate = True
-logger.propagate = False
-def get_logger(name, debug):
-    l = logger.getChild(name)
-    if debug:
-        l.setLevel(DEBUG)
-    else:
-        l.setLevel(INFO)
-    return l
-
+#####
+from MyLogger import MyLogger
+my_logger = MyLogger(__file__)
 
 #####
 DEF_PIN        = [17, 27, 22, 23]
@@ -62,7 +43,7 @@ class OttoPiMotion:
                  pulse_max=DEF_PULSE_MAX,
                  debug=False):
         self.debug = debug
-        self.logger = get_logger(__class__.__name__, debug)
+        self.logger = my_logger.get_logger(__class__.__name__, debug)
         self.logger.debug('pi  = %s', str(pi))
         self.logger.debug('pin = %s', pin)
         self.logger.debug('pulse_home = %s', pulse_home)
@@ -110,7 +91,7 @@ class OttoPiMotion:
         del(self.servo)
         self.servo = PiServo(self.pi, self.pin,
                              self.pulse_home, self.pulse_min, self.pulse_max,
-                             debug=self.debug & logger.propagate)
+                             debug=self.debug & my_logger.logger.propagate)
         self.servo.home()
 
     def end(self):

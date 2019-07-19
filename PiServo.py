@@ -11,27 +11,9 @@ __date__   = '2019'
 import pigpio
 import time
 
-import click
-
-from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO, WARN
-logger = getLogger(__name__)
-logger.setLevel(INFO)
-console_handler = StreamHandler()
-console_handler.setLevel(DEBUG)
-handler_fmt = Formatter(
-    '%(asctime)s %(levelname)s %(name)s.%(funcName)s> %(message)s',
-    datefmt='%H:%M:%S')
-console_handler.setFormatter(handler_fmt)
-logger.addHandler(console_handler)
-logger.propagate = False
-def get_logger(name, debug):
-    l = logger.getChild(name)
-    if debug:
-        l.setLevel(DEBUG)
-    else:
-        l.setLevel(INFO)
-    return l
-
+#####
+from MyLogger import MyLogger
+my_logger = MyLogger(__file__)
 
 #####
 PULSE_OFF  = 0
@@ -54,7 +36,7 @@ class PiServo:
                  pulse_home=None, pulse_min=None, pulse_max=None,
                  debug=False):
         self.debug = debug
-        self.logger = get_logger(__class__.__name__, debug)
+        self.logger = my_logger.get_logger(__class__.__name__, debug)
         self.logger.debug('pi         = %s', pi)
         self.logger.debug('pins       = %s', pins)
         self.logger.debug('pulse_home = %s', pulse_home)
@@ -214,7 +196,7 @@ class PiServo:
 class Sample:
     def __init__(self, pins, debug=False):
         self.debug = debug
-        self.logger = get_logger(__class__.__name__, debug)
+        self.logger = my_logger.get_logger(__class__.__name__, debug)
         self.logger.debug('pins = %s', pins)
 
         self.pin = pins
@@ -249,6 +231,7 @@ class Sample:
         self.pi.stop()
         
 #####
+import click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(context_settings=CONTEXT_SETTINGS)
 @click.argument('pin1', type=int, default=17)
@@ -258,7 +241,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(pin1, pin2, pin3, pin4, debug):
-    logger = get_logger('', debug)
+    logger = my_logger.get_logger(__name__, debug)
     logger.debug('pins: %d, %d, %d, %d', pin1, pin2, pin3, pin4)
 
     obj = Sample([pin1, pin2, pin3, pin4], debug=debug)
