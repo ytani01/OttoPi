@@ -1,0 +1,37 @@
+# Edit this file to introduce tasks to be run by cron.
+# 
+# Each task to run has to be defined through a single line
+# indicating with different fields when the task will be run
+# and what command to run for the task
+# 
+# To define the time you can provide concrete values for
+# minute (m), hour (h), day of month (dom), month (mon),
+# and day of week (dow) or use '*' in these fields (for 'any').# 
+# Notice that tasks will be started based on the cron's system
+# daemon's notion of time and timezones.
+# 
+# Output of the crontab jobs (including errors) is sent through
+# email to the user the crontab file belongs to (unless redirected).
+# 
+# For example, you can run a backup of all your user accounts
+# at 5 a.m every week with:
+# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+# 
+# For more information see the manual pages of crontab(5) and cron(8)
+# 
+# m h  dom mon dow   command
+PIN_LED=20
+PIN_SW=21
+PIN_VCC=26
+PIN_AUDIO1=12
+PIN_AUDIO2=13
+PIN_SERVO1=17
+PIN_SERVO2=27
+PIN_SERVO3=22
+PIN_SERVO4=23
+@reboot		sudo pigpiod
+@reboot		sleep 5; pigs m ${PIN_AUDIO1} 0 m ${PIN_AUDIO2} 0
+@reboot		sleep 6; pigs s ${PIN_SERVO1} 0 s ${PIN_SERVO2} 0
+@reboot		sleep 7; pigs s ${PIN_SERVO3} 0 s ${PIN_SERVO4} 0
+
+@reboot		sleep 10; ${HOME}/bin/boot.sh > ${HOME}/tmp/boot.log 2>&1 &

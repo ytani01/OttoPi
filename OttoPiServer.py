@@ -2,6 +2,8 @@
 #
 # (c) 2019 Yoichi Tanibayashi
 #
+__author__ = 'Yoichi Tanibayashi'
+__date__   = '2019'
 '''
 ロボット制御サーバ
 
@@ -22,8 +24,6 @@ OttoPiServer -- ロボット制御サーバ (ネットワーク送受信スレ�
             +- OttoPiConfig -- 設定ファイルの読み込み・保存
 
 '''
-__author__ = 'Yoichi Tanibayashi'
-__date__   = '2019'
 
 from OttoPiCtrl import OttoPiCtrl
 from OttoPiAuto import OttoPiAuto

@@ -4,22 +4,6 @@
 #
 # (c) Yoichi Tanibayashi
 #
-##### crontab sample ################################################
-# PIN_LED=20
-# PIN_SW=21
-# PIN_VCC=26
-# PIN_AUDIO1=12
-# PIN_AUDIO2=13
-# PIN_SERVO1=17
-# PIN_SERVO2=27
-# PIN_SERVO3=22
-# PIN_SERVO4=23
-# @reboot         sudo pigpiod
-# @reboot         sleep 5; pigs m ${PIN_AUDIO1} 0 m ${PIN_AUDIO2} 0
-# @reboot         sleep 6; pigs s ${PIN_SERVO1} 0 s ${PIN_SERVO2} 0
-# @reboot         sleep 7; pigs s ${PIN_SERVO3} 0 s ${PIN_SERVO4} 0
-# @reboot         ${HOME}/bin/boot.sh > ${HOME}/tmp/boot.log 2>&1 &
-#####################################################################
 
 BINDIR=${HOME}/bin
 LOGDIR=${HOME}/tmp
@@ -28,33 +12,59 @@ PATH=${BINDIR}:${PATH}
 
 MY_NAME="オットー・パイ"
 
+### Button and LED
+PIN_SW=21
+PIN_VCC=26
+PIN_LED=20
+
+BUTTON_CMD="RobotButton.py"
+BUTTON_OPT=" -s ${PIN_SW} -v ${PIN_VCC} -l ${PIN_LED}"
+BUTTON_LOG="${LOGDIR}/button.log"
+
+### Music
+MUSIC=OFF
+MUSIC_PLAYER="cvlc"
+MUSIC_PLAYER_OPT="--play-and-exit"
+MUSIC_DATA="${HOME}/tmp/boot-music.aac"
+
+### Speak
 SPEAK=OFF
 SPEAK_SERVER="SpeakServer.py"
 SPEAK_LOG="${LOGDIR}/speak.log"
-
-#SPEAK_CMD="Speak.py"
-#SPEAK_CMD="speak"
 SPEAK_CMD="SpeakClient.py"
-#SPEAK_CMD="speak2.sh"
-
 SPEAKIPADDR_CMD="speakipaddr2.sh"
 
+### Robot Server
 ROBOT_SERVER="${BINDIR}/OttoPiServer.py"
 ROBOT_OPT="12345"
 #ROBOT_OPT="-d"
 ROBOT_LOG="${LOGDIR}/robot.log"
 
+### HTTP Server
 HTTP_SERVER="${BINDIR}/OttoPiHttpServer.py"
 #HTTP_OPT=""
 HTTP_OPT="-d"
 HTTP_LOG="${LOGDIR}/http.log"
 
+### Robot Client
 ROBOT_CLIENT="${BINDIR}/OttoPiClient.py"
 
+### mjpg_streamer
 MJPG_STREAMER="${BINDIR}/mjpg-streamer.sh"
 MJPG_STREAMER_LOG="${LOGDIR}/mjpg-streamer.log"
 
-if which ${SPEAK_SERVER}; then
+#######
+# main
+#######
+gpio -g mode ${PIN_LED} output && gpio -g write ${PIN_LED} 1
+gpio -g mode ${PIN_VCC} output && gpio -g write ${PIN_VCC} 1
+
+if [ "${MUSIC}" = "ON" ]; then
+    $MUSIC_PLAYER $MUSIC_PLAYER_OPT $MUSIC_DATA > /dev/null 2>&1 &
+fi
+
+#if "${MUSIC}" != "ON"; then
+  if which ${SPEAK_SERVER}; then
     SPEAK=ON
     if [ -f ${SPEAK_LOG} ]; then
 	mv ${SPEAK_LOG} ${SPEAK_LOG}.1
@@ -64,7 +74,8 @@ if which ${SPEAK_SERVER}; then
     #${SPEAK_CMD} "私は二足歩行ロボット"
     ${SPEAK_CMD} "私は二そくほこうロボット"
     ${SPEAK_CMD} "${MY_NAME} です"
-fi
+  fi
+#fi
 
 if [ -x ${ROBOT_SERVER} ]; then
     if [ ${SPEAK} = ON ]; then
@@ -84,7 +95,7 @@ fi
 
 if [ -x ${HTTP_SERVER} ]; then
     if [ ${SPEAK} = ON ]; then
-	${SPEAK_CMD} "ウェブインターフェースを 起動します" &
+	${SPEAK_CMD} "ウェブインターフェースサーバーを 起動します" &
     fi
     if [ -f ${HTTP_LOG} ]; then
 	mv ${HTTP_LOG} ${HTTP_LOG}.1
@@ -101,4 +112,9 @@ if [ ${SPEAK} = ON ]; then
 fi
 
 sleep 10
+
+if which ${BUTTON_CMD}; then
+    ${BUTTON_CMD} ${BUTTON_OPT} > ${BUTTON_LOG} 2>&1 &
+fi
+
 ${ROBOT_CLIENT} -d -c ':happy'

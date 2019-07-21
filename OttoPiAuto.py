@@ -166,7 +166,7 @@ class OttoPiAuto(threading.Thread):
                 time.sleep(2)
 
             elif d <= self.D_NEAR:
-                self.logger.warn('NEAR(<= %d)', self.D_TOO_NEAR)
+                self.logger.warn('NEAR(<= %d)', self.D_NEAR)
                 self.stat = self.STAT_NEAR
                 if self.prev_stat != self.STAT_NEAR:
                     if random.random() < 0.5:

@@ -2,6 +2,8 @@
 #
 # (c) 2019 Yoichi Tanibayashi
 #
+__author__ = 'Yoichi Tanibayashi'
+__date__   = '2019'
 '''
 PiServo を利用して、4個のサーボを制御し、歩行やダンスなどの動作をさせる。
 
@@ -13,8 +15,6 @@ OttoPiMotion -- 動作定義
  +- OttoPiConfig -- 設定ファイルの読み込み・保存
 
 '''
-__author__ = 'Yoichi Tanibayashi'
-__date__   = '2019'
 
 from PiServo import PiServo
 from OttoPiConfig import OttoPiConfig
@@ -456,7 +456,7 @@ class OttoPiMotion:
             if mv[0] == 'end'[0]:
                 self.move1(-p1[1], 0, -p2/2, -p1[0], v=v, q=q)
 
-        time.sleep(.1)
+        time.sleep(.02)
 
         if mv[0] == 'end'[0]:
             self.home(v=v, q=q)
