@@ -1,1 +1,0 @@
-../speak/SpeakClient.py

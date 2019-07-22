@@ -80,6 +80,7 @@ class OttoPiAuto(threading.Thread):
 
         self.prev_stat = self.STAT_NONE
         self.stat      = self.STAT_NONE
+        self.prev_rl   = ""
 
         super().__init__(daemon=True)
 
@@ -170,15 +171,18 @@ class OttoPiAuto(threading.Thread):
                 self.stat = self.STAT_NEAR
                 if self.prev_stat != self.STAT_NEAR:
                     if random.random() < 0.5:
+                        self.prev_rl = "right"
                         self.robot_ctrl.send('slide_right')
                     else:
+                        self.prev_rl = "left"
                         self.robot_ctrl.send('slide_left')
                 else:
-                    if random.random() < 0.5:
+                    if self.prev_rl == "right":
+                    #if random.random() < 0.5:
                         self.robot_ctrl.send('turn_right')
                     else:
                         self.robot_ctrl.send('turn_left')
-                time.sleep(3)
+                time.sleep(1.5)
 
             elif d >= self.D_FAR:
                 self.logger.info('FAR(>= %d)', self.D_FAR)

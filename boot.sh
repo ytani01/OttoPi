@@ -4,13 +4,17 @@
 #
 # (c) Yoichi Tanibayashi
 #
+MY_NAME="オットー・パイ"
 
 BINDIR=${HOME}/bin
 LOGDIR=${HOME}/tmp
 
-PATH=${BINDIR}:${PATH}
+export PATH=${BINDIR}:${PATH}
 
-MY_NAME="オットー・パイ"
+for d in OttoPi LedSwitch speak; do
+    export PYTHONPATH="${PYTHONPATH}:${HOME}/$d"
+done
+echo "PYTHONPATH=${PYTHONPATH}"
 
 ### Button and LED
 PIN_SW=21
@@ -56,6 +60,7 @@ MJPG_STREAMER_LOG="${LOGDIR}/mjpg-streamer.log"
 #######
 # main
 #######
+
 gpio -g mode ${PIN_LED} output && gpio -g write ${PIN_LED} 1
 gpio -g mode ${PIN_VCC} output && gpio -g write ${PIN_VCC} 1
 
