@@ -4,7 +4,7 @@
 #
 # (c) Yoichi Tanibayashi
 #
-MY_NAME="オットー・パイ"
+MY_NAME="オットーパイ"
 
 BINDIR=${HOME}/bin
 LOGDIR=${HOME}/tmp
