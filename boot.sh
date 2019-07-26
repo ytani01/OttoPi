@@ -91,7 +91,8 @@ if [ -x ${ROBOT_SERVER} ]; then
     if [ -f ${ROBOT_LOG} ]; then
 	mv ${ROBOT_LOG} ${ROBOT_LOG}.1
     fi
-    cd ${ROBOT_DIR}
+
+    cd ${BINDIR}
     ${ROBOT_SERVER} ${ROBOT_OPT} > ${ROBOT_LOG} 2>&1 &
     sleep 10
 fi
@@ -107,7 +108,8 @@ if [ -x ${HTTP_SERVER} ]; then
     if [ -f ${HTTP_LOG} ]; then
 	mv ${HTTP_LOG} ${HTTP_LOG}.1
     fi
-    cd ${ROBOT_DIR}
+
+    cd ${BINDIR}
     ${HTTP_SERVER} ${HTTP_OPT} > ${HTTP_LOG} 2>&1 &
     sleep 10 
 fi
