@@ -8,6 +8,7 @@ MY_NAME="オットー・パイ"
 
 BINDIR=${HOME}/bin
 LOGDIR=${HOME}/tmp
+ROBOT_DIR=${HOME}/OttoPi
 
 export PATH=${BINDIR}:${PATH}
 
@@ -21,7 +22,7 @@ PIN_SW=21
 PIN_VCC=26
 PIN_LED=20
 
-BUTTON_CMD="RobotButton.py"
+BUTTON_CMD="${ROBOT_DIR}/RobotButton.py"
 BUTTON_OPT=" -s ${PIN_SW} -v ${PIN_VCC} -l ${PIN_LED}"
 BUTTON_LOG="${LOGDIR}/button.log"
 
@@ -33,25 +34,26 @@ MUSIC_DATA="${HOME}/tmp/boot-music.aac"
 
 ### Speak
 SPEAK=OFF
-SPEAK_SERVER="SpeakServer.py"
+SPEAK_DIR=${HOME}/speak
+SPEAK_SERVER="${SPEAK_DIR}/SpeakServer.py"
 SPEAK_LOG="${LOGDIR}/speak.log"
-SPEAK_CMD="SpeakClient.py"
-SPEAKIPADDR_CMD="speakipaddr2.sh"
+SPEAK_CMD="${SPEAK_DIR}/SpeakClient.py"
+SPEAKIPADDR_CMD="${SPEAK_DIR}/speakipaddr2.sh"
 
 ### Robot Server
-ROBOT_SERVER="${BINDIR}/OttoPiServer.py"
+ROBOT_SERVER="${ROBOT_DIR}/OttoPiServer.py"
 ROBOT_OPT="12345"
 #ROBOT_OPT="-d"
 ROBOT_LOG="${LOGDIR}/robot.log"
 
 ### HTTP Server
-HTTP_SERVER="${BINDIR}/OttoPiHttpServer.py"
+HTTP_SERVER="${ROBOT_DIR}/OttoPiHttpServer.py"
 #HTTP_OPT=""
 HTTP_OPT="-d"
 HTTP_LOG="${LOGDIR}/http.log"
 
 ### Robot Client
-ROBOT_CLIENT="${BINDIR}/OttoPiClient.py"
+ROBOT_CLIENT="${ROBOT_DIR}/OttoPiClient.py"
 
 ### mjpg_streamer
 MJPG_STREAMER="${BINDIR}/mjpg-streamer.sh"
@@ -69,7 +71,7 @@ if [ "${MUSIC}" = "ON" ]; then
 fi
 
 #if "${MUSIC}" != "ON"; then
-  if which ${SPEAK_SERVER}; then
+  if [ -x ${SPEAK_SERVER} ]; then
     SPEAK=ON
     if [ -f ${SPEAK_LOG} ]; then
 	mv ${SPEAK_LOG} ${SPEAK_LOG}.1
@@ -89,7 +91,7 @@ if [ -x ${ROBOT_SERVER} ]; then
     if [ -f ${ROBOT_LOG} ]; then
 	mv ${ROBOT_LOG} ${ROBOT_LOG}.1
     fi
-    cd ${BINDIR}
+    cd ${ROBOT_DIR}
     ${ROBOT_SERVER} ${ROBOT_OPT} > ${ROBOT_LOG} 2>&1 &
     sleep 10
 fi
@@ -105,7 +107,7 @@ if [ -x ${HTTP_SERVER} ]; then
     if [ -f ${HTTP_LOG} ]; then
 	mv ${HTTP_LOG} ${HTTP_LOG}.1
     fi
-    cd ${BINDIR}
+    cd ${ROBOT_DIR}
     ${HTTP_SERVER} ${HTTP_OPT} > ${HTTP_LOG} 2>&1 &
     sleep 10 
 fi
@@ -118,7 +120,7 @@ fi
 
 sleep 10
 
-if which ${BUTTON_CMD}; then
+if [ -x ${BUTTON_CMD} ]; then
     ${BUTTON_CMD} ${BUTTON_OPT} > ${BUTTON_LOG} 2>&1 &
 fi
 
