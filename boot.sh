@@ -55,6 +55,10 @@ HTTP_LOG="${LOGDIR}/http.log"
 ### Robot Client
 ROBOT_CLIENT="${ROBOT_DIR}/OttoPiClient.py"
 
+### loop.sh
+LOOP_SH="${ROBOT_DIR}/loop.sh"
+LOOP_LOG="${LOGDIR}/loop.log"
+
 ### mjpg_streamer
 MJPG_STREAMER="${BINDIR}/mjpg-streamer.sh"
 MJPG_STREAMER_LOG="${LOGDIR}/mjpg-streamer.log"
@@ -120,10 +124,14 @@ if [ ${SPEAK} = ON ]; then
     fi
 fi
 
-sleep 10
-
 if [ -x ${BUTTON_CMD} ]; then
+    sleep 10
     ${BUTTON_CMD} ${BUTTON_OPT} > ${BUTTON_LOG} 2>&1 &
 fi
 
 ${ROBOT_CLIENT} -d -c ':happy'
+
+if [ -x ${LOOP_SH} ]; then
+    sleep 60
+    ${LOOP_SH} > ${LOOP_LOG} 2>&1 &
+fi
