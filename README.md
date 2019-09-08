@@ -45,10 +45,13 @@ $ pipenv shell
 (venv) $
 ```
 
-
 ### 4.1 exit from virtualenv
 
 ```bash
 (venv) $ exit
 $
 ```
+
+## References
+
+https://wikifactory.com/+OttoDIY/otto-diy-laser-cut
