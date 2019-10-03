@@ -54,4 +54,5 @@ $
 
 ## References
 
-[+OttoDIY / otto-diy-laser-cut](https://wikifactory.com/+OttoDIY/otto-diy-laser-cut)
+- [+OttoDIY / otto-diy-laser-cut](https://wikifactory.com/+OttoDIY/otto-diy-laser-cut)
+- [Adding Basic Audio Output to Raspberry Pi Zero](https://learn.adafruit.com/adding-basic-audio-ouput-to-raspberry-pi-zero/pi-zero-pwm-audio)
