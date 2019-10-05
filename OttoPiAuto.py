@@ -43,6 +43,7 @@ class OttoPiAuto(threading.Thread):
 
     DEF_RECV_TIMEOUT = 0.5 # sec
 
+    D_TOUCH       = 40
     D_TOO_NEAR    = 200
     D_NEAR        = 400
     D_FAR         = 8000
@@ -157,7 +158,11 @@ class OttoPiAuto(threading.Thread):
 
             self.prev_stat = self.stat
 
-            if d <= self.D_TOO_NEAR:
+            if d <= self.D_TOUCH:
+                self.logger.warn('touched(<= %d)', self.D_TOUCH)
+                self.cmd_off()
+
+            elif d <= self.D_TOO_NEAR:
                 self.logger.warn('TOO_NEAR(<= %d)', self.D_TOO_NEAR)
                 self.stat = self.STAT_NEAR
                 if self.prev_stat != self.STAT_NEAR:
