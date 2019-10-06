@@ -37,9 +37,10 @@ my_logger = MyLogger(__file__)
 
 #####
 class OttoPiAuto(threading.Thread):
-    CMD_ON   = 'on'
-    CMD_OFF  = 'off'
-    CMD_END  = 'end'
+    CMD_ON    = 'on'
+    CMD_OFF   = 'off'
+    CMD_READY = 'ready'
+    CMD_END   = 'end'
 
     DEF_RECV_TIMEOUT = 0.5 # sec
 
@@ -47,11 +48,15 @@ class OttoPiAuto(threading.Thread):
     D_TOO_NEAR    = 200
     D_NEAR        = 400
     D_FAR         = 8000
+    D_READY_MIN   = 60
+    D_READY_MAX   = 100
+    D_ON_MIN      = 300
     
     STAT_NONE     = ''
     STAT_TOO_NEAR = 'too near'
     STAT_NEAR     = 'near'
     STAT_FAR      = 'far'
+    STAT_READY    = 'ready'
 
     def __init__(self, robot_ctrl=None, debug=False):
         self.debug = debug
@@ -60,6 +65,7 @@ class OttoPiAuto(threading.Thread):
 
         self.cmd_func = {self.CMD_ON:  self.cmd_on,
                          self.CMD_OFF: self.cmd_off,
+                         self.CMD_READY: self.cmd_ready,
                          self.CMD_END: self.cmd_end}
 
         self.my_robot_ctrl = False
@@ -113,6 +119,13 @@ class OttoPiAuto(threading.Thread):
         self.robot_ctrl.send('stop')
         self.on = False
 
+    def cmd_ready(self, ready=True):
+        self.logger.debug('ready=%s', ready)
+        if ready:
+            self.stat = self.STAT_READY
+        else:
+            self.stat = self.STAT_NONE
+
     def cmd_end(self):
         self.logger.debug('')
         self.cmd_off()
@@ -150,17 +163,28 @@ class OttoPiAuto(threading.Thread):
                 else:
                     self.logger.error('%s: invalid command .. ignore', cmd)
 
-            if not self.on:
-                continue
-                
             d = self.get_distance()
             self.logger.info('d = %smm', '{:,}'.format(d))
 
+            if not self.on:
+                if self.stat != 'ready':
+                    if d >= self.D_READY_MIN and d <= self.D_READY_MAX:
+                        self.cmd_ready()
+                        self.robot_ctrl.send('happy')
+                else:
+                    if d <= self.D_TOUCH:
+                        self.cmd_ready(ready=False)
+                    if d >= self.D_ON_MIN:
+                        self.cmd_on()
+                        
+                continue
+                
             self.prev_stat = self.stat
 
             if d <= self.D_TOUCH:
                 self.logger.warn('touched(<= %d)', self.D_TOUCH)
                 self.cmd_off()
+                time.sleep(5)
 
             elif d <= self.D_TOO_NEAR:
                 self.logger.warn('TOO_NEAR(<= %d)', self.D_TOO_NEAR)
