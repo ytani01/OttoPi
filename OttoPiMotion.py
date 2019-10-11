@@ -340,6 +340,34 @@ class OttoPiMotion:
                        (0,0,0,0)], interval_msec=interval_msec, v=v, q=q)
 
 
+    def right_forward(self, n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+
+        self.turn1('r', interval_msec=interval_msec, v=v, q=q)
+        self.walk(n, 'f', rl='', v=v, q=q)
+        
+    def left_forward(self, n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+
+        self.turn1('l', interval_msec=interval_msec, v=v, q=q)
+        self.walk(n, 'f', rl='', v=v, q=q)
+        
+    def right_backward(self, n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+
+        self.turn1('l', interval_msec=interval_msec, v=v, q=q)
+        self.walk(n, 'b', rl='', v=v, q=q)
+        
+    def left_backward(self, n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+
+        self.turn1('r', interval_msec=interval_msec, v=v, q=q)
+        self.walk(n, 'b', rl='', v=v, q=q)
+        
     def turn_right(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)

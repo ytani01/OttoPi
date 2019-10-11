@@ -62,7 +62,12 @@ class OttoPiCtrl(threading.Thread):
         self.cmd_func= {
             # モーション
             'forward':      {'func':self.opm.forward,    'continuous': True},
+            'right_forward':{'func':self.opm.right_forward,'continuous': True},
+            'left_forward': {'func':self.opm.left_forward,'continuous': True},
+
             'backward':     {'func':self.opm.backward,   'continuous': True},
+            'right_backward':{'func':self.opm.right_backward,'continuous': True},
+            'left_backward':{'func':self.opm.left_backward,'continuous': True},
             'turn_right':   {'func':self.opm.turn_right, 'continuous': True},
             'turn_left':    {'func':self.opm.turn_left,  'continuous': True},
             'slide_right':  {'func':self.opm.slide_right,'continuous': True},

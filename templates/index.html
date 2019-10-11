@@ -7,15 +7,19 @@
     <script type="text/javascript" src="/static/js/jquery.min.js"></script>
     <script type="text/javascript">
       function post(val) {
-      var data = {"cmd": val};
-      $.post("/action", data);
+	  var data = {"cmd": val};
+	  $.post("/action", data);
       }
       function speak() {
-      var data = {"msg": document.f1.msg.value};
-      $.post("/speak", data);
+	  var data = {"msg": document.f1.msg.value};
+	  $.post("/speak", data);
       }
       function clear_msg() {
-      document.f1.msg.value = "";
+	  document.f1.msg.value = "";
+      }
+      function speech(val) {
+	  var data = {"onoff": val};
+	  $.post("/speech", data)
       }
     </script>
   </head>
@@ -49,12 +53,18 @@
 	<tbody>
 	  <tr>
 	    <td></td>
-	    <td></td>
+	    <td>
+	      <input type="image" src="/static/images/button_up.png"
+		     width="60px" onClick="post(':left_forward');">
+	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_up.png"
 		     width="60px" onClick="post(':forward');">
 	    </td>
-	    <td></td>
+	    <td>
+	      <input type="image" src="/static/images/button_up.png"
+		     width="60px" onClick="post(':right_forward');">
+	    </td>
 	    <td></td>
 	  </tr>
 	  <tr>
@@ -82,12 +92,18 @@
 	  </tr>
 	  <tr>
 	    <td></td>
-	    <td></td>
+	    <td>
+	      <input type="image" src="/static/images/button_down.png"
+		     width="60px" onClick="post(':left_backward');">
+	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_down.png"
 		     width="60px" onClick="post(':backward');">
 	    </td>
-	    <td></td>
+	    <td>
+	      <input type="image" src="/static/images/button_down.png"
+		     width="60px" onClick="post(':right_backward');">
+	    </td>
 	    <td></td>
 	  </tr>
 	</tbody>
@@ -201,6 +217,18 @@
 	      <input type="image" src="/static/images/button_down.png"
 		     width="30px" onClick="post(':home_down3');">
 	      &nbsp;
+	    </td>
+	  </tr>
+	</tbody>
+      </table>
+      <hr />
+      <table>
+	<tbody>
+	  <tr>
+	    <td align="left">
+	      Speech
+	      <input type="button" value="ON" onClick="speech('on');">
+	      <input type="button" value="OFF" onClick="speech('off');">
 	    </td>
 	  </tr>
 	</tbody>

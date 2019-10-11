@@ -61,33 +61,43 @@ class OttoPiClient:
         self.logger.debug('')
         self.tn.close()
 
+    def recv_reply(self):
+        self.logger.debug('')
+
+        ret = b''
+        
+        while True:
+            time.sleep(0.1)
+            in_data = self.tn.read_eager()
+            if len(in_data) == 0:
+                break
+            self.logger.debug('in_data:%a', in_data)
+            ret += in_data
+
+        self.logger.debug('ret=%a', ret)
+        return ret
+
+    def send_cmd1(self, cmd):
+        self.logger.debug('cmd=%s', cmd)
+
+        self.tn.write(cmd.encode('utf-8'))
+        ret = self.recv_reply()
+        self.logger.debug('ret=%a', ret)
+        ret = ret.decode('utf-8')
+        self.logger.info('ret=\'%s\'', ret)
+
     def send_cmd(self, cmd):
         self.logger.debug('cmd=%s', cmd)
 
-        in_data = self.tn.read_very_eager()
-        if len(in_data) > 0:
-            self.logger.debug('in_data:%a', in_data)
+        self.recv_reply()
 
         if cmd[0] == ':':
-            self.tn.write(cmd.encode('utf-8'))
-
-            time.sleep(0.1)
-
-            in_data = self.tn.read_very_eager()
-            if len(in_data) > 0:
-                self.logger.debug('in_data:%a', in_data)
+            self.send_cmd1(cmd)
             return
         
         for ch in cmd:
             self.logger.debug('ch=%a(0x%02x)', ch, ord(ch))
-
-            self.tn.write(ch.encode('utf-8'))
-
-            time.sleep(0.1)
-
-            in_data = self.tn.read_very_eager()
-            if len(in_data) > 0:
-                self.logger.debug('in_data:%a', in_data)
+            self.send_cmd1(ch)
 
 
 ##### Sample

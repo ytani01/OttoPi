@@ -42,6 +42,8 @@ my_logger = MyLogger(__file__)
 #####
 MyName = os.path.basename(sys.argv[0])
 
+SpeechStopFile = '/home/pi/speech_stop'
+
 app = Flask(__name__)
 
 DEF_HOST = 'localhost'
@@ -117,6 +119,26 @@ def speak():
 
     return index0(Flag_Video)
     #return ''
+
+@app.route('/speech', methods=['POST'])
+def speech():
+    print('speech():request=%s' % request)
+    if request.method != 'POST':
+        return
+
+    onoff = request.form['onoff']
+    print('onoff = %s' % onoff)
+
+    if os.path.isfile(SpeechStopFile):
+        print('remove: %s' % SpeechStopFile)
+        print(os.remove(SpeechStopFile))
+
+    if onoff != 'on':
+        f = open(SpeechStopFile, 'w')
+        f.close()
+
+    return ''
+
 
 #####
 import click

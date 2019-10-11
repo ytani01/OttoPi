@@ -54,6 +54,8 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
 
             # robot control commands
             'w': 'forward',
+            'q': 'left_forward',
+            'e': 'right_forward',
             'x': 'backward',
             'a': 'turn_left',
             'd': 'turn_right',
@@ -81,6 +83,8 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             'p': 'home_up3',
             'P': 'home_down3',
 
+            '.': 'null',
+            
             's': OttoPiCtrl.CMD_STOP,
             'S': OttoPiCtrl.CMD_STOP,
             '' : OttoPiCtrl.CMD_END}
@@ -97,6 +101,25 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             self.wfile.write(msg)
         except:
             pass
+
+    def send_reply(self, cmd, ok=True):
+        self.logger.debug('')
+
+        line = '#CMD ' + cmd + '\r\n'
+        self.net_write(line.encode('utf-8'))
+
+        line = '#STAT ' + self.robot_auto.stat + '\r\n'
+        self.net_write(line.encode('utf-8'))
+
+        line = '#AUTO ' + str(self.robot_auto.on) + '\r\n'
+        self.net_write(line.encode('utf-8'))
+
+        self.net_write('#OK\r\n'.encode('utf-8'))
+        
+
+    def cmd_null(self):
+        self.logger.debug('')
+        
 
     def handle(self):
         self.logger.debug('')
@@ -155,15 +178,18 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
 
             # ダイレクトコマンド
             if data[0] == ':':
-                self.logger.debug('direct command:%s', data[1:])
-                self.net_write('#OK\r\n'.encode('utf-8'))
+                cmd = data[1:]
+                
+                self.logger.debug('direct command:%s', cmd)
 
-                if data[1:].startswith('auto_on'):
+                self.send_reply(cmd)
+
+                if cmd.startswith('auto_on'):
                     self.robot_auto.send('on')
-                elif data[1:].startswith('auto_off'):
+                elif cmd.startswith('auto_off'):
                     self.robot_auto.send('off')
                 else:
-                    self.robot_ctrl.send(data[1:])
+                    self.robot_ctrl.send(cmd)
                 continue
                 
             # ワンキーコマンド
@@ -176,15 +202,17 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                     self.net_write('#NG .. stop\r\n'.encode('utf-8'))
                     continue
 
-                self.net_write('#OK\r\n'.encode('utf-8'))
-
                 cmd = self.cmd_key[ch]
-                self.logger.debug('cmd=\'%s\'', cmd)
+                self.logger.debug('command:%s', cmd)
+
+                self.send_reply(cmd)
 
                 if cmd.startswith('auto_on'):
                     self.robot_auto.send('on')
                 elif cmd.startswith('auto_off'):
                     self.robot_auto.send('off')
+                elif cmd.startswith('null'):
+                    self.cmd_null()
                 else:
                     self.robot_ctrl.send(cmd)
 

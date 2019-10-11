@@ -52,8 +52,8 @@ class OttoPiAuto(threading.Thread):
     D_READY_MAX   = 100
     D_ON_MIN      = 300
     
-    STAT_NONE     = ''
-    STAT_TOO_NEAR = 'too near'
+    STAT_NONE     = 'none'
+    STAT_TOO_NEAR = 'too_near'
     STAT_NEAR     = 'near'
     STAT_FAR      = 'far'
     STAT_READY    = 'ready'
