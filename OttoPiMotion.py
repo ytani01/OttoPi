@@ -246,8 +246,8 @@ class OttoPiMotion:
             n = N_CONTINUOUS
             self.logger.debug('n=%d!', n)
             
-        p1 = [10, 25, 15]
-        p2 = 90
+        p1 = [10, 15, 15]
+        p2 = 85
 
         self.home()
         time.sleep(0.3)
@@ -263,6 +263,32 @@ class OttoPiMotion:
                       interval_msec=500, v=v, q=q)
             self.move([[-p1[0], -p2, 0, 0],
                        [0,0,0,0]],v=v,q=q)
+            time.sleep(interval_msec/1000)
+        
+    def ojigi2(self, n=1, interval_msec=1000, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+
+        if n == 0:
+            n = N_CONTINUOUS
+            self.logger.debug('n=%d!', n)
+            
+        p1 = [10, 15, 15]
+        p2 = 85
+
+        self.home()
+        time.sleep(0.3)
+
+        for i in range(n):
+            if self.stop_flag:
+                break
+
+            self.move([[-10, -90, -30, -10],
+                       [-15, -90, -35, -15],
+                       [-10, -90, -30, -10],
+                       [0,0,0,0]],
+                      interval_msec=500)
+
             time.sleep(interval_msec/1000)
         
     def happy(self, n=1, interval_msec=0, v=None, q=False):
