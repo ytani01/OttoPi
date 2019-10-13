@@ -466,7 +466,7 @@ class OttoPiMotion:
             return
 
         p1 = (65, 35)
-        p2 = (40)
+        p2 = (35)
 
         if rl[0] == 'right'[0]:
             if mv[0] == 'forward'[0]:
