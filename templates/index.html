@@ -14,6 +14,16 @@
 	  var data = {"msg": document.f1.msg.value};
 	  $.post("/speak", data);
       }
+      function speak2() {
+	  var obj = document.f0.sentence;
+	  var idx = obj.selectedIndex;
+	  if (idx != 0) {
+	      var val = obj.options[idx].value;
+	      document.f1.msg.value = val
+	      var data = {"msg": val};
+	      $.post("/speak", data);
+	  }
+      }
       function clear_msg() {
 	  document.f1.msg.value = "";
       }
@@ -25,15 +35,13 @@
   </head>
   <body>
     {% if ipaddr %}
-    <div align="center">
+    <p align="right">[ {{ipaddr}} ]</p>
       {% if video == "on" %}
-      <img src="http://{{ipaddr}}:9000/?action=streaming", width="80%">
-      {% else %}
-      <h3>{{ipaddr}}</h3>
+      <div align="center">
+        <img src="http://{{ipaddr}}:9000/?action=streaming", width="80%">
+      </div>
       {% endif %}
-    </div>
     {% endif %}
-    <hr />
     <div align="center">
       <table width="90%">
 	<tbody>
@@ -110,11 +118,34 @@
 	</tbody>
       </table>
       <hr />
-      <form action="./" method="POST" name="f1">
-	<input type="text" name="msg" value="">
-	<input type="button" value="speak" onClick="speak()">
-	<input type="button" value="clear" onClick="clear_msg()">
-      </form>
+      <div align="left">
+	<strong>【おしゃべり】</strong>
+	<form action="./" method="POST" name="f0">
+	  定型文: 
+	  <select id="sentence" onChange="speak2()">
+	    <option value=""></option>
+	    <option value="こんにちは">こんにちは</option>
+	    <option value="ちーーっす">ちーっす！</option>
+	    <option value="お元気ですか">お元気ですか</option>
+	    <option value="さようなら">さようなら</option>
+	    <option value="私は">私は</option>
+	    <option value="二そくほこうロボット">二足歩行ロボット</option>
+	    <option value="オットーパイと申します">OttoPiと申します</option>
+	  </select>
+	</form>
+	
+	<form action="./" method="POST" name="f1">
+	  <input type="text" name="msg" value="">
+	  <input type="button" value="speak" onClick="speak()">
+	  <input type="button" value="clear" onClick="clear_msg()">
+	</form>
+	
+	自動自己紹介:
+	<input type="button" value="ON" onClick="speech('on');">
+	<input type="button" value="OFF" onClick="speech('off');">
+	
+      </div>
+      
       <hr />
       個別モーター
       <table>
@@ -165,7 +196,7 @@
 	</tbody>
       </table>
       <hr />
-      調整用
+      (調整用)
       <table>
 	<tbody>
 	  <tr>
@@ -180,6 +211,8 @@
 	      <input type="image" src="/static/images/button_left.png"
 		     width="30px" onClick="post(':home_up1');">
 	      &nbsp;
+	    </td>
+	    <td>
 	    </td>
 	    <td>
 	      &nbsp;
@@ -208,6 +241,10 @@
 	      &nbsp;
 	    </td>
 	    <td>
+	      <input type="image" src="/static/images/button_blue2.png"
+		     width="30px" onClick="post(':home');">
+	    </td>
+	    <td>
 	      &nbsp;
 	      <input type="image" src="/static/images/button_left.png"
 		     width="30px" onClick="post(':home_up2');">
@@ -222,19 +259,6 @@
 	  </tr>
 	</tbody>
       </table>
-      <hr />
-      <table>
-	<tbody>
-	  <tr>
-	    <td align="left">
-	      Speech
-	      <input type="button" value="ON" onClick="speech('on');">
-	      <input type="button" value="OFF" onClick="speech('off');">
-	    </td>
-	  </tr>
-	</tbody>
-      </table>
     </div>
-    <hr />
   </body>
 </html>
