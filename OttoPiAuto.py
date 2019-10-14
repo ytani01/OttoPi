@@ -172,7 +172,7 @@ class OttoPiAuto(threading.Thread):
                         self.cmd_ready()
                         self.robot_ctrl.send('happy')
                 else:
-                    if d <= self.D_TOUCH:
+                    if d <= self.D_READY_MIN:
                         self.cmd_ready(ready=False)
                     if d >= self.D_ON_MIN:
                         self.cmd_on()

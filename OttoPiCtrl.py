@@ -74,6 +74,7 @@ class OttoPiCtrl(threading.Thread):
             'slide_left':   {'func':self.opm.slide_left, 'continuous': True},
             'happy':        {'func':self.opm.happy,      'continuous': False},
             'ojigi':        {'func':self.opm.ojigi,      'continuous': False},
+            'ojigi2':       {'func':self.opm.ojigi2,      'continuous': False},
 
             # サーボモーター個別操作
             'move_up0':     {'func':self.opm.move_up0,   'continuous': False},
