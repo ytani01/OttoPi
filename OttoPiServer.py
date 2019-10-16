@@ -57,6 +57,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             'q': 'left_forward',
             'e': 'right_forward',
             'x': 'backward',
+            'W': 'suriashi_fwd',
             'a': 'turn_left',
             'd': 'turn_right',
             'A': 'slide_left',

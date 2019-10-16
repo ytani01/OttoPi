@@ -62,19 +62,22 @@ class OttoPiCtrl(threading.Thread):
         self.cmd_func= {
             # モーション
             'forward':      {'func':self.opm.forward,    'continuous': True},
-            'right_forward':{'func':self.opm.right_forward,'continuous': True},
+            'right_forward':{'func':self.opm.right_forward,'continuous':True},
             'left_forward': {'func':self.opm.left_forward,'continuous': True},
 
             'backward':     {'func':self.opm.backward,   'continuous': True},
-            'right_backward':{'func':self.opm.right_backward,'continuous': True},
-            'left_backward':{'func':self.opm.left_backward,'continuous': True},
+            'right_backward':{'func':self.opm.right_backward,'continuous':True},
+            'left_backward':{'func':self.opm.left_backward,'continuous':True},
+
+            'suriashi_fwd': {'func':self.opm.suriashi,   'continuous': True},
+
             'turn_right':   {'func':self.opm.turn_right, 'continuous': True},
             'turn_left':    {'func':self.opm.turn_left,  'continuous': True},
             'slide_right':  {'func':self.opm.slide_right,'continuous': True},
             'slide_left':   {'func':self.opm.slide_left, 'continuous': True},
             'happy':        {'func':self.opm.happy,      'continuous': False},
             'ojigi':        {'func':self.opm.ojigi,      'continuous': False},
-            'ojigi2':       {'func':self.opm.ojigi2,      'continuous': False},
+            'ojigi2':       {'func':self.opm.ojigi2,     'continuous': False},
 
             # サーボモーター個別操作
             'move_up0':     {'func':self.opm.move_up0,   'continuous': False},
@@ -219,7 +222,7 @@ class OttoPiCtrl(threading.Thread):
 class Sample:
     def __init__(self, debug=False):
         self.debug = debug
-        self.logger = my_logger.get_logger(__class__.__name__, debug)
+        self.logger = my_logger.get_logger(__class__.__name__, self.debug)
 
         self.pi = pigpio.pi()
         self.robot_ctrl = OttoPiCtrl(self.pi, debug=debug)

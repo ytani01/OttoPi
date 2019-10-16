@@ -26,13 +26,13 @@ INTERVAL_FACTOR = 0.35
 #INTERVAL_FACTOR = 1
 
 DEF_PIN = [17, 27, 22, 23]
-DEF_PULSE_HOME = [1470, 1430, 1490, 1490]
+DEF_PULSE_HOME = [1500, 1500, 1500, 1500]
 DEF_PULSE_MIN  = [ 500,  500,  500,  500]
 DEF_PULSE_MAX  = [2500, 2500, 2500, 2500]
 
 #####
 class PiServo:
-    def __init__(self, pi, pins,
+    def __init__(self, pi=None, pins=DEF_PIN,
                  pulse_home=None, pulse_min=None, pulse_max=None,
                  debug=False):
         self.debug = debug
@@ -119,6 +119,10 @@ class PiServo:
     def move(self, pos_list=[], interval_msec=0, v=None, quick=False):
         self.logger.debug('pos_list=%s, v=%s, quick=%s', pos_list, v, quick)
 
+        if type(pos_list[0]) != list:
+            self.move1(pos_list, v, quick)
+            return
+        
         for p in pos_list:
             self.move1(p, v, quick)
             time.sleep(interval_msec/1000)
@@ -234,10 +238,10 @@ class Sample:
 import click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(context_settings=CONTEXT_SETTINGS)
-@click.argument('pin1', type=int, default=17)
-@click.argument('pin2', type=int, default=27)
-@click.argument('pin3', type=int, default=22)
-@click.argument('pin4', type=int, default=23)
+@click.argument('pin1', type=int, default=DEF_PIN[0])
+@click.argument('pin2', type=int, default=DEF_PIN[1])
+@click.argument('pin3', type=int, default=DEF_PIN[2])
+@click.argument('pin4', type=int, default=DEF_PIN[3])
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(pin1, pin2, pin3, pin4, debug):

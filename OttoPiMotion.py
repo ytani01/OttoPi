@@ -58,7 +58,7 @@ class OttoPiMotion:
             self.mypi = True
         self.logger.debug('mypi = %s', self.mypi)
             
-        self.cnf = OttoPiConfig()
+        self.cnf = OttoPiConfig(debug=self.debug)
 
         if pin != []:
             self.pin = pin
@@ -91,7 +91,7 @@ class OttoPiMotion:
         del(self.servo)
         self.servo = PiServo(self.pi, self.pin,
                              self.pulse_home, self.pulse_min, self.pulse_max,
-                             debug=self.debug & my_logger.logger.propagate)
+                             debug=self.debug)
         self.servo.home()
 
     def end(self):
@@ -218,6 +218,9 @@ class OttoPiMotion:
         self.logger.debug('p_list=%s, interval_msec=%d, v=%s, q=%s',
                           p_list, interval_msec, v, q)
         for p in p_list:
+            if p == []:
+                self.logger.debug('p=%s: ignored', p)
+                continue
             self.move1(p[0], p[1], p[2], p[3], v, q)
             time.sleep(interval_msec/1000)
 
@@ -528,4 +531,121 @@ class OttoPiMotion:
             if mv[0] == 'back'[0]:
                 self.move1(0, p2, p2, 0, v=v, q=q)
 
+
+    def suriashi(self, n=1, mv='f', rl='', v=None, q=False):
+        self.logger.debug('n=%d, mv=%s, rl=%s, v=%s, q=%s',
+                          n, mv, rl, str(v), q)
+
+        if n== 0:
+            n = N_CONTINUOUS
+            self.logger.debug('n=%d!', n)
+
+        if rl == '':
+            rl = 'rl'[random.randint(0,1)]
+            self.logger.debug('rl=%s', rl)
+
+        self.home()
+        time.sleep(0.5)
+
+        for i in range(n):
+            if self.stop_flag:
+                break
+
+            self.suriashi1(mv, rl, v=v, q=q)
+            rl = self.change_rl(rl)
+
+        self.suriashi1('end', rl, v=v, q=q)
+
+    def suriashi1(self, mv='f', rl='r', v=None, q=False):
+        self.logger.debug('mv=%s, rl=%s, v=%s, q=%s',
+                          mv, rl, str(v), q)
+        
+        p1 = 40
+        p2 = 15
+        p3 = 25
+
+        if mv[0] == 'end'[0]:
+            self.home(v=v, q=q)
+            return
+
+
+        if rl[0] == 'right'[0]:
+            if mv[0] == 'forward'[0]:
+                self.move1(p1, p3, p3, p2, v=v, q=q)
+            else:
+                pass
+            
+        if rl[0] == 'left'[0]:
+            if mv[0] == 'forward'[0]:
+                self.move1(-p2, -p3, -p3, -p1, v=v, q=q)
+            else:
+                pass
+
+
+        if rl[0] == 'right'[0]:
+            if mv[0] == 'forward'[0]:
+                self.move1(-p2, p3, p3, -p1, v=v, q=q)
+            else:
+                pass
+            
+        if rl[0] == 'left'[0]:
+            if mv[0] == 'forward'[0]:
+                self.move1(p1, -p3, -p3, p2, v=v,q=q)
+            else:
+                pass
+
 #####
+class Sample:
+    def __init__(self, debug=False):
+        self.debug = debug
+        self.logger = my_logger.get_logger(__class__.__name__, self.debug)
+
+        self.opm = OttoPiMotion(pi=None, debug=self.debug)
+
+    def main(self):
+        self.logger.debug('')
+
+        self.opm.home()
+        time.sleep(1)
+
+        p1 = 40
+        p2 = 15
+        p3 = 25
+
+
+        self.opm.move([
+            [p1, p3, p3, p2],
+            [-p2, p3, p3, -p1],
+            [-p2, -p3, -p3, -p1],
+            [p1, -p3, -p3, p2],
+
+            [p1, p3, p3, p2],
+            [-p2, p3, p3, -p1],
+            [-p2, -p3, -p3, -p1],
+            [p1, -p3, -p3, p2],
+        ])
+
+    def end(self):
+        self.logger.debug('')
+
+
+#####
+import click
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
+@click.command(context_settings=CONTEXT_SETTINGS)
+@click.option('--debug', '-d', 'debug', is_flag=True, default=False,
+              help='debug flag')
+def main(debug):
+    logger = my_logger.get_logger(__name__, debug)
+    logger.debug('')
+
+    app = Sample(debug=debug)
+    try:
+        app.main()
+    finally:
+        logger.debug('finally')
+        app.end()
+
+if __name__ == '__main__':
+    main()
+

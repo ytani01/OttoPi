@@ -53,6 +53,7 @@ class OttoPiAuto(threading.Thread):
     D_ON_MIN      = 300
     
     STAT_NONE     = 'none'
+    STAT_YELLOW   = 'yellow'
     STAT_TOO_NEAR = 'too_near'
     STAT_NEAR     = 'near'
     STAT_FAR      = 'far'
@@ -216,13 +217,17 @@ class OttoPiAuto(threading.Thread):
             elif d >= self.D_FAR:
                 self.logger.info('FAR(>= %d)', self.D_FAR)
                 self.stat = self.STAT_FAR
-                if self.prev_stat == self.STAT_NEAR:
+                if self.prev_stat in [self.STAT_NEAR, self.STAT_YELLOW]:
                     self.robot_ctrl.send('forward')
 
             else:
-                self.stat = self.STAT_NONE
                 if self.prev_stat == self.STAT_NEAR:
-                    self.robot_ctrl.send('forward')
+                    self.stat = self.STAT_NONE
+                    if d <= self.D_NEAR + 300:
+                        self.stat = self.STAT_YELLOW
+                        self.robot_ctrl.send('suriashi_fwd')
+                    else:
+                        self.robot_ctrl.send('forward')
 
             self.logger.debug('stat=%s', self.stat)
 
