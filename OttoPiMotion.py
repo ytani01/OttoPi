@@ -476,7 +476,7 @@ class OttoPiMotion:
             self.logger.debug('rl=%s', rl)
 
         self.home()
-        time.sleep(0.5)
+        time.sleep(0.2)
 
         for i in range(n):
             if self.stop_flag:
@@ -494,12 +494,60 @@ class OttoPiMotion:
         if rl == '':
             return
 
+        p1 = (65, 25)
+        p2 = (40)
+
+        if rl[0] == 'right'[0]:
+            if mv[0] == 'forward'[0]:
+                self.move1( p1[0],    p2/2,     0,  p1[1], v=v, q=q)
+                self.move1( p1[0]/2,  p2/2,  p2/2,  p1[1], v=v, q=q)
+            if mv[0] == 'backward'[0]:
+                self.move1( p1[0],   -p2/2,     0,  p1[1], v=v, q=q)
+                self.move1( p1[0]/2, -p2/2, -p2/2,  p1[1], v=v, q=q)
+            if mv[0] == 'end'[0]:
+                self.move1( p1[0],   p2/2,  0,  p1[1], v=v, q=q)
+                
+        if rl[0] == 'left'[0]:
+            if mv[0] == 'forward'[0]:
+                self.move1(-p1[1],     0, -p2/2, -p1[0],   v=v, q=q)
+                self.move1(-p1[1], -p2/2, -p2/2, -p1[0]/2, v=v, q=q)
+            if mv[0] == 'backward'[0]:
+                self.move1(-p1[1],     0,  p2/2, -p1[0],   v=v, q=q)
+                self.move1(-p1[1],  p2/2,  p2/2, -p1[0]/2, v=v, q=q)
+            if mv[0] == 'end'[0]:
+                self.move1(-p1[1], 0, -p2/2, -p1[0], v=v, q=q)
+
+        time.sleep(.02)
+
+        if mv[0] == 'end'[0]:
+            self.home(v=v, q=q)
+            return
+        
+        if rl[0] == 'right'[0]:
+            if mv[0] == 'forward'[0]:
+                self.move1(0, p2, p2, 0, v=v, q=q)
+            if mv[0] == 'back'[0]:
+                self.move1(0,-p2,-p2, 0, v=v, q=q)
+            
+        if rl[0] == 'left'[0]:
+            if mv[0] == 'forowar'[0]:
+                self.move1(0,-p2,-p2, 0, v=v, q=q)
+            if mv[0] == 'back'[0]:
+                self.move1(0, p2, p2, 0, v=v, q=q)
+
+    def walk1orig(self, mv='f', rl='r', v=None, q=False):
+        self.logger.debug('mv=%s, rl=%s, v=%s, q=%s',
+                          mv, rl, str(v), q)
+
+        if rl == '':
+            return
+
         p1 = (65, 35)
         p2 = (35)
 
         if rl[0] == 'right'[0]:
             if mv[0] == 'forward'[0]:
-                self.move1( p1[0], p2/2,  0,  p1[1], v=v, q=q)
+                self.move1( p1[0],   p2/2,  0,  p1[1], v=v, q=q)
             if mv[0] == 'backward'[0]:
                 self.move1( p1[0],  0,  0,  p1[1], v=v, q=q)
             if mv[0] == 'end'[0]:
