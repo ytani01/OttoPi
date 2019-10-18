@@ -318,7 +318,28 @@ class OttoPiMotion:
                        [0,0,0,0]],
                       v=v, q=q)
             time.sleep(interval_msec/1000)
-                      
+
+    def hi(self, n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+        p1 = 70
+        p2 = 80
+
+        self.home()
+
+        self.move1(-p1,-p2,0,0)
+        time.sleep(0.5)
+        self.home()
+
+
+    def suprised(self,  n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+        p1 = 30
+
+        self.home()
+        self.move1(-p1, 0, 0, p1)
+        
 
     def slide_right(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
@@ -650,28 +671,39 @@ class Sample:
 
         self.opm = OttoPiMotion(pi=None, debug=self.debug)
 
-    def main(self):
-        self.logger.debug('')
+    def main(self, pos=()):
+        self.logger.debug('pos=%s', pos)
 
         self.opm.home()
         time.sleep(1)
+        
+        for p in pos:
+            if p[0] == '@':
+                try:
+                    [p1, p2, p3, p4] = [int(i) for i in p[1:].split(',')]
+                except ValueError:
+                    self.logger.error('p=\'%s\': invalid parameters', p)
+                    return
 
-        p1 = 40
-        p2 = 15
-        p3 = 25
+                self.logger.info('move1(%d,%d,%d,%d)', p1, p2, p3, p4)
+                self.opm.move1(p1, p2, p3, p4)
+                continue
+
+            if p[0] in 'sS':
+                sleep_sec = float(p[1:])
+                self.logger.info('sleep(%.1f)', sleep_sec)
+                time.sleep(sleep_sec)
+                continue
+
+            if p[0] in 'hH':
+                self.logger.info('home()')
+                self.opm.home()
+                continue
+
+            self.logger.error('%s: invalid argument', p)
+            break
 
 
-        self.opm.move([
-            [p1, p3, p3, p2],
-            [-p2, p3, p3, -p1],
-            [-p2, -p3, -p3, -p1],
-            [p1, -p3, -p3, p2],
-
-            [p1, p3, p3, p2],
-            [-p2, p3, p3, -p1],
-            [-p2, -p3, -p3, -p1],
-            [p1, -p3, -p3, p2],
-        ])
 
     def end(self):
         self.logger.debug('')
@@ -681,15 +713,16 @@ class Sample:
 import click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(context_settings=CONTEXT_SETTINGS)
+@click.argument('pos', type=str, nargs=-1)
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
-def main(debug):
+def main(pos, debug):
     logger = my_logger.get_logger(__name__, debug)
-    logger.debug('')
+    logger.debug('pos = %s', pos)
 
     app = Sample(debug=debug)
     try:
-        app.main()
+        app.main(pos)
     finally:
         logger.debug('finally')
         app.end()

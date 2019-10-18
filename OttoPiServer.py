@@ -63,8 +63,10 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             'A': 'slide_left',
             'D': 'slide_right',
             '1': 'happy',
-            '2': 'ojigi',
-            '3': 'ojigi2',
+            '2': 'hi',
+            '3': 'supprized',
+            '4': 'ojigi',
+            '5': 'ojigi2',
             '0': 'home',
 
             'h': 'move_up0',

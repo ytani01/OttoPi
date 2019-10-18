@@ -191,7 +191,7 @@ class OttoPiAuto(threading.Thread):
                 self.logger.warn('TOO_NEAR(<= %d)', self.D_TOO_NEAR)
                 self.stat = self.STAT_NEAR
                 if self.prev_stat != self.STAT_NEAR:
-                    self.robot_ctrl.send('happy')
+                    self.robot_ctrl.send('suprised')
                 else:
                     self.robot_ctrl.send('backward')
                 time.sleep(2)
