@@ -335,10 +335,12 @@ class OttoPiMotion:
     def suprised(self,  n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
-        p1 = 30
+        p1 = 40
 
         self.home()
         self.move1(-p1, 0, 0, p1)
+        time.sleep(1)
+        self.home()
         
 
     def slide_right(self, n=1, interval_msec=0, v=None, q=False):
