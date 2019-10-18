@@ -147,13 +147,15 @@ class OttoPiCtrl(threading.Thread):
         self.logger.info('')
         self.opm.stop()
 
-    # cmd: "[コマンド名] [実行回数]"
-    def send(self, cmd):
+    # cmd: "[コマンド名]"
+    def send(self, cmd, doIntrrupt=True):
         self.logger.debug('cmd=\'%s\'', cmd)
 
-        self.interrupt_continuous()
-        self.clear_cmdq()
-        self.cmdq.put(self.CMD_RESUME) 
+        if doIntrrupt:
+            self.interrupt_continuous()
+            self.clear_cmdq()
+            self.cmdq.put(self.CMD_RESUME) 
+            
         self.cmdq.put(cmd)
 
     def recv(self):

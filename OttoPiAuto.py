@@ -190,11 +190,13 @@ class OttoPiAuto(threading.Thread):
             elif d <= self.D_TOO_NEAR:
                 self.logger.warn('TOO_NEAR(<= %d)', self.D_TOO_NEAR)
                 self.stat = self.STAT_NEAR
+
                 if self.prev_stat != self.STAT_NEAR:
                     self.robot_ctrl.send('suprised')
+                    time.sleep(1)
                 else:
                     self.robot_ctrl.send('backward')
-                time.sleep(2)
+                    time.sleep(2)
 
             elif d <= self.D_NEAR:
                 self.logger.warn('NEAR(<= %d)', self.D_NEAR)
