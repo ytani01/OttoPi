@@ -223,10 +223,12 @@ class OttoPiAuto(threading.Thread):
             else:
                 if self.prev_stat == self.STAT_NEAR:
                     self.stat = self.STAT_NONE
-                    if d <= self.D_NEAR + 300:
+                    if d <= self.D_NEAR + 200:
                         self.stat = self.STAT_YELLOW
+                        self.logger.info('stat: %s', self.stat)
                         self.robot_ctrl.send('suriashi_fwd')
                     else:
+                        self.logger.info('stat: %s', self.stat)
                         self.robot_ctrl.send('forward')
 
             self.logger.debug('stat=%s', self.stat)
