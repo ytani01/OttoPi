@@ -5,7 +5,7 @@
 BINDIR=${HOME}/bin
 TOPDIR=${HOME}/OttoPi
 
-CMDS="MyLogger.py OttoPiAuto.py OttoPiClient.py OttoPiConfig.py OttoPiCtrl.py OttoPiHttpServer.py OttoPiMotion.py OttoPiServer.py PiServo.py RobotButton.py VL53L0X.py vl53l0x_python.so speech.sh loop.sh boot.sh"
+CMDS="MyLogger.py OttoPiAuto.py OttoPiClient.py OttoPiConfig.py OttoPiCtrl.py OttoPiHttpServer.py OttoPiMotion.py OttoPiServer.py PiServo.py RobotButton.py VL53L0X.py vl53l0x_python.so speech.sh boot.sh loop.sh music.sh"
 
 pip3 install -U pip
 hash -r

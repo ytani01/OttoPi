@@ -29,7 +29,11 @@
       }
       function speech(val) {
 	  var data = {"onoff": val};
-	  $.post("/speech", data)
+	  $.post("/speech", data);
+      }
+      function music(val) {
+	  var data = {"onoff": val};
+	  $.post("/music", data);
       }
     </script>
   </head>
@@ -148,6 +152,12 @@
 	自動自己紹介:
 	<input type="button" value="ON" onClick="speech('on');">
 	<input type="button" value="OFF" onClick="speech('off');">
+
+	,
+	
+	music:
+	<input type="button" value="ON" onClick="music('on');">
+	<input type="button" value="OFF" onClick="music('off');">
 	
       </div>
       

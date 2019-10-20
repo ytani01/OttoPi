@@ -43,6 +43,7 @@ my_logger = MyLogger(__file__)
 MyName = os.path.basename(sys.argv[0])
 
 SpeechStopFile = '/home/pi/speech_stop'
+MusicStopFile = '/home/pi/music_stop'
 
 app = Flask(__name__)
 
@@ -135,6 +136,25 @@ def speech():
 
     if onoff != 'on':
         f = open(SpeechStopFile, 'w')
+        f.close()
+
+    return ''
+
+@app.route('/music', methods=['POST'])
+def music():
+    print('music():request=%s' % request)
+    if request.method != 'POST':
+        return
+
+    onoff = request.form['onoff']
+    print('onoff = %s' % onoff)
+
+    if os.path.isfile(MusicStopFile):
+        print('remove: %s' % MusicStopFile)
+        print(os.remove(MusicStopFile))
+
+    if onoff != 'on':
+        f = open(MusicStopFile, 'w')
         f.close()
 
     return ''

@@ -59,6 +59,10 @@ ROBOT_CLIENT="${ROBOT_DIR}/OttoPiClient.py"
 LOOP_SH="${ROBOT_DIR}/loop.sh"
 LOOP_LOG="${LOGDIR}/loop.log"
 
+### music.sh
+MUSIC_SH="${ROBOT_DIR}/music.sh"
+MUSIC_LOG="${LOGDIR}/music.log"
+
 ### mjpg_streamer
 MJPG_STREAMER="${BINDIR}/mjpg-streamer.sh"
 MJPG_STREAMER_LOG="${LOGDIR}/mjpg-streamer.log"
@@ -131,7 +135,11 @@ fi
 
 ${ROBOT_CLIENT} -d -c ':happy'
 
+sleep 60
 if [ -x ${LOOP_SH} ]; then
-    sleep 60
     ${LOOP_SH} > ${LOOP_LOG} 2>&1 &
+fi
+
+if [ -x ${MUSIC_SH} ]; then
+    ${MUSIC_SH} > ${MUSIC_LOG} 2>&1 &
 fi
