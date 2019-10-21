@@ -10,6 +10,7 @@ while read s; do
 	echo "stop file: ${STOP_FILE}"
 	exit 0
     fi
+    pkill vlc
     SpeakClient.py $s
 done
-sleep 30
+sleep 60
