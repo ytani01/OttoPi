@@ -3,7 +3,7 @@
 # (c) 2019 Yoichi Tanibayashi
 #
 
-PLAY_CMD="cvlc --loop"
+PLAY_CMD="cvlc --loop --alsa-gain 0.5"
 PKILL_WORD="vlc"
 MUSIC_FILE=${HOME}/OttoPi/sound/carnival.mp3
 STOP_FILE=${HOME}/music_stop

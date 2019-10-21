@@ -29,6 +29,7 @@ PIN_SERVO1=17
 PIN_SERVO2=27
 PIN_SERVO3=22
 PIN_SERVO4=23
+@reboot		cvlc --play-and-exit --alsa-gain 0.5 ${HOME}/OttoPi/sound/StarTrek-VOY-opening.aac
 @reboot		sudo pigpiod
 @reboot		sleep 5; pigs m ${PIN_AUDIO1} 0 m ${PIN_AUDIO2} 0
 @reboot		sleep 6; pigs s ${PIN_SERVO1} 0 s ${PIN_SERVO2} 0
