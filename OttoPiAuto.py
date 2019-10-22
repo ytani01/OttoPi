@@ -44,12 +44,12 @@ class OttoPiAuto(threading.Thread):
 
     DEF_RECV_TIMEOUT = 0.5 # sec
 
-    D_TOUCH       = 30
+    D_TOUCH       = 40
     D_TOO_NEAR    = 200
     D_NEAR        = 400
     D_FAR         = 8000
     D_READY_MIN   = 60
-    D_READY_MAX   = 100
+    D_READY_MAX   = 120
     D_ON_MIN      = 300
     
     STAT_NONE     = 'none'
