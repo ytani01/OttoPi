@@ -5,16 +5,17 @@
 
 PLAY_CMD="cvlc --loop --alsa-gain 0.4"
 PKILL_WORD="vlc"
-MUSIC_FILE=${HOME}/OttoPi/sound/carnival.mp3
-STOP_FILE=${HOME}/music_stop
+MUSIC_FILE="${HOME}/OttoPi/sound/carnival.mp3"
+STOP_FILE="${HOME}/music_stop"
 
 pkill ${PKILL_WORD}
 sleep 1
 
 while true; do
-    if pgrep aplay: then
+    if pgrep aplay; then
        sleep 1
        continue
+    fi
        
     if [ -f ${STOP_FILE} ]; then
 	echo "stop file: ${STOP_FILE}"
