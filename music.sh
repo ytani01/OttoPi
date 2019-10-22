@@ -12,6 +12,10 @@ pkill ${PKILL_WORD}
 sleep 1
 
 while true; do
+    if pgrep aplay: then
+       sleep 1
+       continue
+       
     if [ -f ${STOP_FILE} ]; then
 	echo "stop file: ${STOP_FILE}"
 	pkill ${PKILL_WORD}
