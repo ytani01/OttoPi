@@ -144,7 +144,7 @@ class OttoPiCtrl(threading.Thread):
     
     # 連続実行中断
     def interrupt_continuous(self):
-        self.logger.info('')
+        self.logger.debug('')
         self.opm.stop()
 
     # cmd: "[コマンド名]"

@@ -44,11 +44,11 @@ class OttoPiAuto(threading.Thread):
 
     DEF_RECV_TIMEOUT = 0.5 # sec
 
-    D_TOUCH       = 40
+    D_TOUCH       = 35
     D_TOO_NEAR    = 200
     D_NEAR        = 400
     D_FAR         = 8000
-    D_READY_MIN   = 60
+    D_READY_MIN   = D_TOUCH + 10
     D_READY_MAX   = 120
     D_ON_MIN      = 300
     
@@ -58,6 +58,9 @@ class OttoPiAuto(threading.Thread):
     STAT_NEAR     = 'near'
     STAT_FAR      = 'far'
     STAT_READY    = 'ready'
+
+    TOUCH_COUNT_COMMIT = 2
+    READY_COUNT_COMMIT = 2
 
     def __init__(self, robot_ctrl=None, debug=False):
         self.debug = debug
@@ -86,9 +89,11 @@ class OttoPiAuto(threading.Thread):
         self.alive = True
         self.on    = False
 
-        self.prev_stat = self.STAT_NONE
-        self.stat      = self.STAT_NONE
-        self.prev_rl   = ""
+        self.prev_stat   = self.STAT_NONE
+        self.stat        = self.STAT_NONE
+        self.prev_rl     = ""
+        self.touch_count = 0
+        self.ready_count = 0
 
         super().__init__(daemon=True)
 
@@ -114,11 +119,13 @@ class OttoPiAuto(threading.Thread):
         self.logger.debug('')
         self.robot_ctrl.send('forward')
         self.on = True
+        self.touch_count = 0
 
     def cmd_off(self):
         self.logger.debug('')
         self.robot_ctrl.send('stop')
         self.on = False
+        self.ready_count = 0
 
     def cmd_ready(self, ready=True):
         self.logger.debug('ready=%s', ready)
@@ -170,21 +177,33 @@ class OttoPiAuto(threading.Thread):
                 continue
 
             if not self.on:
-                if self.stat != 'ready':
+                if self.ready_count > 0:
+                    self.logger.info('ready_count=%d', self.ready_count)
+
+                if self.ready_count < self.READY_COUNT_COMMIT:
                     if d >= self.D_READY_MIN and d <= self.D_READY_MAX:
-                        self.cmd_ready()
+                        self.ready_count += 1
                         self.robot_ctrl.send('happy')
-                else:
-                    if d <= self.D_READY_MIN:
-                        self.cmd_ready(ready=False)
-                    if d >= self.D_ON_MIN:
-                        self.cmd_on()
+                        time.sleep(1)
+                    else:
+                        self.ready_count = 0
+
+                else: # self.touch_count >= self.TO
+                    self.cmd_on()
                         
                 continue
                 
             self.prev_stat = self.stat
 
             if d <= self.D_TOUCH:
+                if self.touch_count < self.TOUCH_COUNT_COMMIT:
+                    self.touch_count += 1
+                    self.logger.info('touch_count: %d', self.touch_count)
+                    self.robot_ctrl.send('suprised')
+                    time.sleep(1)
+                    continue
+
+                # self.touch_count >= self.TOUCH_COUNT_COMMIT
                 self.logger.warn('touched(<= %d)', self.D_TOUCH)
                 self.cmd_off()
                 time.sleep(5)
@@ -212,7 +231,6 @@ class OttoPiAuto(threading.Thread):
                         self.robot_ctrl.send('slide_left')
                 else:
                     if self.prev_rl == "right":
-                    #if random.random() < 0.5:
                         self.robot_ctrl.send('turn_right')
                     else:
                         self.robot_ctrl.send('turn_left')
