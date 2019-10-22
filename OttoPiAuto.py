@@ -166,6 +166,8 @@ class OttoPiAuto(threading.Thread):
 
             d = self.get_distance()
             self.logger.info('d = %smm', '{:,}'.format(d))
+            if d < 0:
+                continue
 
             if not self.on:
                 if self.stat != 'ready':
