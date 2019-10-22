@@ -11,6 +11,6 @@ while read s; do
 	exit 0
     fi
     pkill vlc
-    SpeakClient.py $s
+    nice -n 5 SpeakClient.py $s
 done
 sleep 60

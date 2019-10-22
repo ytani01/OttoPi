@@ -335,7 +335,7 @@ class OttoPiMotion:
     def suprised(self,  n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
-        p1 = 40
+        p1 = 30
 
         self.home()
         self.move1(-p1, 0, 0, p1)
@@ -452,7 +452,7 @@ class OttoPiMotion:
         self.logger.debug('rl=%s, interval_msec=%d, v=%s, q=%s',
                           rl, interval_msec, str(v), q)
 
-        p1 = (65, 35)
+        p1 = (65, 30)
         p2 = 30
 
         self.home()
