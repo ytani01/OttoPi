@@ -21,8 +21,8 @@ PULSE_MIN  = 500
 PULSE_MAX  = 2500
 PULSE_HOME = 1500
 
-PULSE_STEP      = 20
-INTERVAL_FACTOR = 0.4
+PULSE_STEP      = 25
+INTERVAL_FACTOR = 0.40
 #INTERVAL_FACTOR = 1
 
 DEF_PIN = [17, 27, 22, 23]
@@ -143,6 +143,9 @@ class PiServo:
         self.logger.debug('d_list = %s', d_list)
 
         d_max = max(d_list)
+        self.logger.debug('d_max=%d', d_max)
+
+        d_min = min(d_list)
         self.logger.debug('d_max=%d', d_max)
 
         if quick:

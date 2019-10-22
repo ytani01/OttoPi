@@ -523,21 +523,20 @@ class OttoPiMotion:
         if rl[0] == 'right'[0]:
             if mv[0] == 'forward'[0]:
                 self.move1( p1[0],   p2/2,     0,  p1[1],   v=v, q=q)
-                self.move1( p1[0]/3, p2/2,  p2/2,  p1[1],   v=v, q=q)
-                #self.move1( p1[0]/2, p2/2,  p2/2,  p1[1],   v=v, q=q)
+                self.move1( p1[0]/2, p2/2,  p2/2,  p1[1],   v=v, q=q)
             if mv[0] == 'backward'[0]:
                 self.move1( p1[0],  -p2/2,     0,  p1[1],   v=v, q=q)
-                self.move1( p1[0]/3,-p2/2, -p2/2,  p1[1],   v=v, q=q)
+                self.move1( p1[0]/2,-p2/2, -p2/2,  p1[1],   v=v, q=q)
             if mv[0] == 'end'[0]:
                 self.move1( p1[0],   p2/2,     0,  p1[1],   v=v, q=q)
                 
         if rl[0] == 'left'[0]:
             if mv[0] == 'forward'[0]:
                 self.move1(-p1[1],      0, -p2/2, -p1[0],   v=v, q=q)
-                self.move1(-p1[1],  -p2/2, -p2/2, -p1[0]/3, v=v, q=q)
+                self.move1(-p1[1],  -p2/2, -p2/2, -p1[0]/2, v=v, q=q)
             if mv[0] == 'backward'[0]:
                 self.move1(-p1[1],      0,  p2/2, -p1[0],   v=v, q=q)
-                self.move1(-p1[1],   p2/2,  p2/2, -p1[0]/3, v=v, q=q)
+                self.move1(-p1[1],   p2/2,  p2/2, -p1[0]/2, v=v, q=q)
             if mv[0] == 'end'[0]:
                 self.move1(-p1[1],      0, -p2/2, -p1[0],   v=v, q=q)
 
