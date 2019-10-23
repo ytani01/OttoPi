@@ -75,7 +75,7 @@ gpio -g mode ${PIN_LED} output && gpio -g write ${PIN_LED} 1
 gpio -g mode ${PIN_VCC} output && gpio -g write ${PIN_VCC} 1
 
 if [ "${MUSIC}" = "ON" ]; then
-    $MUSIC_PLAYER $MUSIC_PLAYER_OPT $MUSIC_DATA > /dev/null 2>&1 &
+    nice -n 5 $MUSIC_PLAYER $MUSIC_PLAYER_OPT $MUSIC_DATA > /dev/null 2>&1 &
 fi
 
 #if "${MUSIC}" != "ON"; then
@@ -126,7 +126,8 @@ fi
 
 if [ ${SPEAK} = ON ]; then
     if which ${SPEAKIPADDR_CMD}; then
-	${SPEAKIPADDR_CMD} repeat &
+	#${SPEAKIPADDR_CMD} repeat &
+	${SPEAKIPADDR_CMD} &
     fi
 fi
 
