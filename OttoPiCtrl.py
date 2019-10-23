@@ -56,7 +56,8 @@ class OttoPiCtrl(threading.Thread):
             self.mypi = True
         self.logger.debug('mypi = %s', self.mypi)
             
-        self.opm = OttoPiMotion(self.pi, debug=my_logger.logger.propagate and debug)
+        #self.opm = OttoPiMotion(self.pi, debug=my_logger.logger.propagate and debug)
+        self.opm = OttoPiMotion(self.pi, debug=self.debug)
 
         # コマンド名とモーション関数の対応づけ
         self.cmd_func= {

@@ -5,6 +5,8 @@
 BINDIR=${HOME}/bin
 TOPDIR=${HOME}/OttoPi
 
+CONFFILENAME=OttoPi.conf
+
 CMDS="MyLogger.py OttoPiAuto.py OttoPiClient.py OttoPiConfig.py OttoPiCtrl.py OttoPiHttpServer.py OttoPiMotion.py OttoPiServer.py PiServo.py RobotButton.py VL53L0X.py vl53l0x_python.so speech.sh boot.sh loop.sh music.sh"
 
 pip3 install -U pip
@@ -24,3 +26,8 @@ for cmd in ${CMDS}; do
 	rm -f ${BINDIR}/${cmd}
 	ln -sf ${TOPDIR}/${cmd} .
 done
+
+### copy config file
+if [ ! -f ${HOME}/${CONFFILENAME} ]; then
+    cp ${TOPDIR}/${CONFFILENAME} ${HOME}
+fi

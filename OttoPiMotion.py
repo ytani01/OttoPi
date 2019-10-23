@@ -328,7 +328,7 @@ class OttoPiMotion:
         self.home()
 
         self.move1(-p1,-p2,0,0)
-        time.sleep(0.5)
+        time.sleep(1)
         self.home()
 
 
@@ -338,8 +338,9 @@ class OttoPiMotion:
         p1 = 30
 
         self.home()
-        self.move1(-p1, 0, 0, p1)
-        time.sleep(1)
+        time.sleep(.2)
+        self.move1(-p1, 0, 0, p1,q=True)
+        time.sleep(.3)
         self.home()
         
 

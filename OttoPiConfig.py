@@ -3,6 +3,7 @@
 # (c) 2019 Yoichi Tanibayashi
 #
 import configparser
+import os
 
 #####
 from MyLogger import MyLogger
@@ -10,6 +11,7 @@ my_logger = MyLogger(__file__)
 
 #####
 DEF_CONF_FILE = 'OttoPi.conf'
+DEF_CONF_PATH = ['.', os.environ['HOME'], '/etc']
 DEF_SECTION   = 'OttoPi'
 KEY_PIN       = 'pin'
 KEY_HOME      = 'home'
@@ -21,19 +23,44 @@ class OttoPiConfig:
         self.logger = my_logger.get_logger(__class__.__name__, debug)
         self.logger.debug('conf_file = %s', conf_file)
 
-        self.conf_file = conf_file
+        self.conf_file      = conf_file
+        self.conf_path_name = ''
         self.config    = configparser.ConfigParser()
         self.load()
 
     def load(self, conf_file=DEF_CONF_FILE):
         self.logger.debug('conf_file=%s', conf_file)
-        self.config.read(self.conf_file)
 
-    def save(self, conf_file=DEF_CONF_FILE):
+        self.conf_path_name = self.search_conf_file(conf_file)
+        if self.conf_path_name is None:
+            self.logger.error('\'%s\' is not found', conf_file)
+            return
+
+        self.config.read(self.conf_path_name)
+
+    def save(self, conf_file=''):
         self.logger.debug('conf_file=%s', conf_file)
+
+        if conf_file == '':
+            conf_file = self.conf_path_name
+            self.logger.debug('conf_file=%s', conf_file)
+
         f = open(conf_file, mode='w')
         self.config.write(f)
         f.close()
+
+    def search_conf_file(self, conf_file=DEF_CONF_FILE, dir=DEF_CONF_PATH):
+        self.logger.debug('conf_file=%s, dir=%s', conf_file, dir)
+
+        for d in dir:
+            path_name = d + '/' + conf_file
+            if os.path.isfile(path_name):
+                self.logger.debug('path_name=%s', path_name)
+                return path_name
+
+        self.logger.warning('\'%s\' is not found', conf_file)
+        return None
+        
 
     def get_intlist(self, key, section=DEF_SECTION):
         self.logger.debug('')
