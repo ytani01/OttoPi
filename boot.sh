@@ -89,6 +89,8 @@ fi
     #${SPEAK_CMD} "私は二足歩行ロボット"
     ${SPEAK_CMD} "私は二そくほこうロボット"
     ${SPEAK_CMD} "${MY_NAME} です"
+    ${SPEAK_CMD} "起動シーケンスを実行してます"
+    ${SPEAK_CMD} "しばらくお待ちください"
   fi
 #fi
 

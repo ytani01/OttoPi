@@ -42,8 +42,8 @@ my_logger = MyLogger(__file__)
 #####
 MyName = os.path.basename(sys.argv[0])
 
-SpeechStopFile = '/home/pi/speech_stop'
-MusicStopFile = '/home/pi/music_stop'
+SpeechStopFile = os.environ['HOME'] + '/' + 'stop_speech'
+MusicStopFile  = os.environ['HOME'] + '/' + 'stop_music'
 
 app = Flask(__name__)
 
