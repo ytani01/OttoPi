@@ -461,18 +461,17 @@ class OttoPiMotion:
         
         if rl[0] == 'left'[0]:
             self.move([[p1[0],   p2, p2,   p1[1]],
-                       [0,      -p2, p2, p1[1]/2],
+                       [0,        0, p2,   p1[1]],
                        [0,      -p2, p2,       0],
                        [-p1[1],   0,  0,  -p1[0]],
                        [0,0,0,0]], interval_msec=interval_msec, v=v, q=q)
 
         if rl[0] == 'right'[0]:
             self.move([[-p1[1], -p2, -p2, -p1[0]],
-                       [-p1[1]/2, -p2, p2, 0],
-                       [0, -p2, p2, 0],
-                       [p1[0], 0, 0, p1[1]],
-                       [0,0,0,0]],
-                      interval_msec=interval_msec, v=v, q=q)
+                       [-p1[1], -p2,   0,      0],
+                       [0,      -p2,  p2,      0],
+                       [p1[0],    0,   0,  p1[1]],
+                       [0,0,0,0]], interval_msec=interval_msec, v=v, q=q)
 
 
     def forward(self, n=1, rl='', v=None, q=False):
@@ -674,8 +673,8 @@ class Sample:
 
         self.opm = OttoPiMotion(pi=None, debug=self.debug)
 
-    def main(self, pos=()):
-        self.logger.debug('pos=%s', pos)
+    def main(self, pos=(), interval=0.0):
+        self.logger.debug('pos=%s, interval=%.2f', pos, interval)
 
         self.opm.home()
         time.sleep(1)
@@ -690,21 +689,22 @@ class Sample:
 
                 self.logger.info('move1(%d,%d,%d,%d)', p1, p2, p3, p4)
                 self.opm.move1(p1, p2, p3, p4)
-                continue
 
-            if p[0] in 'sS':
+            elif p[0] in 'sS':
                 sleep_sec = float(p[1:])
                 self.logger.info('sleep(%.1f)', sleep_sec)
                 time.sleep(sleep_sec)
-                continue
 
-            if p[0] in 'hH':
+            elif p[0] in 'hH':
                 self.logger.info('home()')
                 self.opm.home()
-                continue
 
-            self.logger.error('%s: invalid argument', p)
-            break
+            else:
+                self.logger.error('%s: invalid argument', p)
+                break
+
+            if interval > 0:
+                time.sleep(interval)
 
 
 
@@ -717,15 +717,18 @@ import click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.command(context_settings=CONTEXT_SETTINGS)
 @click.argument('pos', type=str, nargs=-1)
+@click.option('--interval', '-i', 'interval', type=float, default=0,
+              help='interval[sec]')
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
-def main(pos, debug):
+def main(pos, interval, debug):
     logger = my_logger.get_logger(__name__, debug)
+    logger.debug("interval = %0.2f", interval)
     logger.debug('pos = %s', pos)
 
     app = Sample(debug=debug)
     try:
-        app.main(pos)
+        app.main(pos, interval)
     finally:
         logger.debug('finally')
         app.end()
