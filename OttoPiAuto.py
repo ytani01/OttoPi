@@ -120,12 +120,14 @@ class OttoPiAuto(threading.Thread):
         self.robot_ctrl.send('forward')
         self.on = True
         self.touch_count = 0
+        self.stat = self.STAT_NONE
 
     def cmd_off(self):
         self.logger.debug('')
         self.robot_ctrl.send('stop')
         self.on = False
         self.ready_count = 0
+        self.stat = self.STAT_NONE
 
     def cmd_ready(self, ready=True):
         self.logger.debug('ready=%s', ready)
@@ -188,7 +190,7 @@ class OttoPiAuto(threading.Thread):
                     else:
                         self.ready_count = 0
 
-                else: # self.touch_count >= self.TO
+                else: # self.ready_count >= self.READY_COUNT_COMMIT
                     self.cmd_on()
                         
                 continue
@@ -196,17 +198,21 @@ class OttoPiAuto(threading.Thread):
             self.prev_stat = self.stat
 
             if d <= self.D_TOUCH:
+                self.logger.warn('touched(<= %d)', self.D_TOUCH)
+                self.robot_ctrl.send('suprised')
+                time.sleep(2)
+
                 if self.touch_count < self.TOUCH_COUNT_COMMIT:
                     self.touch_count += 1
-                    self.logger.info('touch_count: %d', self.touch_count)
-                    self.robot_ctrl.send('suprised')
-                    time.sleep(1)
+                    self.logger.info('touch_count=%d', self.touch_count)
+                    if self.touch_count >= self.TOUCH_COUNT_COMMIT:
+                        self.logger.warn('STOP!')
+                        self.cmd_off()
+                        self.robot_ctrl.send('suprised')
+                        time.sleep(3)
+                    else:
+                        self.robot_ctrl.send('forward')
                     continue
-
-                # self.touch_count >= self.TOUCH_COUNT_COMMIT
-                self.logger.warn('touched(<= %d)', self.D_TOUCH)
-                self.cmd_off()
-                time.sleep(5)
 
             elif d <= self.D_TOO_NEAR:
                 self.logger.warn('TOO_NEAR(<= %d)', self.D_TOO_NEAR)
@@ -253,6 +259,7 @@ class OttoPiAuto(threading.Thread):
                         self.logger.info('stat: %s', self.stat)
                         self.robot_ctrl.send('forward')
 
+            self.touch_count = 0
             self.logger.debug('stat=%s', self.stat)
 
         self.logger.info('done(alive=%s)', self.alive)
