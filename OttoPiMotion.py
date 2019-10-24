@@ -463,14 +463,14 @@ class OttoPiMotion:
             self.move([[p1[0],   p2, p2,   p1[1]],
                        [0,        0, p2,   p1[1]],
                        [0,      -p2, p2,       0],
-                       [-p1[1],   0,  0,  -p1[0]],
+                       [-p1[1],   0, p2,  -p1[0]],
                        [0,0,0,0]], interval_msec=interval_msec, v=v, q=q)
 
         if rl[0] == 'right'[0]:
             self.move([[-p1[1], -p2, -p2, -p1[0]],
                        [-p1[1], -p2,   0,      0],
                        [0,      -p2,  p2,      0],
-                       [p1[0],    0,   0,  p1[1]],
+                       [p1[0],  -p2,   0,  p1[1]],
                        [0,0,0,0]], interval_msec=interval_msec, v=v, q=q)
 
 
