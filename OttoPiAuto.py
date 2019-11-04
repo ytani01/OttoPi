@@ -44,7 +44,7 @@ class OttoPiAuto(threading.Thread):
 
     DEF_RECV_TIMEOUT = 0.5 # sec
 
-    D_TOUCH       = 35
+    D_TOUCH       = 40
     D_TOO_NEAR    = 200
     D_NEAR        = 400
     D_FAR         = 8000
@@ -69,7 +69,6 @@ class OttoPiAuto(threading.Thread):
 
         self.cmd_func = {self.CMD_ON:  self.cmd_on,
                          self.CMD_OFF: self.cmd_off,
-                         self.CMD_READY: self.cmd_ready,
                          self.CMD_END: self.cmd_end}
 
         self.my_robot_ctrl = False
@@ -128,13 +127,6 @@ class OttoPiAuto(threading.Thread):
         self.on = False
         self.ready_count = 0
         self.stat = self.STAT_NONE
-
-    def cmd_ready(self, ready=True):
-        self.logger.debug('ready=%s', ready)
-        if ready:
-            self.stat = self.STAT_READY
-        else:
-            self.stat = self.STAT_NONE
 
     def cmd_end(self):
         self.logger.debug('')
@@ -213,8 +205,10 @@ class OttoPiAuto(threading.Thread):
                     else:
                         self.robot_ctrl.send('forward')
                     continue
+            else:
+                self.touch_count = 0
 
-            elif d <= self.D_TOO_NEAR:
+            if d <= self.D_TOO_NEAR:
                 self.logger.warn('TOO_NEAR(<= %d)', self.D_TOO_NEAR)
                 self.stat = self.STAT_NEAR
 
