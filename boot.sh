@@ -126,8 +126,8 @@ fi
 
 if [ ${SPEAK} = ON ]; then
     if which ${SPEAKIPADDR_CMD}; then
-	#${SPEAKIPADDR_CMD} repeat &
-	${SPEAKIPADDR_CMD} &
+	#${SPEAKIPADDR_CMD} ${PIN_SW} repeat &
+	${SPEAKIPADDR_CMD} ${PIN_SW} &
     fi
 fi
 
