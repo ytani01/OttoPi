@@ -73,6 +73,7 @@ MJPG_STREAMER_LOG="${LOGDIR}/mjpg-streamer.log"
 
 gpio -g mode ${PIN_LED} output && gpio -g write ${PIN_LED} 1
 gpio -g mode ${PIN_VCC} output && gpio -g write ${PIN_VCC} 1
+gpip -g mode ${PIN_SW} input
 
 if [ "${MUSIC}" = "ON" ]; then
     nice -n 5 $MUSIC_PLAYER $MUSIC_PLAYER_OPT $MUSIC_DATA > /dev/null 2>&1 &
@@ -85,7 +86,7 @@ fi
 	mv ${SPEAK_LOG} ${SPEAK_LOG}.1
     fi
     ${SPEAK_SERVER} -d > ${SPEAK_LOG} 2>&1 &
-    sleep 10
+    sleep 5
     #${SPEAK_CMD} "私は二足歩行ロボット"
     ${SPEAK_CMD} "私は二そくほこうロボット"
     ${SPEAK_CMD} "${MY_NAME} です"
@@ -104,7 +105,7 @@ if [ -x ${ROBOT_SERVER} ]; then
 
     cd ${BINDIR}
     ${ROBOT_SERVER} ${ROBOT_OPT} > ${ROBOT_LOG} 2>&1 &
-    sleep 10
+    sleep 5
 fi
 
 if [ -x ${MJPG_STREAMER} ]; then
@@ -121,7 +122,7 @@ if [ -x ${HTTP_SERVER} ]; then
 
     cd ${BINDIR}
     ${HTTP_SERVER} ${HTTP_OPT} > ${HTTP_LOG} 2>&1 &
-    sleep 10 
+    sleep 5 
 fi
 
 if [ ${SPEAK} = ON ]; then
@@ -132,10 +133,11 @@ if [ ${SPEAK} = ON ]; then
 fi
 
 if [ -x ${BUTTON_CMD} ]; then
-    sleep 10
+    sleep 5
     ${BUTTON_CMD} ${BUTTON_OPT} > ${BUTTON_LOG} 2>&1 &
 fi
 
+wait
 ${ROBOT_CLIENT} -d -c ':happy'
 
 sleep 60

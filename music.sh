@@ -26,5 +26,5 @@ while true; do
 	    nice -n 5 ${PLAY_CMD} ${MUSIC_FILE} &
 	fi
     fi
-    sleep 1
+    sleep 2
 done

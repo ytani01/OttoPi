@@ -15,6 +15,7 @@ from Switch import Switch, SwitchListener, SwitchEvent
 import RPi.GPIO as GPIO
 import subprocess
 import time
+import os
 
 from MyLogger import get_logger
 
@@ -27,8 +28,15 @@ DEF_PIN_LED = 20
 
 #####
 class App:
-    CMDLINE = {'shutdown': ['sudo', 'shutdown', '-h', 'now'],
-               'reboot':   ['sudo', 'shutdown', '-r', 'now']}
+    STOP_SPEECH_FILE = os.environ['HOME'] + '/stop_speech'
+    STOP_MUSIC_FILE  = os.environ['HOME'] + '/stop_music'
+
+    CMDLINE = {'shutdown':     ['sudo', 'shutdown', '-h', 'now'],
+               'reboot':       ['sudo', 'shutdown', '-r', 'now'],
+               'start_speech': ['rm', '-f', STOP_SPEECH_FILE],
+               'start_music':  ['rm', '-f', STOP_MUSIC_FILE],
+               'stop_speech':  ['touch', STOP_SPEECH_FILE],
+               'stop_music':   ['touch', STOP_MUSIC_FILE]}
 
     def __init__(self, sw_pin=DEF_PIN_SW, sw_vcc=DEF_PIN_VCC,
                  led_pin=DEF_PIN_LED, debug=False):
@@ -81,7 +89,7 @@ class App:
         self.led.blink(0.05, 0.95)
 
     def exec_cmd(self, cmd):
-        self.logger.debug('CMDLINE[%s]: %s', cmd, str(self.CMDLINE[cmd]))
+        self.logger.debug('CMDLINE[%s]=%s', cmd, str(self.CMDLINE[cmd]))
         subprocess.run(self.CMDLINE[cmd])
 
     def exec_shutdown_cmd(self, cmd):
@@ -90,6 +98,42 @@ class App:
         self.led.off()
         GPIO.setup(self.led_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         self.exec_cmd(cmd)
+
+    def start_sound(self, start_speech=True, start_music=True):
+        self.logger.debug('start_speech=%s, start_music=%s',
+                          start_speech, start_music)
+
+        if start_speech:
+            self.start_speech()
+
+        if start_music:
+            self.start_music()
+        
+    def start_speech(self):
+        self.logger.debug('')
+        self.exec_cmd('start_speech')
+
+    def start_music(self):
+        self.logger.debug('')
+        self.exec_cmd('start_music')
+
+    def stop_sound(self, stop_speech=True, stop_music=True):
+        self.logger.debug('stop_speech=%s, stop_music=%s',
+                          stop_speech, stop_music)
+
+        if stop_speech:
+            self.stop_speech()
+
+        if stop_music:
+            self.stop_music()
+
+    def stop_speech(self):
+        self.logger.debug('')
+        self.exec_cmd('stop_music')
+
+    def stop_music(self):
+        self.logger.debug('')
+        self.exec_cmd('stop_speech')
 
     def shutdown(self):
         self.logger.debug('')
@@ -128,9 +172,11 @@ class App:
             if event.push_count >= 2:
                 self.logger.info('auto')
                 self.call_robot(':auto_on')
+                self.start_sound()
             else:
                 self.logger.info('stop')
                 self.call_robot(':auto_off')
+                self.stop_sound()
 
             self.level = 0
             self.blink_alive()
