@@ -23,9 +23,8 @@ import pigpio
 import time
 import random
 
-#####
-from MyLogger import MyLogger
-my_logger = MyLogger(__file__)
+from MyLogger import get_logger
+
 
 #####
 DEF_PIN        = [17, 27, 22, 23]
@@ -43,7 +42,7 @@ class OttoPiMotion:
                  pulse_max=DEF_PULSE_MAX,
                  debug=False):
         self.debug = debug
-        self.logger = my_logger.get_logger(__class__.__name__, debug)
+        self.logger = get_logger(__class__.__name__, debug)
         self.logger.debug('pi  = %s', str(pi))
         self.logger.debug('pin = %s', pin)
         self.logger.debug('pulse_home = %s', pulse_home)
@@ -276,9 +275,6 @@ class OttoPiMotion:
             n = N_CONTINUOUS
             self.logger.debug('n=%d!', n)
             
-        p1 = [10, 15, 15]
-        p2 = 85
-
         self.home()
         time.sleep(0.3)
 
@@ -671,7 +667,7 @@ class OttoPiMotion:
 class Sample:
     def __init__(self, debug=False):
         self.debug = debug
-        self.logger = my_logger.get_logger(__class__.__name__, self.debug)
+        self.logger = get_logger(__class__.__name__, self.debug)
 
         self.opm = OttoPiMotion(pi=None, debug=self.debug)
 
@@ -724,7 +720,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(pos, interval, debug):
-    logger = my_logger.get_logger(__name__, debug)
+    logger = get_logger(__name__, debug)
     logger.debug("interval = %0.2f", interval)
     logger.debug('pos = %s', pos)
 

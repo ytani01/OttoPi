@@ -32,9 +32,8 @@ import pigpio
 import time
 import queue, threading
 
-#####
-from MyLogger import MyLogger
-my_logger = MyLogger(__file__)
+from MyLogger import get_logger
+
 
 #####
 class OttoPiCtrl(threading.Thread):
@@ -45,7 +44,7 @@ class OttoPiCtrl(threading.Thread):
 
     def __init__(self, pi=None, debug=False):
         self.debug = debug
-        self.logger = my_logger.get_logger(__class__.__name__, debug)
+        self.logger = get_logger(__class__.__name__, debug)
         self.logger.debug('pi  = %s', str(pi))
 
         if type(pi) == pigpio.pi:
@@ -56,7 +55,7 @@ class OttoPiCtrl(threading.Thread):
             self.mypi = True
         self.logger.debug('mypi = %s', self.mypi)
             
-        #self.opm = OttoPiMotion(self.pi, debug=my_logger.logger.propagate and debug)
+        #self.opm = OttoPiMotion(self.pi, debug=logger.propagate and debug)
         self.opm = OttoPiMotion(self.pi, debug=self.debug)
 
         # コマンド名とモーション関数の対応づけ
@@ -227,7 +226,7 @@ class OttoPiCtrl(threading.Thread):
 class Sample:
     def __init__(self, debug=False):
         self.debug = debug
-        self.logger = my_logger.get_logger(__class__.__name__, self.debug)
+        self.logger = get_logger(__class__.__name__, self.debug)
 
         self.pi = pigpio.pi()
         self.robot_ctrl = OttoPiCtrl(self.pi, debug=debug)
@@ -265,7 +264,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(debug):
-    logger = my_logger.get_logger(__name__, debug)
+    logger = get_logger(__name__, debug)
 
     app = Sample(debug=debug)
     try:

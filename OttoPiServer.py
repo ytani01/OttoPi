@@ -32,15 +32,14 @@ import pigpio
 import socketserver
 import time
 
-#####
-from MyLogger import MyLogger
-my_logger = MyLogger(__file__)
+from MyLogger import get_logger
+
 
 #####
 class OttoPiHandler(socketserver.StreamRequestHandler):
     def __init__(self, request, client_address, server):
         self.debug = server.debug
-        self.logger = my_logger.get_logger(__class__.__name__, self.debug)
+        self.logger = get_logger(__class__.__name__, self.debug)
         self.logger.debug('client_address: %s', client_address)
         
         self.server     = server
@@ -232,7 +231,7 @@ class OttoPiServer(socketserver.TCPServer):
 
     def __init__(self, pi=None, port=DEF_PORT, debug=False):
         self.debug = debug
-        self.logger = my_logger.get_logger(__class__.__name__, debug)
+        self.logger = get_logger(__class__.__name__, debug)
         self.logger.debug('pi   = %s', pi)
         self.logger.debug('port = %d', port)
 
@@ -289,7 +288,7 @@ class OttoPiServer(socketserver.TCPServer):
 class Sample:
     def __init__(self, port, debug=False):
         self.debug = debug
-        self.logger = my_logger.get_logger(__class__.__name__, debug)
+        self.logger = get_logger(__class__.__name__, debug)
         self.logger.debug('port=%d', port)
 
         self.port   = port
@@ -314,7 +313,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(port, debug):
-    logger = my_logger.get_logger(__name__, debug)
+    logger = get_logger(__name__, debug)
     logger.info('port=%d', port)
 
     obj = Sample(port, debug=debug)

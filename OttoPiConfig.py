@@ -5,9 +5,8 @@
 import configparser
 import os
 
-#####
-from MyLogger import MyLogger
-my_logger = MyLogger(__file__)
+from MyLogger import get_logger
+
 
 #####
 DEF_CONF_FILE = 'OttoPi.conf'
@@ -20,7 +19,7 @@ KEY_HOME      = 'home'
 class OttoPiConfig:
     def __init__(self, conf_file=DEF_CONF_FILE, debug=False):
         self.debug = debug
-        self.logger = my_logger.get_logger(__class__.__name__, debug)
+        self.logger = get_logger(__class__.__name__, debug)
         self.logger.debug('conf_file = %s', conf_file)
 
         self.conf_file      = conf_file
@@ -99,7 +98,7 @@ class OttoPiConfig:
 class Sample:
     def __init__(self, conf_file='', debug=False):
         self.debug = debug
-        self.logger = my_logger.get_logger(__class__.__name__, debug)
+        self.logger = get_logger(__class__.__name__, debug)
         self.logger.debug('conf_file=%s', conf_file)
 
         self.c = OttoPiConfig(debug=self.debug)
@@ -129,7 +128,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(conf_file, debug):
-    logger = my_logger.get_logger(__name__, debug)
+    logger = get_logger(__name__, debug)
     logger.debug('conf_file=%s', conf_file)
 
     obj = Sample(conf_file, debug=debug)

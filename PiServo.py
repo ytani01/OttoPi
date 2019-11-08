@@ -145,8 +145,8 @@ class PiServo:
         d_max = max(d_list)
         self.logger.debug('d_max=%d', d_max)
 
-        d_min = min(d_list)
-        self.logger.debug('d_max=%d', d_max)
+        #d_min = min(d_list)
+        #self.logger.debug('d_min=%d', d_min)
 
         if quick:
             # quick mode

@@ -29,9 +29,8 @@ __date__   = '2019'
 import telnetlib
 import time
 
-#####
-from MyLogger import MyLogger
-my_logger = MyLogger(__file__)
+from MyLogger import get_logger
+
 
 #####
 DEF_HOST = 'localhost'
@@ -41,7 +40,7 @@ DEF_PORT = 12345
 class OttoPiClient:
     def __init__(self, svr_host=DEF_HOST, svr_port=DEF_PORT, debug=False):
         self.debug = debug
-        self.logger = my_logger.get_logger(__class__.__name__, debug)
+        self.logger = get_logger(__class__.__name__, debug)
         self.logger.debug('svr_host=%s, svr_port=%d', svr_host, svr_port)
 
         self.svr_host = svr_host
@@ -104,7 +103,7 @@ class OttoPiClient:
 class Sample:
     def __init__(self, svr_host, svr_port, command='', debug=False):
         self.debug = debug
-        self.logger = my_logger.get_logger(__class__.__name__, debug)
+        self.logger = get_logger(__class__.__name__, debug)
         self.logger.debug('svr_host=%s, svr_port=%d', svr_host, svr_port)
         self.logger.debug('command=%s', command)
 
@@ -148,7 +147,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(svr_host, svr_port, command, debug):
-    logger = my_logger.get_logger(__name__, debug)
+    logger = get_logger(__name__, debug)
     logger.info('svr_host=%s, svr_port=%d', svr_host, svr_port)
     
     obj = Sample(svr_host, svr_port, command, debug=debug)

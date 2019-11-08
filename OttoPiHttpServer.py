@@ -35,9 +35,8 @@ import netifaces
 import sys
 import os
 
-#####
-from MyLogger import MyLogger
-my_logger = MyLogger(__file__)
+from MyLogger import get_logger
+
 
 #####
 MyName = os.path.basename(sys.argv[0])
@@ -171,7 +170,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 def main(robot_host, robot_port, debug):
     global RobotHost, RobotPort
 
-    logger = my_logger.get_logger('', debug)
+    logger = get_logger('', debug)
     logger.info('robot_host=%s, robot_port=%d', robot_host, robot_port)
 
     RobotHost = robot_host

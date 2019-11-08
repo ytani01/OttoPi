@@ -7,11 +7,13 @@ __date__   = '2019'
 
 from logging import getLogger, StreamHandler, Formatter, DEBUG, INFO, WARN
 
+
 class MyLogger:
     def __init__(self, name=''):
-        self.handler_fmt = Formatter(
-            '%(asctime)s %(levelname)s %(name)s.%(funcName)s> %(message)s',
-            datefmt='%H:%M:%S')
+        fmt_hdr = '%(asctime)s %(levelname)s '
+        fmt_loc = '%(filename)s.%(name)s.%(funcName)s:%(lineno)d> '
+        self.handler_fmt = Formatter(fmt_hdr + fmt_loc + '%(message)s',
+                                     datefmt='%H:%M:%S')
 
         self.console_handler = StreamHandler()
         self.console_handler.setLevel(DEBUG)
@@ -23,10 +25,16 @@ class MyLogger:
         self.logger.propagate = False
 
     def get_logger(self, name, debug):
-        l = self.logger.getChild(name)
+        logger = self.logger.getChild(name)
         if debug:
-            l.setLevel(DEBUG)
+            logger.setLevel(DEBUG)
         else:
-            l.setLevel(INFO)
-        return l
+            logger.setLevel(INFO)
+        return logger
 
+
+myLogger = MyLogger()
+
+
+def get_logger(name, debug):
+    return myLogger.get_logger(name, debug)

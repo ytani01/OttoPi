@@ -29,11 +29,11 @@ import VL53L0X as VL53L0X
 import pigpio
 import time
 import random
-import queue, threading
+import queue
+import threading
 
-#####
-from MyLogger import MyLogger
-my_logger = MyLogger(__file__)
+from MyLogger import get_logger
+
 
 #####
 class OttoPiAuto(threading.Thread):
@@ -42,7 +42,7 @@ class OttoPiAuto(threading.Thread):
     CMD_READY = 'ready'
     CMD_END   = 'end'
 
-    DEF_RECV_TIMEOUT = 0.5 # sec
+    DEF_RECV_TIMEOUT = 0.2  # sec
 
     D_TOUCH       = 40
     D_TOO_NEAR    = 200
@@ -51,7 +51,7 @@ class OttoPiAuto(threading.Thread):
     D_READY_MIN   = D_TOUCH + 10
     D_READY_MAX   = 120
     D_ON_MIN      = 300
-    
+
     STAT_NONE     = 'none'
     STAT_YELLOW   = 'yellow'
     STAT_TOO_NEAR = 'too_near'
@@ -64,7 +64,7 @@ class OttoPiAuto(threading.Thread):
 
     def __init__(self, robot_ctrl=None, debug=False):
         self.debug = debug
-        self.logger = my_logger.get_logger(__class__.__name__, self.debug)
+        self.logger = get_logger(__class__.__name__, self.debug)
         self.logger.debug('')
 
         self.cmd_func = {self.CMD_ON:  self.cmd_on,
@@ -73,14 +73,15 @@ class OttoPiAuto(threading.Thread):
 
         self.my_robot_ctrl = False
         self.robot_ctrl = robot_ctrl
-        if self.robot_ctrl == None:
+        if self.robot_ctrl is None:
             self.my_robot_ctrl = True
             self.robot_ctrl = OttoPiCtrl(None, debug=self.debug)
             self.robot_ctrl.start()
 
         self.tof = VL53L0X.VL53L0X()
         self.tof.start_ranging(VL53L0X.VL53L0X_BEST_ACCURACY_MODE)
-        #self.tof_timing = self.tof.get_timing()
+        self.tof_timing = self.tof.get_timing()
+        self.logger.info('tof_timing = %.02f ms', self.tof_timing / 1000)
         self.d = 0
 
         self.cmdq = queue.Queue()
@@ -104,7 +105,7 @@ class OttoPiAuto(threading.Thread):
         self.alive = False
 
         self.robot_ctrl.send(OttoPiCtrl.CMD_STOP)
-        
+
         self.tof.stop_ranging()
 
         if self.my_robot_ctrl:
@@ -112,7 +113,6 @@ class OttoPiAuto(threading.Thread):
 
         self.join()
         self.logger.debug('done')
-
 
     def cmd_on(self):
         self.logger.debug('')
@@ -170,6 +170,11 @@ class OttoPiAuto(threading.Thread):
             if d < 0:
                 continue
 
+            if d == 0:
+                # ???
+                d = self.D_FAR
+                self.logger.warn('Crrection: d = %smm', '{:,}'.format(d))
+
             if not self.on:
                 if self.ready_count > 0:
                     self.logger.info('ready_count=%d', self.ready_count)
@@ -182,11 +187,11 @@ class OttoPiAuto(threading.Thread):
                     else:
                         self.ready_count = 0
 
-                else: # self.ready_count >= self.READY_COUNT_COMMIT
+                else:  # self.ready_count >= self.READY_COUNT_COMMIT
                     self.cmd_on()
-                        
+
                 continue
-                
+
             self.prev_stat = self.stat
 
             if d <= self.D_TOUCH:
@@ -263,7 +268,7 @@ class OttoPiAuto(threading.Thread):
 class Sample:
     def __init__(self, debug=False):
         self.debug = debug
-        self.logger = my_logger.get_logger(__class__.__name__, debug)
+        self.logger = get_logger(__class__.__name__, debug)
         self.logger.debug('')
 
         self.pi = pigpio.pi()
@@ -288,7 +293,7 @@ class Sample:
 
             if not self.robot_auto.is_alive():
                 self.alive = False
-                
+
         self.logger.debug('done(alive=%s)', self.alive)
 
     def end(self):
@@ -304,14 +309,17 @@ class Sample:
         self.pi.stop()
         self.logger.info('done')
 
+
 #####
 import click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
+
+
 @click.command(context_settings=CONTEXT_SETTINGS)
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(debug):
-    logger = my_logger.get_logger(__name__, debug)
+    logger = get_logger(__name__, debug)
 
     app = Sample(debug=debug)
     try:
@@ -319,6 +327,7 @@ def main(debug):
     finally:
         logger.info('finally')
         app.end()
+
 
 if __name__ == '__main__':
     main()
