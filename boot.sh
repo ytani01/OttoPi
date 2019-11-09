@@ -88,8 +88,8 @@ fi
     ${SPEAK_SERVER} -d > ${SPEAK_LOG} 2>&1 &
     sleep 5
     #${SPEAK_CMD} "私は二足歩行ロボット"
-    ${SPEAK_CMD} "私は二そくほこうロボット"
-    ${SPEAK_CMD} "${MY_NAME} です"
+    #${SPEAK_CMD} "私は二そくほこうロボット"
+    #${SPEAK_CMD} "${MY_NAME} です"
     ${SPEAK_CMD} "起動シーケンスを実行してます"
     ${SPEAK_CMD} "しばらくお待ちください"
   fi
@@ -129,6 +129,7 @@ if [ ${SPEAK} = ON ]; then
     if which ${SPEAKIPADDR_CMD}; then
 	#${SPEAKIPADDR_CMD} ${PIN_SW} repeat &
 	${SPEAKIPADDR_CMD} ${PIN_SW} &
+	PID_IPADDR=$!
     fi
 fi
 
@@ -137,10 +138,17 @@ if [ -x ${BUTTON_CMD} ]; then
     ${BUTTON_CMD} ${BUTTON_OPT} > ${BUTTON_LOG} 2>&1 &
 fi
 
-wait
 ${ROBOT_CLIENT} -d -c ':happy'
 
-sleep 60
+echo "wait ${PID_IPADDR}"
+wait ${PID_IPADDR}
+
+echo "done: ${PID_IPADDR}"
+
+${SPEAK_CMD} "起動シーケンス 異常なし"
+${SPEAK_CMD} "動作可能です"
+
+#sleep 60
 if [ -x ${LOOP_SH} ]; then
     ${LOOP_SH} > ${LOOP_LOG} 2>&1 &
 fi

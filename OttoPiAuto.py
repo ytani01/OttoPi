@@ -46,7 +46,7 @@ class OttoPiAuto(threading.Thread):
 
     D_TOUCH       = 40
     D_TOO_NEAR    = 200
-    D_NEAR        = 400
+    D_NEAR        = 350
     D_FAR         = 8000
     D_READY_MIN   = D_TOUCH + 10
     D_READY_MAX   = 120
@@ -64,7 +64,7 @@ class OttoPiAuto(threading.Thread):
 
     def __init__(self, robot_ctrl=None, debug=False):
         self.debug = debug
-        self.logger = get_logger(__class__.__name__, self.debug)
+        self.logger = get_logger(self.__class__.__name__, self.debug)
         self.logger.debug('')
 
         self.cmd_func = {self.CMD_ON:  self.cmd_on,
@@ -79,7 +79,8 @@ class OttoPiAuto(threading.Thread):
             self.robot_ctrl.start()
 
         self.tof = VL53L0X.VL53L0X()
-        self.tof.start_ranging(VL53L0X.VL53L0X_BEST_ACCURACY_MODE)
+        #self.tof.start_ranging(VL53L0X.VL53L0X_BEST_ACCURACY_MODE)
+        self.tof.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
         self.tof_timing = self.tof.get_timing()
         self.logger.info('tof_timing = %.02f ms', self.tof_timing / 1000)
         self.d = 0
@@ -239,7 +240,7 @@ class OttoPiAuto(threading.Thread):
                         self.robot_ctrl.send('turn_right')
                     else:
                         self.robot_ctrl.send('turn_left')
-                time.sleep(1.5)
+                time.sleep(1)
 
             elif d >= self.D_FAR:
                 self.logger.info('FAR(>= %d)', self.D_FAR)
@@ -250,7 +251,7 @@ class OttoPiAuto(threading.Thread):
             else:
                 if self.prev_stat == self.STAT_NEAR:
                     self.stat = self.STAT_NONE
-                    if d <= self.D_NEAR + 200:
+                    if d <= self.D_NEAR + 150:
                         self.stat = self.STAT_YELLOW
                         self.logger.info('stat: %s', self.stat)
                         self.robot_ctrl.send('suriashi_fwd')
@@ -268,7 +269,7 @@ class OttoPiAuto(threading.Thread):
 class Sample:
     def __init__(self, debug=False):
         self.debug = debug
-        self.logger = get_logger(__class__.__name__, debug)
+        self.logger = get_logger(self.__class__.__name__, debug)
         self.logger.debug('')
 
         self.pi = pigpio.pi()

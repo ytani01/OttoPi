@@ -5,7 +5,7 @@
 
 PLAY_CMD="cvlc --loop --alsa-gain 0.4"
 PKILL_WORD="vlc"
-MUSIC_FILE="${HOME}/OttoPi/sound/carnival.mp3"
+MUSIC_FILE="${HOME}/OttoPi/sound/music/carnival.mp3"
 STOP_FILE="${HOME}/stop_music"
 
 pkill ${PKILL_WORD}
