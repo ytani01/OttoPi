@@ -589,7 +589,9 @@ class OttoPiMotion:
 
 
 #####
-class Sample:
+class App:
+    '''
+    '''
     def __init__(self, debug=False):
         self.debug = debug
         self.logger = get_logger(__class__.__name__, self.debug)
@@ -649,7 +651,7 @@ def main(pos, interval, debug):
     logger.debug("interval = %0.2f", interval)
     logger.debug('pos = %s', pos)
 
-    app = Sample(debug=debug)
+    app = App(debug=debug)
     try:
         app.main(pos, interval)
     finally:

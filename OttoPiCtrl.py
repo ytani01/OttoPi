@@ -30,7 +30,8 @@ from OttoPiMotion import OttoPiMotion
 
 import pigpio
 import time
-import queue, threading
+import queue
+import threading
 
 from MyLogger import get_logger
 
@@ -40,6 +41,7 @@ class OttoPiCtrl(threading.Thread):
     CMD_HOME   = 'home'
     CMD_STOP   = 'stop'
     CMD_RESUME = 'resume'
+    CMD_HELP   = 'help'
     CMD_END    = 'end'
 
     def __init__(self, pi=None, debug=False):
@@ -54,15 +56,15 @@ class OttoPiCtrl(threading.Thread):
             self.pi   =  pigpio.pi()
             self.mypi = True
         self.logger.debug('mypi = %s', self.mypi)
-            
-        #self.opm = OttoPiMotion(self.pi, debug=logger.propagate and debug)
+
+        # self.opm = OttoPiMotion(self.pi, debug=logger.propagate and debug)
         self.opm = OttoPiMotion(self.pi, debug=self.debug)
 
         # コマンド名とモーション関数の対応づけ
-        self.cmd_func= {
+        self.cmd_func = {
             # モーション
-            'forward':      {'func':self.opm.forward,    'continuous': True},
-            'right_forward':{'func':self.opm.right_forward,'continuous':True},
+            'forward':      {'func':self.opm.forward, 'continuous': True},
+            'right_forward':{'func':self.opm.right_forward, 'continuous': True},
             'left_forward': {'func':self.opm.left_forward,'continuous': True},
 
             'backward':     {'func':self.opm.backward,   'continuous': True},
@@ -105,14 +107,14 @@ class OttoPiCtrl(threading.Thread):
             self.CMD_HOME:  {'func':self.opm.home,       'continuous': False},
             self.CMD_STOP:  {'func':self.opm.stop,       'continuous': False},
             self.CMD_RESUME:{'func':self.opm.resume,     'continuous': False},
+            self.CMD_HELP:  {'func':self.help,           'continuous': False},
             self.CMD_END :  {'func':None,                'continuous': False}}
-        
+
         self.cmdq = queue.Queue()
 
         self.alive = False
-        
-        super().__init__(daemon=True)
 
+        super().__init__(daemon=True)
 
     def __del__(self):
         self.logger.debug('')
@@ -130,7 +132,6 @@ class OttoPiCtrl(threading.Thread):
             self.mypi = False
 
         self.logger.debug('done')
-        
 
     def clear_cmdq(self):
         self.logger.debug('')
@@ -141,7 +142,7 @@ class OttoPiCtrl(threading.Thread):
     def is_valid_cmd(self, cmd=''):
         self.logger.debug('cmd = \'%s\'', cmd)
         return cmd in self.cmd_func.keys()
-    
+
     # 連続実行中断
     def interrupt_continuous(self):
         self.logger.debug('')
@@ -154,8 +155,8 @@ class OttoPiCtrl(threading.Thread):
         if doIntrrupt:
             self.interrupt_continuous()
             self.clear_cmdq()
-            self.cmdq.put(self.CMD_RESUME) 
-            
+            self.cmdq.put(self.CMD_RESUME)
+
         self.cmdq.put(cmd)
 
     def recv(self):
@@ -179,31 +180,37 @@ class OttoPiCtrl(threading.Thread):
             (cmd_name, cmd_n) = (cmdline[0], '')
         else:
             (cmd_name, cmd_n) = (cmdline[0], cmdline[1])
-        self.logger.info('cmd_name,cmd_n=\'%s\',\'%s\'', cmd_name,cmd_n)
+        self.logger.info('cmd_name,cmd_n=\'%s\',\'%s\'', cmd_name, cmd_n)
 
         if not self.is_valid_cmd(cmd_name):
             self.logger.error('\'%s\': no such command .. ignore', cmd_name)
             return True
-        
+
         # 終了確認
         if cmd_name == self.CMD_END:
             self.logger.debug('finish')
             return False
-        
+
         # cmd_n -> n: 実行回数(0=連続実行)
         n = 1
         if cmd_n.isnumeric():
             n = int(cmd_n)
         elif self.cmd_func[cmd_name]['continuous']:
-            n = 0 # continuous move
+            n = 0  # continuous move
         self.logger.debug('n=%d', n)
 
         # コマンド実行
         self.cmd_func[cmd_name]['func'](n=n)
         return True
-            
+
+    def help(self, n=1):
+        cmd_list = [cmd for cmd in self.cmd_func]
+        for cmd in sorted(cmd_list):
+            print('%s' % cmd)
+        return
+
     def is_alive(self):
-        return self.alive   
+        return self.alive
 
     # Thread
     def run(self):
@@ -220,10 +227,10 @@ class OttoPiCtrl(threading.Thread):
 
         # スレッド終了処理
         self.logger.info('done(alive=%s)', self.alive)
-            
-        
+
+
 #####
-class Sample:
+class App:
     def __init__(self, debug=False):
         self.debug = debug
         self.logger = get_logger(__class__.__name__, self.debug)
@@ -249,29 +256,32 @@ class Sample:
                 break
 
         self.logger.info('done')
-        
+
     def end(self):
         self.logger.debug('')
 
         self.robot_ctrl.end()
         self.logger.debug('done')
-        
-        
+
+
 #####
 import click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
+
+
 @click.command(context_settings=CONTEXT_SETTINGS)
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(debug):
     logger = get_logger(__name__, debug)
 
-    app = Sample(debug=debug)
+    app = App(debug=debug)
     try:
         app.main()
     finally:
         logger.info('finally')
         app.end()
+
 
 if __name__ == '__main__':
     main()
