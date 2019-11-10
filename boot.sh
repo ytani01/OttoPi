@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 #
 # Sample boot.sh
 #
@@ -27,10 +27,10 @@ BUTTON_OPT=" -s ${PIN_SW} -v ${PIN_VCC} -l ${PIN_LED}"
 BUTTON_LOG="${LOGDIR}/button.log"
 
 ### Music
-MUSIC=OFF
+MUSIC="ON"
 MUSIC_PLAYER="cvlc"
 MUSIC_PLAYER_OPT="--play-and-exit"
-MUSIC_DATA="${HOME}/tmp/boot-music.aac"
+MUSIC_DATA="${HOME}/tmp/opening-music.aac"
 
 ### Speak
 SPEAK=OFF
@@ -73,10 +73,13 @@ MJPG_STREAMER_LOG="${LOGDIR}/mjpg-streamer.log"
 
 gpio -g mode ${PIN_LED} output && gpio -g write ${PIN_LED} 1
 gpio -g mode ${PIN_VCC} output && gpio -g write ${PIN_VCC} 1
-gpip -g mode ${PIN_SW} input
+gpio -g mode ${PIN_SW} input
 
+echo "MUSIC=${MUSIC}"
 if [ "${MUSIC}" = "ON" ]; then
-    nice -n 5 $MUSIC_PLAYER $MUSIC_PLAYER_OPT $MUSIC_DATA > /dev/null 2>&1 &
+    #nice -n 5 ${MUSIC_PLAYER} ${MUSIC_PLAYER_OPT} ${MUSIC_DATA} &
+    ${MUSIC_PLAYER} ${MUSIC_PLAYER_OPT} ${MUSIC_DATA} &
+    sleep 5
 fi
 
 #if "${MUSIC}" != "ON"; then
@@ -87,11 +90,13 @@ fi
     fi
     ${SPEAK_SERVER} -d > ${SPEAK_LOG} 2>&1 &
     sleep 5
-    #${SPEAK_CMD} "私は二足歩行ロボット"
+    ${SPEAK_CMD} "音声合成システム 作動"
+    sleep 1
     #${SPEAK_CMD} "私は二そくほこうロボット"
     #${SPEAK_CMD} "${MY_NAME} です"
     ${SPEAK_CMD} "起動シーケンスを実行してます"
     ${SPEAK_CMD} "しばらくお待ちください"
+    sleep 5
   fi
 #fi
 
@@ -145,8 +150,7 @@ wait ${PID_IPADDR}
 
 echo "done: ${PID_IPADDR}"
 
-${SPEAK_CMD} "起動シーケンス 異常なし"
-${SPEAK_CMD} "動作可能です"
+${SPEAK_CMD} "起動シーケンスが完了しました"
 
 #sleep 60
 if [ -x ${LOOP_SH} ]; then

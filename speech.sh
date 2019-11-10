@@ -9,7 +9,7 @@ PKILL_WORD_MUSIC="vlc"
 
 #####
 usage () {
-    echo "usage: ${MYNAME} stop_file interval_sec"
+    echo "usage: ${MYNAME} stop_file"
 }
 
 stop_music () {
