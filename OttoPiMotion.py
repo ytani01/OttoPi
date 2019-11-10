@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 #
 # (c) 2019 Yoichi Tanibayashi
 #
@@ -361,7 +361,7 @@ class OttoPiMotion:
         self.logger.debug('rl=%s, interval_msec=%d, v=%s, q=%s',
                           rl, interval_msec, str(v), q)
 
-        p1 = (80, 30)
+        p1 = (80, 20)
         p2 = (-10, -60)
 
         self.home()
