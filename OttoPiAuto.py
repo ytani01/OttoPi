@@ -209,7 +209,8 @@ class OttoPiAuto(threading.Thread):
                         self.robot_ctrl.send('suprised')
                         time.sleep(3)
                     else:
-                        self.robot_ctrl.send('forward')
+                        self.robot_ctrl.send('backward')
+                        time.sleep(2)
                     continue
             else:
                 self.touch_count = 0
@@ -251,7 +252,7 @@ class OttoPiAuto(threading.Thread):
             else:
                 if self.prev_stat == self.STAT_NEAR:
                     self.stat = self.STAT_NONE
-                    if d <= self.D_NEAR + 150:
+                    if d <= self.D_NEAR + 100:
                         self.stat = self.STAT_YELLOW
                         self.logger.info('stat: %s', self.stat)
                         self.robot_ctrl.send('suriashi_fwd')

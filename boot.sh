@@ -27,10 +27,9 @@ BUTTON_OPT=" -s ${PIN_SW} -v ${PIN_VCC} -l ${PIN_LED}"
 BUTTON_LOG="${LOGDIR}/button.log"
 
 ### Music
-MUSIC="ON"
-MUSIC_PLAYER="cvlc"
-MUSIC_PLAYER_OPT="--play-and-exit"
-MUSIC_DATA="${HOME}/tmp/opening-music.aac"
+OPENING_MUSIC="ON"
+OPENING_MUSIC_PLAYER="cvlc --play-and-exit"
+OPENING_MUSIC_DATA="${HOME}/tmp/opening-music"
 
 ### Speak
 SPEAK=OFF
@@ -75,41 +74,42 @@ gpio -g mode ${PIN_LED} output && gpio -g write ${PIN_LED} 1
 gpio -g mode ${PIN_VCC} output && gpio -g write ${PIN_VCC} 1
 gpio -g mode ${PIN_SW} input
 
-echo "MUSIC=${MUSIC}"
-if [ "${MUSIC}" = "ON" ]; then
-    #nice -n 5 ${MUSIC_PLAYER} ${MUSIC_PLAYER_OPT} ${MUSIC_DATA} &
-    ${MUSIC_PLAYER} ${MUSIC_PLAYER_OPT} ${MUSIC_DATA} &
+echo "OPENING_MUSIC=${OPENING_MUSIC}"
+if [ "${OPENING_MUSIC}" = "ON" ]; then
+    #nice -n 5 ${OPENING_MUSIC_PLAYER} ${OPENING_MUSIC_DATA} &
+    ${OPENING_MUSIC_PLAYER} ${OPENING_MUSIC_DATA} &
     sleep 5
 fi
 
-#if "${MUSIC}" != "ON"; then
-  if [ -x ${SPEAK_SERVER} ]; then
+if [ -x ${SPEAK_SERVER} ]; then
     SPEAK=ON
     if [ -f ${SPEAK_LOG} ]; then
 	mv ${SPEAK_LOG} ${SPEAK_LOG}.1
     fi
     ${SPEAK_SERVER} -d > ${SPEAK_LOG} 2>&1 &
+    sleep 4
+    ${SPEAK_CMD} "音声合成システムを起動しました"
     sleep 5
-    ${SPEAK_CMD} "音声合成システム 作動"
-    sleep 1
+
     #${SPEAK_CMD} "私は二そくほこうロボット"
     #${SPEAK_CMD} "${MY_NAME} です"
-    ${SPEAK_CMD} "起動シーケンスを実行してます"
+    ${SPEAK_CMD} "起動処理を実行しています"
     ${SPEAK_CMD} "しばらくお待ちください"
     sleep 5
-  fi
-#fi
+fi
 
 if [ -x ${ROBOT_SERVER} ]; then
-    if [ ${SPEAK} = ON ]; then
-	${SPEAK_CMD} "ロボット制御システムを起動します" &
-    fi
+    cd ${BINDIR}
     if [ -f ${ROBOT_LOG} ]; then
 	mv ${ROBOT_LOG} ${ROBOT_LOG}.1
     fi
-
-    cd ${BINDIR}
     ${ROBOT_SERVER} ${ROBOT_OPT} > ${ROBOT_LOG} 2>&1 &
+
+    if [ ${SPEAK} = ON ]; then
+	${SPEAK_CMD} "制御システムを起動します" &
+    fi
+    sleep 5
+    ${ROBOT_CLIENT} -d -c ':happy'
     sleep 5
 fi
 
@@ -118,41 +118,38 @@ if [ -x ${MJPG_STREAMER} ]; then
 fi
 
 if [ -x ${HTTP_SERVER} ]; then
-    if [ ${SPEAK} = ON ]; then
-	${SPEAK_CMD} "ウェブインターフェースサーバーを 起動します" &
-    fi
+    cd ${BINDIR}
     if [ -f ${HTTP_LOG} ]; then
 	mv ${HTTP_LOG} ${HTTP_LOG}.1
     fi
-
-    cd ${BINDIR}
     ${HTTP_SERVER} ${HTTP_OPT} > ${HTTP_LOG} 2>&1 &
-    sleep 5 
-fi
 
-if [ ${SPEAK} = ON ]; then
-    if which ${SPEAKIPADDR_CMD}; then
-	#${SPEAKIPADDR_CMD} ${PIN_SW} repeat &
-	${SPEAKIPADDR_CMD} ${PIN_SW} &
-	PID_IPADDR=$!
+    if [ ${SPEAK} = ON ]; then
+	${SPEAK_CMD} "リモート操作インターフェースを起動します" &
     fi
+    sleep 7
 fi
 
 if [ -x ${BUTTON_CMD} ]; then
-    sleep 5
     ${BUTTON_CMD} ${BUTTON_OPT} > ${BUTTON_LOG} 2>&1 &
+
+    ${SPEAK_CMD} "ボタン操作を可能にします" &
+    sleep 5
 fi
 
-${ROBOT_CLIENT} -d -c ':happy'
-
+if which ${SPEAKIPADDR_CMD}; then
+    #${SPEAKIPADDR_CMD} ${PIN_SW} repeat &
+    ${SPEAKIPADDR_CMD} ${PIN_SW} &
+    PID_IPADDR=$!
+fi
 echo "wait ${PID_IPADDR}"
 wait ${PID_IPADDR}
-
 echo "done: ${PID_IPADDR}"
 
-${SPEAK_CMD} "起動シーケンスが完了しました"
+${SPEAK_CMD} "起動処理が完了しました"
+${SPEAK_CMD} "準備、オーケーです"
 
-#sleep 60
+sleep 10
 if [ -x ${LOOP_SH} ]; then
     ${LOOP_SH} > ${LOOP_LOG} 2>&1 &
 fi
