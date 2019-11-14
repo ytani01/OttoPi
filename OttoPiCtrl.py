@@ -3,16 +3,11 @@
 # (c) 2019 Yoichi Tanibayashi
 #
 '''
-コマンド(文字列)を受診し、OttoPiMotionで定義されている動きを起動する。
+コマンド(文字列)を受信して、OttoPiMotionで定義されている動きを起動する。
 
 send()にコマンド(文字列)を指定する。
-
-send()でコマンドを送り、動作をコントロールする。
-
 実行(モーター制御)は独立したスレッドで行う。
-
-send()メソッドでコマンドを送信すると、
-現在の動作を「キリのいいところで」中断し、割り込む。
+このとき、現在の動作を「キリのいいところで」中断し、割り込む。
 
 
 OttoPiCtrl -- コマンド制御 (動作実行スレッド)
@@ -200,7 +195,7 @@ class OttoPiCtrl(threading.Thread):
         self.logger.debug('n=%d', n)
 
         # コマンド実行
-        self.cmd_func[cmd_name]['func'](n=n)
+        self.cmd_func[cmd_name]['func'](n)
         return True
 
     def help(self, n=1):

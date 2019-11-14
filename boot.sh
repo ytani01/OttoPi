@@ -98,23 +98,9 @@ if [ -x ${SPEAK_SERVER} ]; then
     sleep 5
 fi
 
-if [ -x ${ROBOT_SERVER} ]; then
-    cd ${BINDIR}
-    if [ -f ${ROBOT_LOG} ]; then
-	mv ${ROBOT_LOG} ${ROBOT_LOG}.1
-    fi
-    ${ROBOT_SERVER} ${ROBOT_OPT} > ${ROBOT_LOG} 2>&1 &
-
-    if [ ${SPEAK} = ON ]; then
-	${SPEAK_CMD} "制御システムを起動します" &
-    fi
-    sleep 5
-    ${ROBOT_CLIENT} -d -c ':happy'
-    sleep 5
-fi
-
-if [ -x ${MJPG_STREAMER} ]; then
-    ${MJPG_STREAMER} > ${MJPG_STREAMER_LOG} 2>&1 &
+if which ${SPEAKIPADDR_CMD}; then
+    ${SPEAKIPADDR_CMD} ${PIN_SW}
+    ${SPEAK_CMD} "起動処理を続行します"
 fi
 
 if [ -x ${HTTP_SERVER} ]; then
@@ -124,10 +110,25 @@ if [ -x ${HTTP_SERVER} ]; then
     fi
     ${HTTP_SERVER} ${HTTP_OPT} > ${HTTP_LOG} 2>&1 &
 
-    if [ ${SPEAK} = ON ]; then
-	${SPEAK_CMD} "リモート操作インターフェースを起動します" &
-    fi
+    ${SPEAK_CMD} "リモート操作インターフェースを起動します" &
     sleep 7
+fi
+
+if [ -x ${ROBOT_SERVER} ]; then
+    cd ${BINDIR}
+    if [ -f ${ROBOT_LOG} ]; then
+	mv ${ROBOT_LOG} ${ROBOT_LOG}.1
+    fi
+    ${ROBOT_SERVER} ${ROBOT_OPT} > ${ROBOT_LOG} 2>&1 &
+
+    ${SPEAK_CMD} "モーター制御システムを起動します" &
+    sleep 5
+    ${ROBOT_CLIENT} -d -c ':happy'
+    sleep 5
+fi
+
+if [ -x ${MJPG_STREAMER} ]; then
+    ${MJPG_STREAMER} > ${MJPG_STREAMER_LOG} 2>&1 &
 fi
 
 if [ -x ${BUTTON_CMD} ]; then
@@ -137,16 +138,17 @@ if [ -x ${BUTTON_CMD} ]; then
     sleep 5
 fi
 
-if which ${SPEAKIPADDR_CMD}; then
-    #${SPEAKIPADDR_CMD} ${PIN_SW} repeat &
-    ${SPEAKIPADDR_CMD} ${PIN_SW} &
-    PID_IPADDR=$!
-fi
-echo "wait ${PID_IPADDR}"
-wait ${PID_IPADDR}
-echo "done: ${PID_IPADDR}"
+# if which ${SPEAKIPADDR_CMD}; then
+#     #${SPEAKIPADDR_CMD} ${PIN_SW} repeat &
+#     ${SPEAKIPADDR_CMD} ${PIN_SW} &
+#     PID_IPADDR=$!
+# fi
+# echo "wait ${PID_IPADDR}"
+# wait ${PID_IPADDR}
+# echo "done: ${PID_IPADDR}"
 
 ${SPEAK_CMD} "起動処理が完了しました"
+${SPEAK_CMD} "お待たせしました"
 ${SPEAK_CMD} "準備、オーケーです"
 
 sleep 10

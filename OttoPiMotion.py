@@ -274,9 +274,9 @@ class OttoPiMotion:
             if self.stop_flag:
                 break
 
-            self.move([[-10, -90, -30, -10],
-                       [-15, -90, -35, -15],
-                       [-10, -90, -30, -10],
+            self.move([[-10, -90, -30, -5],
+                       [-15, -90, -35, -10],
+                       [-10, -90, -30, -5],
                        [0, 0, 0, 0]],
                       interval_msec=500)
 
@@ -309,12 +309,21 @@ class OttoPiMotion:
     def hi(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
-        p1 = 70
-        p2 = 80
+        p1 = [-80, -70]
+        p2 = -85
+        p3 = -50
+        p4 = -10
 
         self.home()
 
-        self.move1(-p1, -p2, 0, 0)
+        for i in range(2):
+            self.move1(p1[0], p2, p3, p4, v=v, q=q)
+            time.sleep(0.2)
+            self.move1(p1[1], p2, p3, p4, v=v, q=q)
+            time.sleep(0.2)
+        self.move1(p1[0], p2, p3, p4, v=v, q=q)
+        #self.turn_right(1)
+
         time.sleep(1)
         self.home()
 

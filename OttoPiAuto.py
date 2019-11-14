@@ -59,7 +59,7 @@ class OttoPiAuto(threading.Thread):
     STAT_FAR      = 'far'
     STAT_READY    = 'ready'
 
-    TOUCH_COUNT_COMMIT = 2
+    TOUCH_COUNT_COMMIT = 3
     READY_COUNT_COMMIT = 2
 
     def __init__(self, robot_ctrl=None, debug=False):
@@ -107,12 +107,13 @@ class OttoPiAuto(threading.Thread):
 
         self.robot_ctrl.send(OttoPiCtrl.CMD_STOP)
 
-        self.tof.stop_ranging()
-
         if self.my_robot_ctrl:
             self.robot_ctrl.end()
 
         self.join()
+
+        self.tof.stop_ranging()
+
         self.logger.debug('done')
 
     def cmd_on(self):
@@ -198,7 +199,7 @@ class OttoPiAuto(threading.Thread):
             if d <= self.D_TOUCH:
                 self.logger.warn('touched(<= %d)', self.D_TOUCH)
                 self.robot_ctrl.send('suprised')
-                time.sleep(2)
+                time.sleep(1)
 
                 if self.touch_count < self.TOUCH_COUNT_COMMIT:
                     self.touch_count += 1
@@ -206,11 +207,10 @@ class OttoPiAuto(threading.Thread):
                     if self.touch_count >= self.TOUCH_COUNT_COMMIT:
                         self.logger.warn('STOP!')
                         self.cmd_off()
-                        self.robot_ctrl.send('suprised')
+                        #self.robot_ctrl.send('suprised')
                         time.sleep(3)
                     else:
                         self.robot_ctrl.send('backward')
-                        time.sleep(2)
                     continue
             else:
                 self.touch_count = 0
