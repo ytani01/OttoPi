@@ -45,12 +45,11 @@ class OttoPiAuto(threading.Thread):
     DEF_RECV_TIMEOUT = 0.2  # sec
 
     D_TOUCH       = 40
-    D_TOO_NEAR    = 200
-    D_NEAR        = 350
+    D_TOO_NEAR    = 180
+    D_NEAR        = 250
     D_FAR         = 8000
     D_READY_MIN   = D_TOUCH + 10
     D_READY_MAX   = 120
-    D_ON_MIN      = 300
 
     STAT_NONE     = 'none'
     STAT_YELLOW   = 'yellow'
@@ -241,7 +240,8 @@ class OttoPiAuto(threading.Thread):
                         self.robot_ctrl.send('turn_right')
                     else:
                         self.robot_ctrl.send('turn_left')
-                time.sleep(1)
+                    time.sleep(1)
+                time.sleep(1.5)
 
             elif d >= self.D_FAR:
                 self.logger.info('FAR(>= %d)', self.D_FAR)
