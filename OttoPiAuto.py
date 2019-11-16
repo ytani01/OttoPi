@@ -78,7 +78,7 @@ class OttoPiAuto(threading.Thread):
             self.robot_ctrl.start()
 
         self.tof = VL53L0X.VL53L0X()
-        #self.tof.start_ranging(VL53L0X.VL53L0X_BEST_ACCURACY_MODE)
+        # self.tof.start_ranging(VL53L0X.VL53L0X_BEST_ACCURACY_MODE)
         self.tof.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
         self.tof_timing = self.tof.get_timing()
         self.logger.info('tof_timing = %.02f ms', self.tof_timing / 1000)
@@ -206,7 +206,7 @@ class OttoPiAuto(threading.Thread):
                     if self.touch_count >= self.TOUCH_COUNT_COMMIT:
                         self.logger.warn('STOP!')
                         self.cmd_off()
-                        #self.robot_ctrl.send('suprised')
+                        # self.robot_ctrl.send('suprised')
                         time.sleep(3)
                     else:
                         self.robot_ctrl.send('backward')
