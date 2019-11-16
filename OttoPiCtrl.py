@@ -48,7 +48,7 @@ class OttoPiCtrl(threading.Thread):
             self.pi   = pi
             self.mypi = False
         else:
-            self.pi   =  pigpio.pi()
+            self.pi   = pigpio.pi()
             self.mypi = True
         self.logger.debug('mypi = %s', self.mypi)
 
@@ -58,52 +58,51 @@ class OttoPiCtrl(threading.Thread):
         # コマンド名とモーション関数の対応づけ
         self.cmd_func = {
             # モーション
-            'forward':      {'func':self.opm.forward, 'continuous': True},
-            'right_forward':{'func':self.opm.right_forward, 'continuous': True},
-            'left_forward': {'func':self.opm.left_forward,'continuous': True},
+            'forward':        {'func': self.opm.forward,        'loop': True},
+            'right_forward':  {'func': self.opm.right_forward,  'loop': True},
+            'left_forward':   {'func': self.opm.left_forward,   'loop': True},
 
-            'backward':     {'func':self.opm.backward,   'continuous': True},
-            'right_backward':{'func':self.opm.right_backward,'continuous':True},
-            'left_backward':{'func':self.opm.left_backward,'continuous':True},
+            'backward':       {'func': self.opm.backward,       'loop': True},
+            'right_backward': {'func': self.opm.right_backward, 'loop': True},
+            'left_backward':  {'func': self.opm.left_backward,  'loop': True},
+            'suriashi_fwd':   {'func': self.opm.suriashi,       'loop': True},
 
-            'suriashi_fwd': {'func':self.opm.suriashi,   'continuous': True},
-
-            'turn_right':   {'func':self.opm.turn_right, 'continuous': True},
-            'turn_left':    {'func':self.opm.turn_left,  'continuous': True},
-            'slide_right':  {'func':self.opm.slide_right,'continuous': True},
-            'slide_left':   {'func':self.opm.slide_left, 'continuous': True},
-            'happy':        {'func':self.opm.happy,      'continuous': False},
-            'hi':           {'func':self.opm.hi,         'continuous': False},
-            'suprised':     {'func':self.opm.suprised,   'continuous': False},
-            'ojigi':        {'func':self.opm.ojigi,      'continuous': False},
-            'ojigi2':       {'func':self.opm.ojigi2,     'continuous': False},
+            'turn_right':     {'func': self.opm.turn_right,     'loop': True},
+            'turn_left':      {'func': self.opm.turn_left,      'loop': True},
+            'slide_right':    {'func': self.opm.slide_right,    'loop': True},
+            'slide_left':     {'func': self.opm.slide_left,     'loop': True},
+            'happy':          {'func': self.opm.happy,          'loop': False},
+            'hi':             {'func': self.opm.hi,             'loop': False},
+            'suprised':       {'func': self.opm.suprised,       'loop': False},
+            'ojigi':          {'func': self.opm.ojigi,          'loop': False},
+            'ojigi2':         {'func': self.opm.ojigi2,         'loop': False},
 
             # サーボモーター個別操作
-            'move_up0':     {'func':self.opm.move_up0,   'continuous': False},
-            'move_down0':   {'func':self.opm.move_down0, 'continuous': False},
-            'move_up1':     {'func':self.opm.move_up1,   'continuous': False},
-            'move_down1':   {'func':self.opm.move_down1, 'continuous': False},
-            'move_up2':     {'func':self.opm.move_up2,   'continuous': False},
-            'move_down2':   {'func':self.opm.move_down2, 'continuous': False},
-            'move_up3':     {'func':self.opm.move_up3,   'continuous': False},
-            'move_down3':   {'func':self.opm.move_down3, 'continuous': False},
+            'move_up0':       {'func': self.opm.move_up0,       'loop': False},
+            'move_down0':     {'func': self.opm.move_down0,     'loop': False},
+            'move_up1':       {'func': self.opm.move_up1,       'loop': False},
+            'move_down1':     {'func': self.opm.move_down1,     'loop': False},
+            'move_up2':       {'func': self.opm.move_up2,       'loop': False},
+            'move_down2':     {'func': self.opm.move_down2,     'loop': False},
+            'move_up3':       {'func': self.opm.move_up3,       'loop': False},
+            'move_down3':     {'func': self.opm.move_down3,     'loop': False},
 
             # ホームポジションの調整
-            'home_up0':     {'func':self.opm.home_up0,   'continuous': False},
-            'home_down0':   {'func':self.opm.home_down0, 'continuous': False},
-            'home_up1':     {'func':self.opm.home_up1,   'continuous': False},
-            'home_down1':   {'func':self.opm.home_down1, 'continuous': False},
-            'home_up2':     {'func':self.opm.home_up2,   'continuous': False},
-            'home_down2':   {'func':self.opm.home_down2, 'continuous': False},
-            'home_up3':     {'func':self.opm.home_up3,   'continuous': False},
-            'home_down3':   {'func':self.opm.home_down3, 'continuous': False},
+            'home_up0':       {'func': self.opm.home_up0,       'loop': False},
+            'home_down0':     {'func': self.opm.home_down0,     'loop': False},
+            'home_up1':       {'func': self.opm.home_up1,       'loop': False},
+            'home_down1':     {'func': self.opm.home_down1,     'loop': False},
+            'home_up2':       {'func': self.opm.home_up2,       'loop': False},
+            'home_down2':     {'func': self.opm.home_down2,     'loop': False},
+            'home_up3':       {'func': self.opm.home_up3,       'loop': False},
+            'home_down3':     {'func': self.opm.home_down3,     'loop': False},
 
             # 基本コマンド
-            self.CMD_HOME:  {'func':self.opm.home,       'continuous': False},
-            self.CMD_STOP:  {'func':self.opm.stop,       'continuous': False},
-            self.CMD_RESUME:{'func':self.opm.resume,     'continuous': False},
-            self.CMD_HELP:  {'func':self.help,           'continuous': False},
-            self.CMD_END :  {'func':None,                'continuous': False}}
+            self.CMD_HOME:    {'func': self.opm.home,           'loop': False},
+            self.CMD_STOP:    {'func': self.opm.stop,           'loop': False},
+            self.CMD_RESUME:  {'func': self.opm.resume,         'loop': False},
+            self.CMD_HELP:    {'func': self.help,               'loop': False},
+            self.CMD_END :    {'func': None,                    'loop': False}}
 
         self.cmdq = queue.Queue()
 
@@ -139,7 +138,7 @@ class OttoPiCtrl(threading.Thread):
         return cmd in self.cmd_func.keys()
 
     # 連続実行中断
-    def interrupt_continuous(self):
+    def interrupt_loop(self):
         self.logger.debug('')
         self.opm.stop()
 
@@ -148,7 +147,7 @@ class OttoPiCtrl(threading.Thread):
         self.logger.debug('cmd=\'%s\'', cmd)
 
         if doIntrrupt:
-            self.interrupt_continuous()
+            self.interrupt_loop()
             self.clear_cmdq()
             self.cmdq.put(self.CMD_RESUME)
 
@@ -190,8 +189,8 @@ class OttoPiCtrl(threading.Thread):
         n = 1
         if cmd_n.isnumeric():
             n = int(cmd_n)
-        elif self.cmd_func[cmd_name]['continuous']:
-            n = 0  # continuous move
+        elif self.cmd_func[cmd_name]['loop']:
+            n = 0  # loop move
         self.logger.debug('n=%d', n)
 
         # コマンド実行

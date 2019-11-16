@@ -63,7 +63,7 @@ class OttoPiAuto(threading.Thread):
 
     def __init__(self, robot_ctrl=None, debug=False):
         self.debug = debug
-        self.logger = get_logger(self.__class__.__name__, self.debug)
+        self.logger = get_logger(__class__.__name__, self.debug)
         self.logger.debug('')
 
         self.cmd_func = {self.CMD_ON:  self.cmd_on,
@@ -270,7 +270,7 @@ class OttoPiAuto(threading.Thread):
 class Sample:
     def __init__(self, debug=False):
         self.debug = debug
-        self.logger = get_logger(self.__class__.__name__, debug)
+        self.logger = get_logger(__class__.__name__, debug)
         self.logger.debug('')
 
         self.pi = pigpio.pi()
