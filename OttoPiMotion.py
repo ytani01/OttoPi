@@ -447,26 +447,26 @@ class OttoPiMotion:
                           rl, interval_msec, str(v), q)
 
         p1 = (60, 25)
-        p2 = 25
+        p2 = (25, 5)
         p3 = 0.6
 
         self.home()
         time.sleep(interval_msec/1000)
 
         if rl[0] == 'left'[0]:
-            self.move([[ p1[0],       p2,  p2,  p1[1]     ],
-                       [ p1[0] * p3, -p2,  p2,  p1[1]     ],
-                       [ 0,          -p2,  p2,  0         ],
-                       [-p1[1],      -p2,  p2, -p1[0]     ],
-                       [-p1[1],      -p2/2,  p2/2, -p1[0] *p3 ],
+            self.move([[ p1[0],       p2[0],  p2[0],  p1[1]     ],
+                       [ p1[0] * p3, -p2[0],  p2[0],  p1[1]     ],
+                       [ 0,          -p2[0],  p2[0],  0         ],
+                       [-p1[1],      -p2[0],  p2[0], -p1[0]     ],
+                       [-p1[1],       p2[1], -p2[1], -p1[0] *p3 ],
                        [0, 0, 0, 0]], interval_msec=interval_msec, v=v, q=q)
 
         if rl[0] == 'right'[0]:
-            self.move([[-p1[1],      -p2, -p2, -p1[0]     ],
-                       [-p1[1],      -p2,  p2, -p1[0] * p3],
-                       [ 0,          -p2,  p2,  0         ],
-                       [ p1[0],      -p2,  p2,  p1[1]     ],
-                       [ p1[0] * p3, -p2/2,  p2/2,  p1[1]     ],
+            self.move([[-p1[1],      -p2[0], -p2[0], -p1[0]     ],
+                       [-p1[1],      -p2[0],  p2[0], -p1[0] * p3],
+                       [ 0,          -p2[0],  p2[0],  0         ],
+                       [ p1[0],      -p2[0],  p2[0],  p1[1]     ],
+                       [ p1[0] * p3,  p2[1], -p2[1],  p1[1]     ],
                        [0, 0, 0, 0]], interval_msec=interval_msec, v=v, q=q)
 
     def forward(self, n=1, rl='', v=None, q=False):
