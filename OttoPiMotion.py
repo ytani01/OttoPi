@@ -119,45 +119,47 @@ class OttoPiMotion:
         self.logger.debug('n=%d, v=%s, q=%s', n, v, q)
         self.move1(0, 0, 0, 0, v=v, q=q)
 
-    def change_pos(self, i, d_pos, v=None, q=False):
+    def change_pos(self, i, d_pos, n=1, v=None, q=False):
         self.logger.debug('i=%d, d_pos=%d', i, d_pos)
-        cur_pos = self.get_cur_position()
-        cur_pos[i] += d_pos
-        self.logger.info('cur_pos = %s', cur_pos)
-        self.move1(cur_pos[0], cur_pos[1], cur_pos[2], cur_pos[3],
-                   v=v, q=q)
+
+        for count in range(n):
+            cur_pos = self.get_cur_position()
+            cur_pos[i] += d_pos
+            self.logger.info('cur_pos = %s', cur_pos)
+            self.move1(cur_pos[0], cur_pos[1], cur_pos[2], cur_pos[3],
+                       v=v, q=q)
 
     def move_up0(self, n=1, v=None, q=False):
         self.logger.debug('n=%d, v=%s, q=%s', n, str(v), q)
-        self.change_pos(0, 5)
+        self.change_pos(0, 5, n)
 
     def move_down0(self, n=1, v=None, q=False):
         self.logger.debug('n=%d, v=%s, q=%s', n, str(v), q)
-        self.change_pos(0, -5)
+        self.change_pos(0, -5, n)
 
     def move_up1(self, n=1, v=None, q=False):
         self.logger.debug('n=%d, v=%s, q=%s', n, str(v), q)
-        self.change_pos(1, 5)
+        self.change_pos(1, 5, n)
 
     def move_down1(self, n=1, v=None, q=False):
         self.logger.debug('n=%d, v=%s, q=%s', n, str(v), q)
-        self.change_pos(1, -5)
+        self.change_pos(1, -5, n)
 
     def move_up2(self, n=1, v=None, q=False):
         self.logger.debug('n=%d, v=%s, q=%s', n, str(v), q)
-        self.change_pos(2, 5)
+        self.change_pos(2, 5, n)
 
     def move_down2(self, n=1, v=None, q=False):
         self.logger.debug('n=%d, v=%s, q=%s', n, str(v), q)
-        self.change_pos(2, -5)
+        self.change_pos(2, -5, n)
 
     def move_up3(self, n=1, v=None, q=False):
         self.logger.debug('n=%d, v=%s, q=%s', n, str(v), q)
-        self.change_pos(3, 5)
+        self.change_pos(3, 5, n)
 
     def move_down3(self, n=1, v=None, q=False):
         self.logger.debug('n=%d, v=%s, q=%s', n, str(v), q)
-        self.change_pos(3, -5)
+        self.change_pos(3, -5, n)
 
     def adjust_home(self, i, v):
         self.logger.debug('i = %d, v = %d', i, v)
@@ -322,7 +324,7 @@ class OttoPiMotion:
             self.move1(p1[1], p2, p3, p4, v=v, q=q)
             time.sleep(0.2)
         self.move1(p1[0], p2, p3, p4, v=v, q=q)
-        #self.turn_right(1)
+        # self.turn_right(1)
 
         time.sleep(1)
         self.home()
@@ -449,6 +451,7 @@ class OttoPiMotion:
         p1 = (60, 25)
         p2 = (25, 5)
         p3 = 0.6
+        sleep_sec = 0.1
 
         self.home()
         time.sleep(interval_msec/1000)
@@ -456,18 +459,24 @@ class OttoPiMotion:
         if rl[0] == 'left'[0]:
             self.move([[ p1[0],       p2[0],  p2[0],  p1[1]     ],
                        [ p1[0] * p3, -p2[0],  p2[0],  p1[1]     ],
-                       [ 0,          -p2[0],  p2[0],  0         ],
-                       [-p1[1],      -p2[0],  p2[0], -p1[0]     ],
-                       [-p1[1],       p2[1], -p2[1], -p1[0] *p3 ],
+                       [ 0,          -p2[0],  p2[0],  0         ]],
+                      interval_msec=interval_msec, v=v, q=q)
+            time.sleep(sleep_sec)
+            self.move([[-p1[1],      -p2[0],  p2[0], -p1[0]     ],
+                       [-p1[1],       p2[1], -p2[1], -p1[0] * p3],
                        [0, 0, 0, 0]], interval_msec=interval_msec, v=v, q=q)
+            time.sleep(sleep_sec)
 
         if rl[0] == 'right'[0]:
             self.move([[-p1[1],      -p2[0], -p2[0], -p1[0]     ],
                        [-p1[1],      -p2[0],  p2[0], -p1[0] * p3],
-                       [ 0,          -p2[0],  p2[0],  0         ],
-                       [ p1[0],      -p2[0],  p2[0],  p1[1]     ],
+                       [ 0,          -p2[0],  p2[0],  0         ]],
+                      interval_msec=interval_msec, v=v, q=q)
+            time.sleep(sleep_sec)
+            self.move([[ p1[0],      -p2[0],  p2[0],  p1[1]     ],
                        [ p1[0] * p3,  p2[1], -p2[1],  p1[1]     ],
                        [0, 0, 0, 0]], interval_msec=interval_msec, v=v, q=q)
+            time.sleep(sleep_sec)
 
     def forward(self, n=1, rl='', v=None, q=False):
         self.logger.debug('n=%d, rl=%s, v=%s, q=%s', n, rl, str(v), q)

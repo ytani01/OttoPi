@@ -98,11 +98,6 @@ if [ -x ${SPEAK_SERVER} ]; then
     sleep 5
 fi
 
-if which ${SPEAKIPADDR_CMD}; then
-    ${SPEAKIPADDR_CMD} ${PIN_SW}
-    ${SPEAK_CMD} "起動処理を続行します"
-fi
-
 if [ -x ${HTTP_SERVER} ]; then
     cd ${BINDIR}
     if [ -f ${HTTP_LOG} ]; then
@@ -111,7 +106,12 @@ if [ -x ${HTTP_SERVER} ]; then
     ${HTTP_SERVER} ${HTTP_OPT} > ${HTTP_LOG} 2>&1 &
 
     ${SPEAK_CMD} "リモート操作インターフェースを起動します" &
-    sleep 7
+    sleep 3
+fi
+
+if which ${SPEAKIPADDR_CMD}; then
+    ${SPEAKIPADDR_CMD} ${PIN_SW}
+    ${SPEAK_CMD} "起動処理を続行します"
 fi
 
 if [ -x ${ROBOT_SERVER} ]; then

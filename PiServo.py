@@ -21,14 +21,14 @@ PULSE_MIN  = 500
 PULSE_MAX  = 2500
 PULSE_HOME = 1500
 
-PULSE_STEP      = 25
+PULSE_STEP      = 22
 INTERVAL_FACTOR = 0.40
-#INTERVAL_FACTOR = 1
 
 DEF_PIN = [17, 27, 22, 23]
 DEF_PULSE_HOME = [1500, 1500, 1500, 1500]
 DEF_PULSE_MIN  = [ 500,  500,  500,  500]
 DEF_PULSE_MAX  = [2500, 2500, 2500, 2500]
+
 
 #####
 class PiServo:
@@ -50,7 +50,7 @@ class PiServo:
             self.pi   = pigpio.pi()
             self.mypi = True
         self.logger.debug('mypi = %s', self.mypi)
-            
+
         self.pin   = pins
         self.pin_n = len(self.pin)
 
@@ -78,18 +78,15 @@ class PiServo:
         self.home()
         self.off()
 
-
     def off(self):
         self.logger.debug('')
         self.set_pulse(self.pulse_off)
-        
 
     def get_cur_position(self):
         cur_pos = [(self.cur_pulse[i] - self.pulse_home[i])
                    for i in range(self.pin_n)]
         self.logger.debug('cur_pos = %s', cur_pos)
         return cur_pos
-
 
     def set_pulse(self, pulse):
         self.logger.debug('pulse=%s', pulse)
@@ -110,11 +107,9 @@ class PiServo:
 
             self.pi.set_servo_pulsewidth(self.pin[i], pulse[i])
 
-
     def home(self):
         self.logger.debug('')
         self.set_pulse(self.pulse_home)
-
 
     def move(self, pos_list=[], interval_msec=0, v=None, quick=False):
         self.logger.debug('pos_list=%s, v=%s, quick=%s', pos_list, v, quick)
@@ -122,7 +117,7 @@ class PiServo:
         if type(pos_list[0]) != list:
             self.move1(pos_list, v, quick)
             return
-        
+
         for p in pos_list:
             self.move1(p, v, quick)
             time.sleep(interval_msec/1000)
@@ -132,21 +127,20 @@ class PiServo:
         p = [pos[i] + self.pulse_home[i] for i in range(self.pin_n)]
         self.move_p(p, v, quick)
 
-
     def move_p(self, pulse, v=None, quick=False):
         self.logger.debug('pulse=%s, v=%s, quick=%s', pulse, v, quick)
 
         if v is None:
             v = INTERVAL_FACTOR
-            
+
         d_list = [abs(pulse[i] - self.cur_pulse[i]) for i in range(self.pin_n)]
         self.logger.debug('d_list = %s', d_list)
 
         d_max = max(d_list)
         self.logger.debug('d_max=%d', d_max)
 
-        #d_min = min(d_list)
-        #self.logger.debug('d_min=%d', d_min)
+        # d_min = min(d_list)
+        # self.logger.debug('d_min=%d', d_min)
 
         if quick:
             # quick mode
@@ -156,7 +150,7 @@ class PiServo:
             self.set_pulse(pulse)
             time.sleep(sleep_msec/1000)
             return
-        
+
         step_n = int(d_max / PULSE_STEP)
         if d_max > PULSE_STEP * step_n:
             step_n += 1
@@ -177,7 +171,7 @@ class PiServo:
                 dp[i] = pulse[i] - self.cur_pulse[i]
             else:
                 dp[i] = (pulse[i] - self.cur_pulse[i]) / step_n
-                
+
         self.logger.debug('pulse0 = %s', pulse0)
         self.logger.debug('dp = %s', dp)
 
@@ -189,8 +183,7 @@ class PiServo:
             self.logger.debug('p = %s', p)
             self.set_pulse(p)
             time.sleep(interval_msec/1000)
-            
-            
+
     def print_pulse(self):
         self.logger.debug('')
 
@@ -198,6 +191,7 @@ class PiServo:
         print('cur_pos = %s' %
               [(self.cur_pulse[i] - self.pulse_home[i])
                for i in range(self.pin_n)])
+
 
 #####
 class Sample:
@@ -216,12 +210,12 @@ class Sample:
         self.logger.debug('')
 
         self.servo.move1([-200, 0, 0, -200])
-        self.servo.move1([0,0,0,0])
+        self.servo.move1([0, 0, 0, 0])
         self.servo.move1([200, 0, 0, 200])
-        self.servo.move1([0,0,0,0])
+        self.servo.move1([0, 0, 0, 0])
 
         time.sleep(1)
-        
+
         self.servo.move([[200, 0, 0, -200],
                          [0, 0, 0, 0],
                          [-200, 0, 0, 200],
@@ -236,10 +230,13 @@ class Sample:
         time.sleep(1)
         self.servo.off()
         self.pi.stop()
-        
+
+
 #####
 import click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
+
+
 @click.command(context_settings=CONTEXT_SETTINGS)
 @click.argument('pin1', type=int, default=DEF_PIN[0])
 @click.argument('pin2', type=int, default=DEF_PIN[1])
@@ -257,6 +254,7 @@ def main(pin1, pin2, pin3, pin4, debug):
     finally:
         logger.debug('finally')
         obj.end()
+
 
 if __name__ == '__main__':
     main()
