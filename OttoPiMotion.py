@@ -449,7 +449,7 @@ class OttoPiMotion:
                           rl, interval_msec, str(v), q)
 
         p1 = (60, 25)
-        p2 = (25, 5)
+        p2 = (20, 5)
         p3 = 0.6
         sleep_sec = 0.1
 
