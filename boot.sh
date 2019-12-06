@@ -131,12 +131,12 @@ if [ -x ${MJPG_STREAMER} ]; then
     ${MJPG_STREAMER} > ${MJPG_STREAMER_LOG} 2>&1 &
 fi
 
-if [ -x ${BUTTON_CMD} ]; then
-    ${BUTTON_CMD} ${BUTTON_OPT} > ${BUTTON_LOG} 2>&1 &
+# if [ -x ${BUTTON_CMD} ]; then
+#     ${BUTTON_CMD} ${BUTTON_OPT} > ${BUTTON_LOG} 2>&1 &
 
-    ${SPEAK_CMD} "ボタン操作を可能にします" &
-    sleep 5
-fi
+#     ${SPEAK_CMD} "ボタン操作を可能にします" &
+#     sleep 5
+# fi
 
 # if which ${SPEAKIPADDR_CMD}; then
 #     #${SPEAKIPADDR_CMD} ${PIN_SW} repeat &
