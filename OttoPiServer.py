@@ -226,7 +226,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
         return super().finish()
     
 
-class OttoPiServer(socketserver.TCPServer):
+class OttoPiServer(socketserver.ThreadingTCPServer):
     DEF_PORT = 12345
 
     def __init__(self, pi=None, port=DEF_PORT, debug=False):
