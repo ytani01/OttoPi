@@ -151,7 +151,7 @@ ${SPEAK_CMD} "起動処理が完了しました"
 ${SPEAK_CMD} "お待たせしました"
 ${SPEAK_CMD} "準備、オーケーです"
 
-sleep 10
+sleep 5
 if [ -x ${LOOP_SH} ]; then
     ${LOOP_SH} > ${LOOP_LOG} 2>&1 &
 fi
