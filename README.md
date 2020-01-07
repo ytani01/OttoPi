@@ -1,6 +1,6 @@
 # OttoPi
 
-OTTO like robot for Raspberry Pi Zero
+OTTO like bipad robot for Raspberry Pi Zero
 
 ## 1. Install
 
