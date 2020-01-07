@@ -1,6 +1,6 @@
 # OttoPi
 
-OTTO like biped robot for Raspberry Pi Zero
+Otto like biped robot for Raspberry Pi Zero
 
 ## 1. Install
 
