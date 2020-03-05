@@ -67,7 +67,12 @@ class OttoPiClient:
         
         while True:
             time.sleep(0.1)
-            in_data = self.tn.read_eager()
+            try:
+                in_data = self.tn.read_eager()
+            except Exception as e:
+                self.logger.debug('%s:%s', type(e), e)
+                in_data = b''
+                
             if len(in_data) == 0:
                 break
             self.logger.debug('in_data:%a', in_data)

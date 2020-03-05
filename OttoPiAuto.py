@@ -167,7 +167,7 @@ class OttoPiAuto(threading.Thread):
                     self.logger.error('%s: invalid command .. ignore', cmd)
 
             d = self.get_distance()
-            self.logger.info('d = %smm', '{:,}'.format(d))
+            self.logger.debug('d = %smm', '{:,}'.format(d))
             if d < 0:
                 continue
 
@@ -182,6 +182,10 @@ class OttoPiAuto(threading.Thread):
 
                 if self.ready_count < self.READY_COUNT_COMMIT:
                     if d >= self.D_READY_MIN and d <= self.D_READY_MAX:
+                        self.logger.warn('%dmm <= %dmm <= %dmm',
+                                         self.D_READY_MIN,
+                                         d,
+                                         self.D_READY_MAX)
                         self.ready_count += 1
                         self.robot_ctrl.send('happy')
                         time.sleep(1)
@@ -196,7 +200,7 @@ class OttoPiAuto(threading.Thread):
             self.prev_stat = self.stat
 
             if d <= self.D_TOUCH:
-                self.logger.warn('touched(<= %d)', self.D_TOUCH)
+                self.logger.warn('touched(%dmm <= %dmm)', d, self.D_TOUCH)
                 self.robot_ctrl.send('suprised')
                 time.sleep(1)
 
@@ -215,7 +219,7 @@ class OttoPiAuto(threading.Thread):
                 self.touch_count = 0
 
             if d <= self.D_TOO_NEAR:
-                self.logger.warn('TOO_NEAR(<= %d)', self.D_TOO_NEAR)
+                self.logger.warn('TOO_NEAR(%dmm <= %dmm)', d, self.D_TOO_NEAR)
                 self.stat = self.STAT_NEAR
 
                 if self.prev_stat != self.STAT_NEAR:
@@ -226,7 +230,7 @@ class OttoPiAuto(threading.Thread):
                     time.sleep(2)
 
             elif d <= self.D_NEAR:
-                self.logger.warn('NEAR(<= %d)', self.D_NEAR)
+                self.logger.warn('NEAR(%dmm <= %dmm)', d, self.D_NEAR)
                 self.stat = self.STAT_NEAR
                 if self.prev_stat != self.STAT_NEAR:
                     if random.random() < 0.5:
@@ -244,7 +248,7 @@ class OttoPiAuto(threading.Thread):
                 time.sleep(1.5)
 
             elif d >= self.D_FAR:
-                self.logger.info('FAR(>= %d)', self.D_FAR)
+                self.logger.info('FAR(%dmm >= %dmm)', d, self.D_FAR)
                 self.stat = self.STAT_FAR
                 if self.prev_stat in [self.STAT_NEAR, self.STAT_YELLOW]:
                     self.robot_ctrl.send('forward')

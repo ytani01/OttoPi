@@ -431,12 +431,12 @@ class OttoPiMotion:
             self.turn1('r', interval_msec=interval_msec, v=v, q=q)
 
     def turn_left(self, n=1, interval_msec=0, v=None, q=False):
-        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+        self.logger.info('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
 
         if n == 0:
             n = N_CONTINUOUS
-            self.logger.debug('n=%d!', n)
+            self.logger.info('n=%d!', n)
 
         for i in range(n):
             if self.stop_flag:

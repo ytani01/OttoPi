@@ -139,18 +139,21 @@ class OttoPiCtrl(threading.Thread):
 
     # 連続実行中断
     def interrupt_loop(self):
-        self.logger.debug('')
+        self.logger.warn('')
         self.opm.stop()
 
     # cmd: "[コマンド名]"
-    def send(self, cmd, doIntrrupt=True):
-        self.logger.debug('cmd=\'%s\'', cmd)
+    def send(self, cmd, doInterrupt=True):
+        self.logger.info('cmd=\'%s\' doInterrupt=%s', cmd, doInterrupt)
 
-        if doIntrrupt:
+        cmdline = cmd.split()
+        self.logger.info('cmdline=%s', cmdline)
+
+        if doInterrupt:
             self.interrupt_loop()
             self.clear_cmdq()
-            self.cmdq.put(self.CMD_RESUME)
 
+        self.cmdq.put(self.CMD_RESUME)
         self.cmdq.put(cmd)
 
     def recv(self):

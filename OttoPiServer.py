@@ -175,13 +175,18 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             if not self.robot_ctrl.is_alive():
                 self.logger.warn('robot control thread is dead !? .. restart')
                 self.server.robot_ctrl = OttoPiCtrl(self.server.pi,
-                                               debug=self.server.debug)
+                                                    debug=self.server.debug)
                 self.robot_ctrl = self.server.robot_ctrl
                 self.robot_ctrl.start()
 
             # ダイレクトコマンド
             if data[0] == ':':
                 cmd = data[1:]
+                interrupt_flag = True
+
+                if data[1] == '.':
+                    cmd = data[2:]
+                    interrupt_flag = False
                 
                 self.logger.debug('direct command:%s', cmd)
 
@@ -192,7 +197,9 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                 elif cmd.startswith('auto_off'):
                     self.robot_auto.send('off')
                 else:
-                    self.robot_ctrl.send(cmd)
+                    # self.robot_ctrl.send(cmd, doInterrupt=False)
+                    self.robot_ctrl.send(cmd, interrupt_flag)
+                    # self.robot_ctrl.send(cmd)
                 continue
                 
             # ワンキーコマンド
