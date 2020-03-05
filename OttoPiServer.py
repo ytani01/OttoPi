@@ -142,8 +142,14 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             # データー受信
             try:
                 net_data = self.request.recv(512)
+            except ConnectionResetError as e:
+                self.logger.warn('%s:%s.', type(e), e)
+                net_data = b''
+                self.logger.warn('net_data=%a', net_data)
+                return
             except BaseException as e:
-                self.logger.info('BaseException:%s:%s.', type(e), e)
+                self.logger.warn('BaseException:%s:%s.', type(e), e)
+                self.logger.warn('send: CootPiCtrl.CMD_STOP')
                 self.robot_ctrl.send(OttoPiCtrl.CMD_STOP)
                 return
             else:
