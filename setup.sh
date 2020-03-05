@@ -9,7 +9,10 @@ DIRS="bin etc tmp work"
 
 CONFFILENAME=OttoPi.conf
 
-CMDS="MyLogger.py OttoPiAuto.py OttoPiClient.py OttoPiConfig.py OttoPiCtrl.py OttoPiHttpServer.py OttoPiMotion.py OttoPiServer.py PiServo.py RobotButton.py VL53L0X.py vl53l0x_python.so speech.sh boot.sh loop.sh music.sh"
+CMDS="MyLogger.py OttoPiWsServer.py OttoPiAuto.py OttoPiClient.py"
+CMDS="${CMDS} OttoPiConfig.py OttoPiCtrl.py OttoPiHttpServer.py"
+CMDS="${CMDS} OttoPiMotion.py OttoPiServer.py PiServo.py RobotButton.py"
+CMDS="${CMDS} VL53L0X.py vl53l0x_python.so speech.sh boot.sh loop.sh music.sh"
 
 ###
 

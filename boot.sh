@@ -51,6 +51,11 @@ HTTP_SERVER="${ROBOT_DIR}/OttoPiHttpServer.py"
 HTTP_OPT="-d"
 HTTP_LOG="${LOGDIR}/http.log"
 
+### WebSocket Server
+WS_SERVER="${ROBOT_DIR}/OttoPiWsServer.py"
+WS_SERVER_OPT="-d"
+WS_SERVER_LOG="${LOGDIR}/ws_server.log"
+
 ### Robot Client
 ROBOT_CLIENT="${ROBOT_DIR}/OttoPiClient.py"
 
@@ -122,6 +127,19 @@ if [ -x ${ROBOT_SERVER} ]; then
     ${ROBOT_SERVER} ${ROBOT_OPT} > ${ROBOT_LOG} 2>&1 &
 
     ${SPEAK_CMD} "モーター制御システムを起動します" &
+    sleep 5
+    ${ROBOT_CLIENT} -d -c ':happy'
+    sleep 5
+fi
+
+if [ -x ${WS_SERVER} ]; then
+    cd ${BINDIR}
+    if [ -f ${WS_SERVER_LOG} ]; then
+	mv ${WS_SERVER_LOG} ${WS_SERVER_LOG}.1
+    fi
+    ${WS_SERVER} ${WS_SERVER_OPT} > ${WS_SERVER_LOG} 2>&1 &
+
+    ${SPEAK_CMD} "ウエブソックサーバーを起動します" &
     sleep 5
     ${ROBOT_CLIENT} -d -c ':happy'
     sleep 5
