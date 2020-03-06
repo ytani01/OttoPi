@@ -31,20 +31,24 @@ class OttoPiWsServer():
         self.robotsvr = None
         self.server = WebsocketServer(port, host=host)
 
+    def end(self):
+        self._log.debug('')
+
     def new_client(self, client, server):
-        self._log.debug('client=%s', client)
-        self.robotsvr = OttoPiClient(self.svrhost, self.svrport,
-                                     debug=self._dbg)
+        self._log.debug('client=%s', client['id'])
 
     def client_left(self, client, server):
-        self._log.debug('client=%s', client)
-        self.robotsvr.close()
+        self._log.debug('client=%s', client['id'])
 
     def message_received(self, client, server, msg):
-        self._log.debug('client=%s, msg=%s', client, msg)
+        self._log.debug('client=%s, msg=%s', client['id'], msg)
         self.msg = msg.encode('utf-8')
-        self._log.info('msg=%s.', msg)
+
+        self.robotsvr = OttoPiClient(self.svrhost, self.svrport, debug=False)
         self.robotsvr.send_cmd(msg)
+        self.robotsvr.close()
+
+        self._log.info('msg=%s: done', msg)
 
     def run(self):
         self._log.debug('')
@@ -70,6 +74,7 @@ class App:
         self.ws_svr.run()
 
     def end(self):
+        self.ws_svr.end()
         self._log.debug('')
 
 

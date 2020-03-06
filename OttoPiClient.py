@@ -26,6 +26,7 @@ OttoPiServer -- ロボット制御サーバ (ネットワーク送受信スレ�
 __author__ = 'Yoichi Tanibayashi'
 __date__   = '2019'
 
+from OttoPiServer import OttoPiServer
 import telnetlib
 import time
 
@@ -84,25 +85,31 @@ class OttoPiClient:
     def send_cmd1(self, cmd):
         self.logger.debug('cmd=%s', cmd)
 
-        self.tn.write(cmd.encode('utf-8'))
+        try:
+            self.tn.write(cmd.encode('utf-8'))
+        except Exception as e:
+            self.logger.warn('Retry:%s:%s:%s.', cmd, type(e), e)
+            self.tn = self.open(self.svr_host, self.svr_port)
+            self.tn.write(cmd.encode('utf-8'))
+        
         ret = self.recv_reply()
         self.logger.debug('ret=%a', ret)
         ret = ret.decode('utf-8')
         self.logger.info('ret=\'%s\'', ret)
 
     def send_cmd(self, cmd):
-        self.logger.debug('cmd=%s', cmd)
+        self.logger.debug('cmd=%s, %s', cmd, cmd[0])
 
         self.recv_reply()
 
-        if cmd[0] == ':':
+        if cmd[0] == OttoPiServer.CMD_PREFIX:
             self.send_cmd1(cmd)
-            return
-        
-        for ch in cmd:
-            self.logger.debug('ch=%a(0x%02x)', ch, ord(ch))
-            self.send_cmd1(ch)
+        else:
+            for ch in cmd:
+                self.logger.debug('ch=%a(0x%02x)', ch, ord(ch))
+                self.send_cmd1(ch)
 
+        return
 
 ##### Sample
 class Sample:
@@ -119,7 +126,7 @@ class Sample:
         self.logger.debug('command:\'%s\'', self.command)
         
         if self.command != '':
-            if self.command[0] == ':':
+            if self.command[0] == OttoPiServer.CMD_PREFIX:
                 self.cl.send_cmd(self.command)
                 time.sleep(3)
             else:

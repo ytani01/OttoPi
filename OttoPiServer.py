@@ -133,10 +133,11 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
         #  0xff IAC
         #  0xfd D0
         #  0x22 LINEMODE
-        self.net_write(b'\xff\xfd\x22')
+        # self.net_write(b'\xff\xfd\x22')
 
         self.net_write('#Ready\r\n'.encode('utf-8'))
 
+        net_data = b''
         flag_continue = True
         while flag_continue:
             # データー受信
@@ -144,8 +145,6 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                 net_data = self.request.recv(512)
             except ConnectionResetError as e:
                 self.logger.warn('%s:%s.', type(e), e)
-                net_data = b''
-                self.logger.warn('net_data=%a', net_data)
                 return
             except BaseException as e:
                 self.logger.warn('BaseException:%s:%s.', type(e), e)
@@ -159,10 +158,10 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             try:
                 decoded_data = net_data.decode('utf-8')
             except UnicodeDecodeError as e:
-                self.logger.debug('%s:%s .. ignored', type(e), e)
+                self.logger.warning('%s:%s .. ignored', type(e), e)
                 continue
             else:
-                self.logger.debug('decoded_data:%a', decoded_data)
+                self.logger.info('decoded_data:%a', decoded_data)
 
             self.net_write('\r\n'.encode('utf-8'))
             
@@ -171,7 +170,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             for ch in decoded_data:
                 if ord(ch) >= 0x20:
                     data += ch
-            self.logger.debug('data=%a', data)
+            self.logger.info('data=%a', data)
             if len(data) == 0:
                 self.logger.debug('No data .. disconnect')
                 self.net_write('No data .. disconnect\r\n'.encode('utf-8'))
@@ -186,15 +185,17 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                 self.robot_ctrl.start()
 
             # ダイレクトコマンド
-            if data[0] == ':':
+            self.logger.info('%s,%s.', data[0], OttoPiServer.CMD_PREFIX)
+            if data[0] == OttoPiServer.CMD_PREFIX:
                 cmd = data[1:]
                 interrupt_flag = True
 
-                if data[1] == '.':
+                if data[1] == OttoPiServer.CMD_PREFIX2:
                     cmd = data[2:]
                     interrupt_flag = False
                 
-                self.logger.debug('direct command:%s', cmd)
+                self.logger.info('cmd=%s, interrupt_flag=%s',
+                                 cmd, interrupt_flag)
 
                 self.send_reply(cmd)
 
@@ -203,14 +204,12 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                 elif cmd.startswith('auto_off'):
                     self.robot_auto.send('off')
                 else:
-                    # self.robot_ctrl.send(cmd, doInterrupt=False)
                     self.robot_ctrl.send(cmd, interrupt_flag)
-                    # self.robot_ctrl.send(cmd)
                 continue
                 
             # ワンキーコマンド
             for ch in data:
-                self.logger.debug('ch=%a', ch)
+                self.logger.info('ch=%a', ch)
 
                 if not ch in self.cmd_key.keys():
                     self.robot_ctrl.send(OttoPiCtrl.CMD_STOP)
@@ -241,6 +240,8 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
 
 class OttoPiServer(socketserver.ThreadingTCPServer):
     DEF_PORT = 12345
+    CMD_PREFIX = ':'
+    CMD_PREFIX2 = '.'
 
     def __init__(self, pi=None, port=DEF_PORT, debug=False):
         self.debug = debug
