@@ -329,16 +329,20 @@ class OttoPiMotion:
         time.sleep(1)
         self.home()
 
-    def suprised(self,  n=1, interval_msec=0, v=None, q=False):
+    def surprised(self,  n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
         p1 = 30
 
-        self.home()
-        time.sleep(.2)
-        self.move1(-p1, 0, 0, p1, q=True)
-        time.sleep(.3)
-        self.home()
+        for i in range(n):
+            if self.stop_flag:
+                break
+            
+            self.home()
+            time.sleep(.2)
+            self.move1(-p1, 0, 0, p1, q=True)
+            time.sleep(.3)
+            self.home()
 
     def slide_right(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',

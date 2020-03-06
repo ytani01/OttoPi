@@ -73,7 +73,7 @@ class OttoPiCtrl(threading.Thread):
             'slide_left':     {'func': self.opm.slide_left,     'loop': True},
             'happy':          {'func': self.opm.happy,          'loop': False},
             'hi':             {'func': self.opm.hi,             'loop': False},
-            'suprised':       {'func': self.opm.suprised,       'loop': False},
+            'surprised':      {'func': self.opm.surprised,      'loop': False},
             'ojigi':          {'func': self.opm.ojigi,          'loop': False},
             'ojigi2':         {'func': self.opm.ojigi2,         'loop': False},
 
