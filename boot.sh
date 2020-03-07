@@ -52,7 +52,7 @@ HTTP_OPT="-d"
 HTTP_LOG="${LOGDIR}/http.log"
 
 ### WebSocket Server
-WS_SERVER="${ROBOT_DIR}/OttoPiWsServer.py"
+WS_SERVER="${ROBOT_DIR}/OttoPiWebsockServer.py"
 WS_SERVER_OPT="-d"
 WS_SERVER_LOG="${LOGDIR}/ws_server.log"
 

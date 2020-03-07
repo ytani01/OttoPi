@@ -9,12 +9,13 @@ __author__ = 'Yoichi Tanibayashi'
 __date__ = '2020'
 
 from OttoPiClient import OttoPiClient
-from websocket_server import WebsocketServer
+import asyncio
+import websockets
 import click
 from MyLogger import get_logger
 
 
-class OttoPiWsServer():
+class OttoPiWebsockServer():
     DEF_PORT = 9001
     DEF_SVR_PORT = 12345
 
@@ -28,50 +29,50 @@ class OttoPiWsServer():
 
         self.svrhost = svrhost
         self.svrport = svrport
-        self.robotsvr = None
-        self.server = WebsocketServer(port, host=host)
+
+        # websockets
+        self.start_server = websockets.serve(self.handle, host, port)
+        self.loop = asyncio.get_event_loop()
+
+    def main(self):
+        self._log.debug('')
+
+        self._log.info('start_server ..')
+        self.loop.run_until_complete(self.start_server)
+        
+        self._log.info('run_forever ..')
+        self.loop.run_forever()
 
     def end(self):
         self._log.debug('')
 
-    def new_client(self, client, server):
-        self._log.debug('client=%s', client['id'])
+    async def handle(self, websocket, path):
+        self._log.debug('websocket=%s:%s, path=%s',
+                        websocket.local_address,
+                        websocket.host,
+                        path)
+        msg = await websocket.recv()
+        self._log.debug('msg=%s', msg)
 
-    def client_left(self, client, server):
-        self._log.debug('client=%s', client['id'])
-
-    def message_received(self, client, server, msg):
-        self._log.debug('client=%s, msg=%s', client['id'], msg)
-        self.msg = msg.encode('utf-8')
-
-        self.robotsvr = OttoPiClient(self.svrhost, self.svrport, debug=False)
-        self.robotsvr.send_cmd(msg)
-        self.robotsvr.close()
-
-        self._log.info('msg=%s: done', msg)
-
-    def run(self):
-        self._log.debug('')
-        self.server.set_fn_new_client(self.new_client)
-        self.server.set_fn_client_left(self.client_left)
-        self.server.set_fn_message_received(self.message_received)
-        self.server.run_forever()
-
+        robot_client = OttoPiClient(self.svrhost, self.svrport, debug=False)
+        robot_client.send_cmd(msg)
+        robot_client.close()
+        self._log.info('send msg=%s: done', msg)
 
 class App:
-    def __init__(self, svr_port=OttoPiWsServer.DEF_SVR_PORT, debug=False):
+    def __init__(self, svr_port=OttoPiWebsockServer.DEF_SVR_PORT, debug=False):
         self._dbg = debug
         self._log = get_logger(__class__.__name__, self._dbg)
         self._log.debug('svr_port=svr_port')
 
         self.svr_port = svr_port
-        self.ws_svr = OttoPiWsServer(port=OttoPiWsServer.DEF_PORT,
-                                     svrport=OttoPiWsServer.DEF_SVR_PORT,
-                                     debug=self._dbg)
+        self.ws_svr = OttoPiWebsockServer(port=OttoPiWebsockServer.DEF_PORT,
+                                          svrport=OttoPiWebsockServer.DEF_SVR_PORT,
+                                          debug=self._dbg)
 
     def main(self):
         self._log.debug('')
-        self.ws_svr.run()
+        self.ws_svr.main()
 
     def end(self):
         self.ws_svr.end()
@@ -82,10 +83,11 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
 @click.command(context_settings=CONTEXT_SETTINGS, help='''
-OttoPi WebSocket Server
+OttoPi Websocket Server
 ''')
 @click.option('--svr_port', '--sp', 'svr_port', type=int,
-              default=OttoPiWsServer.DEF_SVR_PORT, help='server port number')
+              default=OttoPiWebsockServer.DEF_SVR_PORT,
+              help='server port number')
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(svr_port, debug):
