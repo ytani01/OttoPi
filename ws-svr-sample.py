@@ -14,13 +14,13 @@ log = get_logger(__name__, True)
 
 
 async def handle(websocket, path):
-    msg = await websocket.recv()
-    log.info('msg=%s', msg)
+    async for msg in websocket:
+        log.debug('msg=%s', msg)
 
 def main():
     log.debug('start')
 
-    start_server = websockets.serve(handle, "0.0.0.0", 9001)
+    start_server = websockets.serve(handle, "0.0.0.0", 9002)
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(start_server)
