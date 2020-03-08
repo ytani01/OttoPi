@@ -14,7 +14,6 @@ from MyLogger import get_logger
 
 log = get_logger(__name__, True)
 
-
 async def handle(websocket, path):
     msg = await websocket.recv()
     log.info('msg=%s', msg)

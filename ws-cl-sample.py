@@ -6,8 +6,11 @@ from MyLogger import get_logger
 
 log = get_logger(__name__, True)
 
+import ssl
+context = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+
 async def hello():
-    uri = 'ws://localhost:9002/'
+    uri = 'wss://192.168.0.228:9003/'
     async with websockets.connect(uri) as websocket:
         await websocket.send('Hello world!')
 

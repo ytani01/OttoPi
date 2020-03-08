@@ -15,7 +15,8 @@ ssl_context.load_verify_locations(cert)
 log.info('bbb')
 
 async def hello():
-    uri = 'wss://127.0.0.1:9003/'
+    #uri = 'wss://127.0.0.1:9003/'
+    uri = 'wss://192.168.0.228:9003/'
     async with websockets.connect(uri, ssl=ssl_context) as websocket:
         await websocket.send('Hello world!')
 
