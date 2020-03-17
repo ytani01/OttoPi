@@ -11,6 +11,7 @@ __date__ = '2020'
 from OttoPiClient import OttoPiClient
 import asyncio
 import websockets
+import time
 import click
 from MyLogger import get_logger
 
@@ -55,9 +56,13 @@ class OttoPiWebsockServer():
         self._log.debug('msg=%s', msg)
 
         robot_client = OttoPiClient(self.svrhost, self.svrport, debug=False)
-        robot_client.send_cmd(msg)
+        ret = robot_client.send_cmd(msg)
+        self._log.debug('ret=%a', ret)
+
+        await websocket.send(ret)
+
         robot_client.close()
-        self._log.info('send msg=%s: done', msg)
+        self._log.info('done')
 
 class App:
     def __init__(self, svr_port=OttoPiWebsockServer.DEF_SVR_PORT, debug=False):

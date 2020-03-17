@@ -97,19 +97,21 @@ class OttoPiClient:
         ret = ret.decode('utf-8')
         self.logger.info('ret=\'%s\'', ret)
 
+        return ret
+
     def send_cmd(self, cmd):
         self.logger.debug('cmd=%s, %s', cmd, cmd[0])
 
         self.recv_reply()
 
         if cmd[0] == OttoPiServer.CMD_PREFIX:
-            self.send_cmd1(cmd)
+            ret = self.send_cmd1(cmd)
         else:
             for ch in cmd:
                 self.logger.debug('ch=%a(0x%02x)', ch, ord(ch))
-                self.send_cmd1(ch)
+                ret = self.send_cmd1(ch)
 
-        return
+        return ret
 
 ##### Sample
 class Sample:
