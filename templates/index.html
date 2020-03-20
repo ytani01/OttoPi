@@ -51,10 +51,12 @@
 	<tbody>
 	  <tr>
 	    <td align="left">
+              <input type="radio" name="enable" value="on"
+                     onClick="post(':auto_enable');">
 	      <input type="button" value="AUTO" onClick="post(':auto_on');">
-	    </td>
-	    <td align="center">
-	      <input type="button" value="suriashi" onClick="post(':suriashi_fwd');">
+              <br />
+              <input type="radio" name="enable" value="off" checked="checked"
+                     onclick="post(':auto_disable');">
 	    </td>
 	    <td align="right">
 	      <input type="button" value=" !! "  onClick="post(':surprised');">
@@ -69,6 +71,15 @@
       <hr />
       <table>
 	<tbody>
+	  <tr>
+	    <td></td>
+	    <td></td>
+	    <td align="center">
+	      <input type="button" value="suriashi" onClick="post(':suriashi_fwd');">
+	    </td>
+	    <td></td>
+	    <td></td>
+	  </tr>
 	  <tr>
 	    <td></td>
 	    <td>

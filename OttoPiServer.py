@@ -199,10 +199,8 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
 
                 self.send_reply(cmd)
 
-                if cmd.startswith('auto_on'):
-                    self.robot_auto.send('on')
-                elif cmd.startswith('auto_off'):
-                    self.robot_auto.send('off')
+                if cmd.startswith('auto_'):
+                    self.robot_auto.send(cmd[5:])
                 else:
                     self.robot_ctrl.send(cmd, interrupt_flag)
                 continue
