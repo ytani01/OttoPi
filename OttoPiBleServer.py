@@ -39,7 +39,7 @@ class OttoPiBleServer(BlePeripheral):
 
 
 class OttoPiService(BleService):
-    UUID = 'ec00'
+    UUID = '4e769f72-391f-4cd3-bbea-25a2e945066b'
 
     _log = get_logger(__name__, False)
 
@@ -52,7 +52,7 @@ class OttoPiService(BleService):
 
 
 class CmdCharacteristic(BleCharacteristic):
-    UUID = 'ec0E'
+    UUID = '70e45870-79ec-44c6-859d-0897aa7134b6'
 
     _log = get_logger(__name__, False)
 
@@ -68,7 +68,7 @@ class CmdCharacteristic(BleCharacteristic):
         self._robot_port = robot_port
         self._chara_resp = chara_resp
         
-        super().__init__(uuid, ['write'], debug=debug)
+        super().__init__(uuid, ['write', 'read', 'notify'], debug=debug)
 
     def onWriteRequest(self, data, offset, withoutRespoinse, callback):
         self._log.debug('data=%a', data)
@@ -103,7 +103,7 @@ class CmdCharacteristic(BleCharacteristic):
 
 
 class RespCharacteristic(BleCharacteristic):
-    UUID = 'ec0F'
+    UUID = '79394316-6874-4506-9c20-1245751c6c20'
 
     _log = get_logger(__name__, False)
 
