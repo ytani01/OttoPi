@@ -100,6 +100,8 @@ class OttoPiAuto(threading.Thread):
         self.touch_count = 0
         self.ready_count = 0
 
+        self.distance = self.D_FAR
+
         super().__init__(daemon=True)
 
     def __del__(self):
@@ -175,7 +177,14 @@ class OttoPiAuto(threading.Thread):
         return cmd
 
     def get_distance(self):
-        return self.tof.get_distance()
+        self.distance = self.tof.get_distance()
+        if self.distance == 0:
+            # ???
+            self.distance = self.D_FAR
+            self._log.warning('Crrection: distance = %smm',
+                              '{:,}'.format(self.distance))
+
+        return self.distance
 
     def run(self):
         self._log.debug('')
@@ -196,11 +205,6 @@ class OttoPiAuto(threading.Thread):
 
             if not self.enable:
                 continue
-
-            if d == 0:
-                # ???
-                d = self.D_FAR
-                self._log.warn('Crrection: d = %smm', '{:,}'.format(d))
 
             if not self.on:
                 if self.ready_count > 0:
