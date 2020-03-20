@@ -56,6 +56,11 @@ WS_SERVER="${ROBOT_DIR}/OttoPiWebsockServer.py"
 WS_SERVER_OPT="-d"
 WS_SERVER_LOG="${LOGDIR}/ws_server.log"
 
+### BLE Server
+BLE_SERVER="${ROBOT_DIR}/OttoPiBleServer.py"
+BLE_SERVER_OPT="-d"
+BLE_SERVER_LOG="${LOGDIR}/ble_server.log"
+
 ### Robot Client
 ROBOT_CLIENT="${ROBOT_DIR}/OttoPiClient.py"
 
@@ -141,7 +146,20 @@ if [ -x ${WS_SERVER} ]; then
 
     ${SPEAK_CMD} "ウエブソックサーバーを起動します" &
     sleep 5
-    ${ROBOT_CLIENT} -d -c ':happy'
+    ${ROBOT_CLIENT} -d -c ':surprised'
+    sleep 5
+fi
+
+if [ -x ${BLE_SERVER} ]; then
+    cd ${BINDIR}
+    if [ -f ${BLE_SERVER_LOG} ]; then
+	mv ${BLE_SERVER_LOG} ${BLE_SERVER_LOG}.1
+    fi
+    sudo ${BLE_SERVER} ${BLE_SERVER_OPT} > ${BLE_SERVER_LOG} 2>&1 &
+
+    ${SPEAK_CMD} "BLEサーバーを起動します" &
+    sleep 5
+    ${ROBOT_CLIENT} -d -c ':hi'
     sleep 5
 fi
 
