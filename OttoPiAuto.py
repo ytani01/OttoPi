@@ -193,7 +193,8 @@ class OttoPiAuto(threading.Thread):
             cmd = self.recv()
             if cmd != '':
                 self._log.info('cmd=\'%s\'', cmd)
-                if cmd in self.cmd_func.keys():
+                cmd_name = split(None, 1)[0]
+                if cmd_name in self.cmd_func.keys():
                     self.cmd_func[cmd]()
                 else:
                     self._log.error('%s: invalid command .. ignore', cmd)

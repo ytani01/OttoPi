@@ -142,8 +142,10 @@ class OttoPiCtrl(threading.Thread):
         self.logger.warn('')
         self.opm.stop()
 
-    # cmd: "[コマンド名]"
     def send(self, cmd, doInterrupt=True):
+        '''
+        cmd: "<cmd_name> <cmd_n>"
+        '''
         self.logger.info('cmd=\'%s\' doInterrupt=%s', cmd, doInterrupt)
 
         cmdline = cmd.split()
