@@ -234,6 +234,19 @@ class OttoPiMotion:
             return 'right'
         return ''
 
+    def cmd_n(self, func, rl='r', n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('func=%s, rl=%s n=%d, interval_msec=%d, v=%s, q=%s',
+                          func, rl, n, interval_msec, str(v), q)
+        if n == 0:
+            n = N_CONTINUOUS
+            self.logger.info('n=%d!', n)
+
+        for i in range(n):
+            if self.stop_flag:
+                break
+
+            func(rl, interval_msec=interval_msec, v=v, q=q)
+
     def ojigi(self, n=1, interval_msec=1000, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
@@ -308,9 +321,19 @@ class OttoPiMotion:
                        [0, 0, 0, 0]], v=v, q=q)
             time.sleep(interval_msec / 1000)
 
-    def hi(self, n=1, interval_msec=0, v=None, q=False):
+    def hi_right(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
+        self.cmd_n(self.hi1, 'r', n, interval_msec, v, q)
+
+    def hi_left(self, n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+        self.cmd_n(self.hi1, 'l', n, interval_msec, v, q)
+
+    def hi1(self, rl='r', interval_msec=0, v=None, q=False):
+        self.logger.info('rl=%s, interval_msec=%d, v=%s, q=%s',
+                          rl, interval_msec, str(v), q)
         p1 = [-80, -70]
         p2 = -85
         p3 = -50
@@ -318,16 +341,55 @@ class OttoPiMotion:
 
         self.home()
 
-        for i in range(2):
+        if rl[0] == 'right'[0]:
             self.move1(p1[0], p2, p3, p4, v=v, q=q)
-            time.sleep(0.2)
-            self.move1(p1[1], p2, p3, p4, v=v, q=q)
-            time.sleep(0.2)
-        self.move1(p1[0], p2, p3, p4, v=v, q=q)
-        # self.turn_right(1)
 
-        time.sleep(1)
+        if rl[0] == 'left'[0]:
+            self.move1(-4, -p3, -p2, -p1[0], v=v, q=q)
+
+        time.sleep(0.5)
         self.home()
+        time.sleep(0.5)
+
+    def bye_right(self, n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+        self.cmd_n(self.bye1, 'r', n, interval_msec, v, q)
+
+    def bye_left(self, n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+        self.cmd_n(self.bye1, 'l', n, interval_msec, v, q)
+
+    def bye1(self, rl='r', interval_msec=0, v=None, q=False):
+        self.logger.debug('rl=%s, interval_msec=%d, v=%s, q=%s',
+                          rl, interval_msec, str(v), q)
+        p1 = [-80, -70]
+        p2 = -85
+        p3 = -50
+        p4 = -10
+
+        self.home()
+
+        if rl[0] == 'right'[0]:
+            for i in range(2):
+                self.move1(p1[0], p2, p3, p4, v=v, q=q)
+                time.sleep(0.2)
+                self.move1(p1[1], p2, p3, p4, v=v, q=q)
+                time.sleep(0.2)
+            self.move1(p1[0], p2, p3, p4, v=v, q=q)
+
+        if rl[0] == 'left'[0]:
+            for i in range(2):
+                self.move1(-p4, -p3, -p2, -p1[0], v=v, q=q)
+                time.sleep(0.2)
+                self.move1(-p4, -p3, -p2, -p1[1], v=v, q=q)
+                time.sleep(0.2)
+            self.move1(-p4, -p3, -p2, -p1[0], v=v, q=q)
+
+        time.sleep(0.7)
+        self.home()
+        time.sleep(1)
 
     def surprised(self,  n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
@@ -347,30 +409,12 @@ class OttoPiMotion:
     def slide_right(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
-
-        if n == 0:
-            n = N_CONTINUOUS
-            self.logger.debug('n=%d!', n)
-
-        for i in range(n):
-            if self.stop_flag:
-                break
-
-            self.slide1('r', interval_msec=interval_msec, v=v, q=q)
+        self.cmd_n(self.slide1, 'r', n, interval_msec, v, q)
 
     def slide_left(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
-
-        if n == 0:
-            n = N_CONTINUOUS
-            self.logger.debug('n=%d!', n)
-
-        for i in range(n):
-            if self.stop_flag:
-                break
-
-            self.slide1('l', interval_msec=interval_msec, v=v, q=q)
+        self.cmd_n(self.slide1, 'l', n, interval_msec, v, q)
 
     def slide1(self, rl='r', interval_msec=0, v=None, q=False):
         self.logger.debug('rl=%s, interval_msec=%d, v=%s, q=%s',
@@ -380,7 +424,7 @@ class OttoPiMotion:
         p2 = (-10, -60)
 
         self.home()
-        time.sleep(interval_msec/1000)
+        time.sleep(interval_msec / 1000)
 
         if rl[0] == 'left'[0]:
             self.move([[p1[0], 0, 0, p1[1]],
@@ -423,30 +467,12 @@ class OttoPiMotion:
     def turn_right(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
-
-        if n == 0:
-            n = N_CONTINUOUS
-            self.logger.debug('n=%d!', n)
-
-        for i in range(n):
-            if self.stop_flag:
-                break
-
-            self.turn1('r', interval_msec=interval_msec, v=v, q=q)
+        self.cmd_n(self.turn1, 'r', n, interval_msec, v, q)
 
     def turn_left(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.info('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
-
-        if n == 0:
-            n = N_CONTINUOUS
-            self.logger.info('n=%d!', n)
-
-        for i in range(n):
-            if self.stop_flag:
-                break
-
-            self.turn1('l', interval_msec=interval_msec, v=v, q=q)
+        self.cmd_n(self.turn1, 'l', n, interval_msec, v, q)
 
     def turn1(self, rl='r', interval_msec=0, v=None, q=False):
         self.logger.debug('rl=%s, interval_msec=%d, v=%s, q=%s',

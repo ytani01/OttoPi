@@ -108,6 +108,11 @@ if [ -x ${SPEAK_SERVER} ]; then
     sleep 4
 fi
 
+if which ${SPEAKIPADDR_CMD}; then
+    ${SPEAKIPADDR_CMD} ${PIN_SW}
+    ${SPEAK_CMD} "起動処理を続行します"
+fi
+
 if [ -x ${HTTP_SERVER} ]; then
     cd ${BINDIR}
     if [ -f ${HTTP_LOG} ]; then
@@ -119,11 +124,6 @@ if [ -x ${HTTP_SERVER} ]; then
     sleep 3
 fi
 
-if which ${SPEAKIPADDR_CMD}; then
-    ${SPEAKIPADDR_CMD} ${PIN_SW}
-    ${SPEAK_CMD} "起動処理を続行します"
-fi
-
 if [ -x ${ROBOT_SERVER} ]; then
     cd ${BINDIR}
     if [ -f ${ROBOT_LOG} ]; then
@@ -132,9 +132,9 @@ if [ -x ${ROBOT_SERVER} ]; then
     ${ROBOT_SERVER} ${ROBOT_OPT} > ${ROBOT_LOG} 2>&1 &
 
     ${SPEAK_CMD} "モーター制御システムを起動します" &
-    sleep 4
+    sleep 3
     ${ROBOT_CLIENT} -d -c ':happy'
-    sleep 4
+    sleep 3
 fi
 
 if [ -x ${WS_SERVER} ]; then
@@ -145,9 +145,9 @@ if [ -x ${WS_SERVER} ]; then
     ${WS_SERVER} ${WS_SERVER_OPT} > ${WS_SERVER_LOG} 2>&1 &
 
     ${SPEAK_CMD} "ウエブソックサーバーを起動します" &
-    sleep 4
+    sleep 3
     ${ROBOT_CLIENT} -d -c ':surprised'
-    sleep 4
+    sleep 3
 fi
 
 if [ -x ${BLE_SERVER} ]; then
@@ -158,9 +158,9 @@ if [ -x ${BLE_SERVER} ]; then
     sudo ${BLE_SERVER} ${BLE_SERVER_OPT} > ${BLE_SERVER_LOG} 2>&1 &
 
     ${SPEAK_CMD} "BLEサーバーを起動します" &
-    sleep 4
+    sleep 3
     ${ROBOT_CLIENT} -d -c ':hi'
-    sleep 4
+    sleep 3
 fi
 
 if [ -x ${MJPG_STREAMER} ]; then
