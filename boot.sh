@@ -137,18 +137,18 @@ if [ -x ${ROBOT_SERVER} ]; then
     sleep 3
 fi
 
-if [ -x ${WS_SERVER} ]; then
-    cd ${BINDIR}
-    if [ -f ${WS_SERVER_LOG} ]; then
-	mv ${WS_SERVER_LOG} ${WS_SERVER_LOG}.1
-    fi
-    ${WS_SERVER} ${WS_SERVER_OPT} > ${WS_SERVER_LOG} 2>&1 &
-
-    ${SPEAK_CMD} "ウエブソックサーバーを起動します" &
-    sleep 3
-    ${ROBOT_CLIENT} -d -c ':surprised'
-    sleep 3
-fi
+#if [ -x ${WS_SERVER} ]; then
+#    cd ${BINDIR}
+#    if [ -f ${WS_SERVER_LOG} ]; then
+#	mv ${WS_SERVER_LOG} ${WS_SERVER_LOG}.1
+#    fi
+#    ${WS_SERVER} ${WS_SERVER_OPT} > ${WS_SERVER_LOG} 2>&1 &
+#
+#    ${SPEAK_CMD} "ウエブソックサーバーを起動します" &
+#    sleep 3
+#    ${ROBOT_CLIENT} -d -c ':surprised'
+#    sleep 3
+#fi
 
 if [ -x ${BLE_SERVER} ]; then
     cd ${BINDIR}
