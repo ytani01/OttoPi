@@ -2,9 +2,38 @@
 #
 # (c) 2020 Yoichi Tanibayashi
 #
+"""
+ロボットBLEサーバー
+
+BLEでコマンドを受信し、OttoPiServerにコマンドを中継する
+
+-----------------------------------------------------------------
+OttoPiBleServer -- ロボットBLEサーバー
+ |
+ +- OttoPiClient -- ロボット制御クライアント
+     |
+     |(TCP/IP)
+     |
+OttoPiServer -- ロボット制御サーバ (ネットワーク送受信スレッド)
+ |
+ +- OttoPiAuto -- ロボットの自動運転 (自動運転スレッド)
+ |   |
+ +---+- OttoPiCtrl -- コマンド制御 (動作実行スレッド)
+         |
+         + OttoPiMotion -- 動作定義
+            |
+            +- PiServo -- 複数サーボの同期制御
+            +- OttoPiConfig -- 設定ファイルの読み込み・保存
+-----------------------------------------------------------------
+"""
+__author__ = 'Yoichi Tanibayashi'
+__data__   = '2020'
+
 from OttoPiClient import OttoPiClient
 from BlePeripheral import BlePeripheral, BleService, BleCharacteristic
 from BlePeripheral import BlePeripheralApp
+import json
+
 from MyLogger import get_logger
 import click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -81,22 +110,11 @@ class CmdCharacteristic(BleCharacteristic):
         robot_client = OttoPiClient(self._robot_host, self._robot_port,
                                     debug=False)
         ret = robot_client.send_cmd(cmd)
-        self._log.debug('ret=%a', ret)
+        self._log.debug('ret=%s', ret)
 
         robot_client.close()
 
-        ret_cmd = ''
-        ret_result = ''
-        for line in ret.split('\r\n'):
-            if line.startswith('#CMD'):
-                ret_cmd = line
-            if line == '#OK' or line == '#NG':
-                ret_result = line
-
-        ret1 = ret_cmd + ' ' + ret_result
-        self._log.debug('ret1=%a', ret1)
-
-        self._chara_resp._value = bytearray(ret1.encode('utf-8'))
+        self._chara_resp._value = bytearray(json.dumps(ret).encode('utf-8'))
         self._log.debug('_chara_resp._value=%s', self._chara_resp._value)
 
         self._log.debug('done')

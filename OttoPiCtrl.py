@@ -9,14 +9,14 @@ send()にコマンド(文字列)を指定する。
 実行(モーター制御)は独立したスレッドで行う。
 このとき、現在の動作を「キリのいいところで」中断し、割り込む。
 
-
+------------------------------------------------------------
 OttoPiCtrl -- コマンド制御 (動作実行スレッド)
  |
  +- OttoPiMotion -- 動作定義
      |
      +- PiServo -- 複数サーボの同期制御
      +- OttoPiConfig -- 設定ファイルの読み込み・保存
-
+------------------------------------------------------------
 """
 __author__ = 'Yoichi Tanibayashi'
 __date__   = '2019'
@@ -43,7 +43,7 @@ class OttoPiCtrl(threading.Thread):
     def __init__(self, pi=None, debug=False):
         self._dbg = debug
         self._log = get_logger(__class__.__name__, self._dbg)
-        self._log.debug('pi  = %s', str(pi))
+        self._log.debug('pi=%s', str(pi))
 
         if type(pi) == pigpio.pi:
             self.pi   = pi

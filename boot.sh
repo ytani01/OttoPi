@@ -159,7 +159,7 @@ if [ -x ${BLE_SERVER} ]; then
 
     ${SPEAK_CMD} "BLEサーバーを起動します" &
     sleep 3
-    ${ROBOT_CLIENT} -d -c ':hi'
+    ${ROBOT_CLIENT} -d -c ':hi_right'
     sleep 2
 fi
 
