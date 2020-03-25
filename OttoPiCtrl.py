@@ -2,7 +2,7 @@
 #
 # (c) 2019 Yoichi Tanibayashi
 #
-'''
+"""
 コマンド(文字列)を受信して、OttoPiMotionで定義されている動きを起動する。
 
 send()にコマンド(文字列)を指定する。
@@ -17,7 +17,7 @@ OttoPiCtrl -- コマンド制御 (動作実行スレッド)
      +- PiServo -- 複数サーボの同期制御
      +- OttoPiConfig -- 設定ファイルの読み込み・保存
 
-'''
+"""
 __author__ = 'Yoichi Tanibayashi'
 __date__   = '2019'
 
@@ -29,9 +29,10 @@ import queue
 import threading
 
 from MyLogger import get_logger
+import click
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
-#####
 class OttoPiCtrl(threading.Thread):
     CMD_HOME   = 'home'
     CMD_STOP   = 'stop'
@@ -40,9 +41,9 @@ class OttoPiCtrl(threading.Thread):
     CMD_END    = 'end'
 
     def __init__(self, pi=None, debug=False):
-        self.debug = debug
-        self.logger = get_logger(__class__.__name__, debug)
-        self.logger.debug('pi  = %s', str(pi))
+        self._dbg = debug
+        self._log = get_logger(__class__.__name__, self._dbg)
+        self._log.debug('pi  = %s', str(pi))
 
         if type(pi) == pigpio.pi:
             self.pi   = pi
@@ -50,10 +51,10 @@ class OttoPiCtrl(threading.Thread):
         else:
             self.pi   = pigpio.pi()
             self.mypi = True
-        self.logger.debug('mypi = %s', self.mypi)
+        self._log.debug('mypi = %s', self.mypi)
 
         # self.opm = OttoPiMotion(self.pi, debug=logger.propagate and debug)
-        self.opm = OttoPiMotion(self.pi, debug=self.debug)
+        self.opm = OttoPiMotion(self.pi, debug=self._dbg)
 
         # コマンド名とモーション関数の対応づけ
         self.cmd_func = {
@@ -108,16 +109,12 @@ class OttoPiCtrl(threading.Thread):
             self.CMD_END :    {'func': None,                    'loop': False}}
 
         self.cmdq = queue.Queue()
-
         self.alive = False
 
         super().__init__(daemon=True)
 
-    def __del__(self):
-        self.logger.debug('')
-
     def end(self):
-        self.logger.debug('')
+        self._log.debug('')
 
         self.send(self.CMD_END)
         self.join()
@@ -128,31 +125,33 @@ class OttoPiCtrl(threading.Thread):
             self.pi.stop()
             self.mypi = False
 
-        self.logger.debug('done')
+        self._log.debug('done')
 
     def clear_cmdq(self):
-        self.logger.debug('')
+        self._log.debug('')
         while not self.cmdq.empty():
             c = self.cmdq.get()
-            self.logger.debug('%s: ignored', c)
+            self._log.debug('%s: ignored', c)
 
     def is_valid_cmd(self, cmd=''):
-        self.logger.debug('cmd = \'%s\'', cmd)
+        self._log.debug('cmd = \'%s\'', cmd)
         return cmd in self.cmd_func.keys()
 
-    # 連続実行中断
     def interrupt_loop(self):
-        self.logger.warn('')
+        """
+        連続実行中断
+        """
+        self._log.warn('')
         self.opm.stop()
 
     def send(self, cmd, doInterrupt=True):
-        '''
+        """
         cmd: "<cmd_name> <cmd_n>"
-        '''
-        self.logger.info('cmd=\'%s\' doInterrupt=%s', cmd, doInterrupt)
+        """
+        self._log.info('cmd=\'%s\' doInterrupt=%s', cmd, doInterrupt)
 
         cmdline = cmd.split()
-        self.logger.info('cmdline=%s', cmdline)
+        self._log.info('cmdline=%s', cmdline)
 
         if doInterrupt:
             self.interrupt_loop()
@@ -162,17 +161,17 @@ class OttoPiCtrl(threading.Thread):
         self.cmdq.put(cmd)
 
     def recv(self):
-        self.logger.debug('')
+        self._log.debug('')
         cmd = self.cmdq.get()
-        self.logger.debug('cmd=\'%s\'', cmd)
+        self._log.debug('cmd=\'%s\'', cmd)
         return cmd
 
     def exec_cmd(self, cmd):
-        self.logger.debug('cmd=\'%s\'', cmd)
+        self._log.debug('cmd=\'%s\'', cmd)
 
         # コマンドライン分割
         cmdline = cmd.split()
-        self.logger.debug('cmdline=%s', cmdline)
+        self._log.debug('cmdline=%s', cmdline)
 
         # cmd_name: コマンド名
         # cmd_n:    実行回数
@@ -182,15 +181,15 @@ class OttoPiCtrl(threading.Thread):
             (cmd_name, cmd_n) = (cmdline[0], '')
         else:
             (cmd_name, cmd_n) = (cmdline[0], cmdline[1])
-        self.logger.info('cmd_name,cmd_n=\'%s\',\'%s\'', cmd_name, cmd_n)
+        self._log.info('cmd_name,cmd_n=\'%s\',\'%s\'', cmd_name, cmd_n)
 
         if not self.is_valid_cmd(cmd_name):
-            self.logger.error('\'%s\': no such command .. ignore', cmd_name)
+            self._log.error('\'%s\': no such command .. ignore', cmd_name)
             return True
 
         # 終了確認
         if cmd_name == self.CMD_END:
-            self.logger.debug('finish')
+            self._log.debug('finish')
             return False
 
         # cmd_n -> n: 実行回数(0=連続実行)
@@ -199,7 +198,7 @@ class OttoPiCtrl(threading.Thread):
             n = int(cmd_n)
         elif self.cmd_func[cmd_name]['loop']:
             n = 0  # loop move
-        self.logger.debug('n=%d', n)
+        self._log.debug('n=%d', n)
 
         # コマンド実行
         self.cmd_func[cmd_name]['func'](n)
@@ -214,41 +213,39 @@ class OttoPiCtrl(threading.Thread):
     def is_alive(self):
         return self.alive
 
-    # Thread
     def run(self):
-        self.logger.debug('')
+        self._log.debug('')
 
         self.alive = True
         while self.alive:
             # コマンドライン受信
             cmd = self.recv()
-            self.logger.debug('cmd=\'%s\'', cmd)
+            self._log.debug('cmd=%a', cmd)
             # コマンドライン実行
             self.alive = self.exec_cmd(cmd)
-            self.logger.debug('alive=%s', self.alive)
+            self._log.debug('alive=%s', self.alive)
 
         # スレッド終了処理
-        self.logger.info('done(alive=%s)', self.alive)
+        self._log.info('done(alive=%s)', self.alive)
 
 
-#####
-class App:
+class OttoPiCtrlApp:
     def __init__(self, debug=False):
-        self.debug = debug
-        self.logger = get_logger(__class__.__name__, self.debug)
+        self._dbg = debug
+        self._log = get_logger(__class__.__name__, self._dbg)
 
         self.pi = pigpio.pi()
         self.robot_ctrl = OttoPiCtrl(self.pi, debug=debug)
         self.robot_ctrl.start()
 
     def main(self):
-        self.logger.debug('')
+        self._log.debug('')
 
         self.robot_ctrl.send('happy')
 
         while True:
             cmdline = input()
-            self.logger.info('cmdline=\'%s\'', cmdline)
+            self._log.info('cmdline=\'%s\'', cmdline)
             if cmdline == '':
                 break
             self.robot_ctrl.send(cmdline)
@@ -257,18 +254,13 @@ class App:
             if not self.robot_ctrl.is_alive():
                 break
 
-        self.logger.info('done')
+        self._log.info('done')
 
     def end(self):
-        self.logger.debug('')
+        self._log.debug('')
 
         self.robot_ctrl.end()
-        self.logger.debug('done')
-
-
-#####
-import click
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
+        self._log.debug('done')
 
 
 @click.command(context_settings=CONTEXT_SETTINGS)
@@ -277,7 +269,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 def main(debug):
     logger = get_logger(__name__, debug)
 
-    app = App(debug=debug)
+    app = OttoPiCtrlApp(debug=debug)
     try:
         app.main()
     finally:

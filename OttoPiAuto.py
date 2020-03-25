@@ -2,7 +2,7 @@
 #
 # (c) 2019 Yoichi Tanibayashi
 #
-'''
+"""
 ロボットの自動運転
 
 距離センサーで障害物からの距離を認識し、
@@ -20,7 +20,7 @@ OttoPiAuto -- ロボットの自動運転 (自動運転スレッド)
          +- PiServo -- 複数サーボの同期制御
          +- OttoPiConfig -- 設定ファイルの読み込み・保存
 
-'''
+"""
 __author__ = 'Yoichi Tanibayashi'
 __date__   = '2019'
 
@@ -35,7 +35,6 @@ import threading
 from MyLogger import get_logger
 
 
-#####
 class OttoPiAuto(threading.Thread):
     CMD_ON    = 'on'
     CMD_OFF   = 'off'
@@ -192,8 +191,10 @@ class OttoPiAuto(threading.Thread):
         while self.alive:
             cmd = self.recv()
             if cmd != '':
-                self._log.info('cmd=\'%s\'', cmd)
-                (cmd_name, cmd_args) = cmd.split(None, 1)
+                self._log.info('cmd=%a', cmd)
+                cmdline = cmd.split()
+                cmd_name = cmdline[0]
+                self._log.info('cmd_name=%a', cmd_name)
                 if cmd_name in self.cmd_func.keys():
                     self.cmd_func[cmd_name]()
                 else:

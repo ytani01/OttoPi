@@ -97,15 +97,15 @@ if [ -x ${SPEAK_SERVER} ]; then
 	mv ${SPEAK_LOG} ${SPEAK_LOG}.1
     fi
     ${SPEAK_SERVER} -d > ${SPEAK_LOG} 2>&1 &
-    sleep 4
+    sleep 3
     ${SPEAK_CMD} "音声合成システムを起動しました"
-    sleep 4
+    sleep 3
 
     #${SPEAK_CMD} "私は二そくほこうロボット"
     #${SPEAK_CMD} "${MY_NAME} です"
     ${SPEAK_CMD} "起動処理を実行しています"
     ${SPEAK_CMD} "しばらくお待ちください"
-    sleep 4
+    sleep 3
 fi
 
 if which ${SPEAKIPADDR_CMD}; then
@@ -134,7 +134,7 @@ if [ -x ${ROBOT_SERVER} ]; then
     ${SPEAK_CMD} "モーター制御システムを起動します" &
     sleep 3
     ${ROBOT_CLIENT} -d -c ':happy'
-    sleep 3
+    sleep 2
 fi
 
 #if [ -x ${WS_SERVER} ]; then
@@ -160,7 +160,7 @@ if [ -x ${BLE_SERVER} ]; then
     ${SPEAK_CMD} "BLEサーバーを起動します" &
     sleep 3
     ${ROBOT_CLIENT} -d -c ':hi'
-    sleep 3
+    sleep 2
 fi
 
 if [ -x ${MJPG_STREAMER} ]; then
