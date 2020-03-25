@@ -33,6 +33,8 @@ import queue
 import threading
 
 from MyLogger import get_logger
+import click
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
 class OttoPiAuto(threading.Thread):
@@ -288,7 +290,7 @@ class OttoPiAuto(threading.Thread):
             else:
                 if self.prev_stat == self.STAT_NEAR:
                     self.stat = self.STAT_NONE
-                    if d <= self.D_NEAR + 100:
+                    if d <= self.D_NEAR + 50:
                         self.stat = self.STAT_YELLOW
                         self._log.info('stat: %s', self.stat)
                         self.robot_ctrl.send('suriashi_fwd')
@@ -302,7 +304,6 @@ class OttoPiAuto(threading.Thread):
         self._log.info('done(alive=%s)', self.alive)
 
 
-#####
 class OttoPiAutoApp:
     def __init__(self, debug=False):
         self.dbg = debug
@@ -346,11 +347,6 @@ class OttoPiAutoApp:
 
         self.pi.stop()
         self._log.info('done')
-
-
-#####
-import click
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
 @click.command(context_settings=CONTEXT_SETTINGS)
