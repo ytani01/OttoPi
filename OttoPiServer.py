@@ -65,10 +65,13 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             'A': 'slide_left',
             'D': 'slide_right',
             '1': 'happy',
-            '2': 'hi',
-            '3': 'surprised',
-            '4': 'ojigi',
-            '5': 'ojigi2',
+            '2': 'hi_right',
+            '3': 'hi_left',
+            '4': 'bye_right',
+            '5': 'bye_left',
+            '6': 'surprised',
+            '8': 'ojigi',
+            '9': 'ojigi2',
             '0': 'home',
 
             'h': 'move_up0',
@@ -101,8 +104,11 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
 
     def net_write(self, msg):
         self._log.debug('msg=%s', msg)
+
         try:
             self.wfile.write(msg)
+        except BrokenPipeError as e:
+            self._log.debug('%s:%s', type(e).__name__, e)
         except Exception as e:
             self._log.warning('%s:%s', type(e).__name__, e)
 
@@ -327,7 +333,7 @@ class OttoPiServer(socketserver.ThreadingTCPServer):
         self.end()
 
 
-class Sample:
+class OttoPiServerApp:
     def __init__(self, port, debug=False):
         self._dbg = debug
         self._log = get_logger(__class__.__name__, debug)
@@ -355,7 +361,7 @@ def main(port, debug):
     _log = get_logger(__name__, debug)
     _log.info('port=%d', port)
 
-    obj = Sample(port, debug=debug)
+    obj = OttoPiServerApp(port, debug=debug)
     try:
         obj.main()
     finally:

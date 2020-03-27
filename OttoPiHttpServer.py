@@ -100,7 +100,7 @@ def action():
     print(MyName + ': cmd = \'' + cmd + '\'')
 
     rc = OttoPiClient(RobotHost, RobotPort)
-    rc.send_cmd(cmd)
+    ret = rc.send_cmd(cmd)
     rc.close()
 
     return ''

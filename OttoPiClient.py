@@ -114,7 +114,7 @@ class OttoPiClient:
             self.tn.write(cmd.encode('utf-8'))
 
         ret = self.recv_reply()
-        self._log.info('ret=%s', ret)
+        self._log.debug('ret=%s', ret)
 
         return ret
 
@@ -133,12 +133,12 @@ class OttoPiClient:
         return ret
 
 
-class Sample:
-    def __init__(self, svr_host, svr_port, command='', debug=False):
+class OttoPiClientApp:
+    def __init__(self, command, svr_host, svr_port, debug=False):
         self._dbg = debug
         self._log = get_logger(__class__.__name__, debug)
-        self._log.debug('svr_host=%s, svr_port=%d', svr_host, svr_port)
         self._log.debug('command=%s', command)
+        self._log.debug('svr_host=%s, svr_port=%d', svr_host, svr_port)
 
         self.cl = OttoPiClient(svr_host, svr_port, debug=self._dbg)
         self.command = command
@@ -146,24 +146,15 @@ class Sample:
     def main(self):
         self._log.debug('command:\'%s\'', self.command)
 
-        if self.command != '':
-            if self.command[0] == OttoPiServer.CMD_PREFIX:
-                self.cl.send_cmd(self.command)
-                time.sleep(3)
+        for cmd1 in self.command:
+            if cmd1[0] == OttoPiServer.CMD_PREFIX:
+                ret = self.cl.send_cmd(cmd1)
+                print(ret)
             else:
-                for ch in self.command:
+                for ch in cmd1:
                     self._log.debug('ch=%a', ch)
-                    self.cl.send_cmd(ch)
-                    time.sleep(3)
-
-            self.cl.send_cmd(':stop')
-
-        else:
-            self.cl.send_cmd(':happy')
-            time.sleep(3)
-            self.cl.send_cmd(':hi_right')
-            time.sleep(3)
-            self.cl.send_cmd(':stop')
+                    ret = self.cl.send_cmd(ch)
+                    print(ret)
 
     def end(self):
         self._log.debug('')
@@ -171,22 +162,26 @@ class Sample:
 
 
 @click.command(context_settings=CONTEXT_SETTINGS,
-               help='')
-@click.argument('svr_host', type=str, default=OttoPiClient.DEF_HOST)
-@click.argument('svr_port', type=int, default=OttoPiClient.DEF_PORT)
-@click.option('--command', '-c', type=str, default='',
-              help='control commands')
+               help='OttoPiClient')
+@click.argument('command', type=str, nargs=-1)
+@click.option('--svr_host', '-s', 'svr_host', type=str,
+              default=OttoPiClient.DEF_HOST,
+              help='server hostname or IP address')
+@click.option('--svr_port', '-p', 'svr_port', type=int,
+              default=OttoPiClient.DEF_PORT,
+              help='server port number')
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
-def main(svr_host, svr_port, command, debug):
-    logger = get_logger(__name__, debug)
-    logger.info('svr_host=%s, svr_port=%d', svr_host, svr_port)
+def main(command, svr_host, svr_port, debug):
+    _log = get_logger(__name__, debug)
+    _log.debug('command=%s, svr_host=%s, svr_port=%d',
+              command, svr_host, svr_port)
 
-    obj = Sample(svr_host, svr_port, command, debug=debug)
+    obj = OttoPiClientApp(command, svr_host, svr_port, debug=debug)
     try:
         obj.main()
     finally:
-        logger.info('finally')
+        _log.debug('finally')
         obj.end()
 
 
