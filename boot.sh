@@ -133,7 +133,7 @@ if [ -x ${ROBOT_SERVER} ]; then
 
     ${SPEAK_CMD} "モーター制御システムを起動します" &
     sleep 3
-    ${ROBOT_CLIENT} -d -c ':happy'
+    ${ROBOT_CLIENT} -d ':.happy'
     sleep 2
 fi
 
@@ -146,7 +146,7 @@ fi
 #
 #    ${SPEAK_CMD} "ウエブソックサーバーを起動します" &
 #    sleep 3
-#    ${ROBOT_CLIENT} -d -c ':surprised'
+#    ${ROBOT_CLIENT} -d  ':.surprised'
 #    sleep 3
 #fi
 
@@ -159,7 +159,7 @@ if [ -x ${BLE_SERVER} ]; then
 
     ${SPEAK_CMD} "BLEサーバーを起動します" &
     sleep 3
-    ${ROBOT_CLIENT} -d -c ':hi_right'
+    ${ROBOT_CLIENT} -d ':.hi_right'
     sleep 2
 fi
 
