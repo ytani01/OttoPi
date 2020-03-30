@@ -20,20 +20,4 @@
 # For more information see the manual pages of crontab(5) and cron(8)
 # 
 # m h  dom mon dow   command
-PIN_LED=20
-PIN_SW=21
-PIN_VCC=26
-PIN_AUDIO1=12
-PIN_AUDIO2=13
-PIN_SERVO1=17
-PIN_SERVO2=27
-PIN_SERVO3=22
-PIN_SERVO4=23
-@reboot		sudo pigpiod
-@reboot		${HOME}/env0-ottopi/OttoPi2/boot.sh > ${HOME}/tmp/boot2.log 2>&1 &
-@reboot		sleep 4; pigs m ${PIN_AUDIO1} 0 m ${PIN_AUDIO2} 0
-@reboot		sleep 6; cvlc --play-and-exit --alsa-gain 0.5 ${HOME}/OttoPi/sound/StarTrek-VOY-opening.aac
-@reboot		sleep 7; pigs s ${PIN_SERVO1} 0 s ${PIN_SERVO2} 0
-@reboot		sleep 8; pigs s ${PIN_SERVO3} 0 s ${PIN_SERVO4} 0
-
-@reboot		sleep 10; ${HOME}/bin/boot.sh > ${HOME}/tmp/boot.log 2>&1 &
+@reboot		${HOME}/env0-ottopi/OttoPi/boot.sh > ${HOME}/tmp/boot.log 2>&1 &
