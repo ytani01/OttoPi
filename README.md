@@ -25,7 +25,7 @@ T.B.D
 
 ## Hardware
 
-### BOM(Bill of Materials)
+### BOM (Bill of Materials)
 
 | Item | Qty |
 |------|-----|
@@ -33,6 +33,9 @@ T.B.D
 | 18650 battery        | x1 |
 | battery box          | x1 |
 | SG-90 Servo Motor    | x4 | 
+
+
+### T.B.D.
 
 
 ## Install software
