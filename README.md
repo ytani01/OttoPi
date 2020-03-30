@@ -2,7 +2,7 @@
 
 # OttoPi: Otto DIY like biped robot for Raspberry Pi (Zero)
 
-## about
+## About
 
 Raspberry Pi Zeroをベースに、
 [Otto DIY](https://www.ottodiy.com/)のような
@@ -18,7 +18,7 @@ Raspberry Piがベースと言うことで、
 * 音声合成機能内蔵(OpenJTalk)で、自由な文章をしゃべらせることができます。
 
 
-## install
+## Install
 
 ### make Python3 venv
 
@@ -44,14 +44,15 @@ $ ./setup.sh
 ```
 
 
-## access from smartphone or PC
+## Access from smartphone or PC
 
 ``http://{IP address}:5000/``
 
 
-## control with Scratch 3.0
+## Control with Scratch 3.0
 
-[Scratch & 専用拡張機能](https://ytani01.github.io/scratch-gui/)
+* (for PC) run ``Scratch Link``
+* [Scratch & 専用拡張機能](https://ytani01.github.io/scratch-gui/)
 
 
 ## References
