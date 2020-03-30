@@ -18,18 +18,18 @@ done
 echo "PYTHONPATH=${PYTHONPATH}"
 
 ### Button and LED
-PIN_SW=21
-PIN_VCC=26
-PIN_LED=20
+#PIN_SW=21
+#PIN_VCC=26
+#PIN_LED=20
 
-BUTTON_CMD="${ROBOT_DIR}/RobotButton.py"
-BUTTON_OPT=" -s ${PIN_SW} -v ${PIN_VCC} -l ${PIN_LED}"
-BUTTON_LOG="${LOGDIR}/button.log"
+#BUTTON_CMD="${ROBOT_DIR}/RobotButton.py"
+#BUTTON_OPT=" -s ${PIN_SW} -v ${PIN_VCC} -l ${PIN_LED}"
+#BUTTON_LOG="${LOGDIR}/button.log"
 
 ### Music
 OPENING_MUSIC="ON"
-OPENING_MUSIC_PLAYER="cvlc --play-and-exit"
-OPENING_MUSIC_DATA="${HOME}/tmp/opening-music"
+#OPENING_MUSIC_PLAYER="cvlc --play-and-exit"
+#OPENING_MUSIC_DATA="${HOME}/tmp/opening-music"
 
 ### Speak
 SPEAK=OFF
@@ -80,38 +80,38 @@ MJPG_STREAMER_LOG="${LOGDIR}/mjpg-streamer.log"
 # main
 #######
 
-gpio -g mode ${PIN_LED} output && gpio -g write ${PIN_LED} 1
-gpio -g mode ${PIN_VCC} output && gpio -g write ${PIN_VCC} 1
-gpio -g mode ${PIN_SW} input
+#gpio -g mode ${PIN_LED} output && gpio -g write ${PIN_LED} 1
+#gpio -g mode ${PIN_VCC} output && gpio -g write ${PIN_VCC} 1
+#gpio -g mode ${PIN_SW} input
 
-echo "OPENING_MUSIC=${OPENING_MUSIC}"
-if [ "${OPENING_MUSIC}" = "ON" ]; then
-    #nice -n 5 ${OPENING_MUSIC_PLAYER} ${OPENING_MUSIC_DATA} &
-    ${OPENING_MUSIC_PLAYER} ${OPENING_MUSIC_DATA} &
-    sleep 5
-fi
+#echo "OPENING_MUSIC=${OPENING_MUSIC}"
+#if [ "${OPENING_MUSIC}" = "ON" ]; then
+#    #nice -n 5 ${OPENING_MUSIC_PLAYER} ${OPENING_MUSIC_DATA} &
+#    ${OPENING_MUSIC_PLAYER} ${OPENING_MUSIC_DATA} &
+#    sleep 5
+#fi
 
-if [ -x ${SPEAK_SERVER} ]; then
-    SPEAK=ON
-    if [ -f ${SPEAK_LOG} ]; then
-	mv ${SPEAK_LOG} ${SPEAK_LOG}.1
-    fi
-    ${SPEAK_SERVER} -d > ${SPEAK_LOG} 2>&1 &
-    sleep 3
-    ${SPEAK_CMD} "音声合成システムを起動しました"
-    sleep 3
-
-    #${SPEAK_CMD} "私は二そくほこうロボット"
-    #${SPEAK_CMD} "${MY_NAME} です"
-    ${SPEAK_CMD} "起動処理を実行しています"
-    ${SPEAK_CMD} "しばらくお待ちください"
-    sleep 3
-fi
-
-if which ${SPEAKIPADDR_CMD}; then
-    ${SPEAKIPADDR_CMD} ${PIN_SW}
-    ${SPEAK_CMD} "起動処理を続行します"
-fi
+#if [ -x ${SPEAK_SERVER} ]; then
+#    SPEAK=ON
+#    if [ -f ${SPEAK_LOG} ]; then
+#	mv ${SPEAK_LOG} ${SPEAK_LOG}.1
+#    fi
+#    ${SPEAK_SERVER} -d > ${SPEAK_LOG} 2>&1 &
+#    sleep 3
+#    ${SPEAK_CMD} "音声合成システムを起動しました"
+#    sleep 3
+#
+#    #${SPEAK_CMD} "私は二そくほこうロボット"
+#    #${SPEAK_CMD} "${MY_NAME} です"
+#    ${SPEAK_CMD} "起動処理を実行しています"
+#    ${SPEAK_CMD} "しばらくお待ちください"
+#    sleep 3
+#fi
+#
+#if which ${SPEAKIPADDR_CMD}; then
+#    ${SPEAKIPADDR_CMD} ${PIN_SW}
+#    ${SPEAK_CMD} "起動処理を続行します"
+#fi
 
 if [ -x ${HTTP_SERVER} ]; then
     cd ${BINDIR}
@@ -163,9 +163,9 @@ if [ -x ${BLE_SERVER} ]; then
     sleep 2
 fi
 
-if [ -x ${MJPG_STREAMER} ]; then
-    ${MJPG_STREAMER} > ${MJPG_STREAMER_LOG} 2>&1 &
-fi
+#if [ -x ${MJPG_STREAMER} ]; then
+#    ${MJPG_STREAMER} > ${MJPG_STREAMER_LOG} 2>&1 &
+#fi
 
 # if [ -x ${BUTTON_CMD} ]; then
 #     ${BUTTON_CMD} ${BUTTON_OPT} > ${BUTTON_LOG} 2>&1 &
