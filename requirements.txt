@@ -1,6 +1,9 @@
-smbus2
 click
+Flask
+itsdangerous
+Jinja2
+MarkupSafe
 netifaces
-flask
-websockets
-websocket_server
+pigpio
+smbus2
+Werkzeug

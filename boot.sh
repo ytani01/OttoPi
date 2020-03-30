@@ -1,197 +1,267 @@
-#!/bin/sh -x
+#!/bin/sh
 #
-# Sample boot.sh
+# (c) 2020 Yoichi Tanibayashi
 #
-# (c) Yoichi Tanibayashi
-#
-MY_NAME="オットーパイ"
+MYNAME=`basename $0`
+MYDIR=`dirname $0`
 
-BINDIR=${HOME}/bin
 LOGDIR=${HOME}/tmp
-ROBOT_DIR=${HOME}/OttoPi
 
-export PATH=${BINDIR}:${PATH}
+IPHTML="/tmp/`hostname`-ip.html"
+HTTP_PORT=5000
 
-for d in OttoPi LedSwitch speak; do
-    export PYTHONPATH="${PYTHONPATH}:${HOME}/$d"
-done
-echo "PYTHONPATH=${PYTHONPATH}"
+IPHTML_DST="ytani@ssh.ytani.net:public_html/iot"
 
-### Button and LED
-#PIN_SW=21
-#PIN_VCC=26
-#PIN_LED=20
+PIN_AUDIO1=12
+PIN_AUDIO2=13
 
-#BUTTON_CMD="${ROBOT_DIR}/RobotButton.py"
-#BUTTON_OPT=" -s ${PIN_SW} -v ${PIN_VCC} -l ${PIN_LED}"
-#BUTTON_LOG="${LOGDIR}/button.log"
+PIN_SERVO1=17
+PIN_SERVO2=27
+PIN_SERVO3=22
+PIN_SERVO4=23
 
-### Music
-OPENING_MUSIC="ON"
-#OPENING_MUSIC_PLAYER="cvlc --play-and-exit"
-#OPENING_MUSIC_DATA="${HOME}/tmp/opening-music"
+PIN_SW=21
+PIN_VCC=26
+PIN_LED=20
 
-### Speak
-SPEAK=OFF
-SPEAK_DIR=${HOME}/speak
-SPEAK_SERVER="${SPEAK_DIR}/SpeakServer.py"
+OPENING_MUSIC="StarTrek-VOY-opening.mp3"
+OPENING_MUSIC_PLAYER="cvlc --play-and-exit --alsa-gain 0.5"
+
+SPEAK_SVR="SpeakServer.py"
+SPEAK_SVR_OPT="-d"
 SPEAK_LOG="${LOGDIR}/speak.log"
-SPEAK_CMD="${SPEAK_DIR}/SpeakClient.py"
-SPEAKIPADDR_CMD="${SPEAK_DIR}/speakipaddr2.sh"
+SPEAK_CMD="SpeakClient.py"
+SPEAKIPADDR="speakipaddr2.sh"
 
-### Robot Server
-ROBOT_SERVER="${ROBOT_DIR}/OttoPiServer.py"
-ROBOT_OPT="12345"
-#ROBOT_OPT="-d"
-ROBOT_LOG="${LOGDIR}/robot.log"
-
-### HTTP Server
-HTTP_SERVER="${ROBOT_DIR}/OttoPiHttpServer.py"
-#HTTP_OPT=""
-HTTP_OPT="-d"
+HTTP_SVR="OttoPiHttpServer.py"
+HTTP_SVR_OPT="-d"
 HTTP_LOG="${LOGDIR}/http.log"
 
-### WebSocket Server
-WS_SERVER="${ROBOT_DIR}/OttoPiWebsockServer.py"
-WS_SERVER_OPT="-d"
-WS_SERVER_LOG="${LOGDIR}/ws_server.log"
+ROBOT_SVR="OttoPiServer.py"
+ROBOT_SVR_OPT="12345"
+ROBOT_LOG="${LOGDIR}/robot.log"
+ROBOT_CLIENT="OttoPiClient.py"
 
-### BLE Server
-BLE_SERVER="${ROBOT_DIR}/OttoPiBleServer.py"
-BLE_SERVER_OPT="-d"
-BLE_SERVER_LOG="${LOGDIR}/ble_server.log"
+BLE_SVR="OttoPiBleServer.py"
+BLE_SVR_OPT="-d"
+BLE_LOG="${LOGDIR}/ble.log"
 
-### Robot Client
-ROBOT_CLIENT="${ROBOT_DIR}/OttoPiClient.py"
-
-### loop.sh
-LOOP_SH="${ROBOT_DIR}/loop.sh"
+LOOP_SH="loop.sh"
 LOOP_LOG="${LOGDIR}/loop.log"
 
-### music.sh
-MUSIC_SH="${ROBOT_DIR}/music.sh"
+MUSIC_SH="music.sh"
 MUSIC_LOG="${LOGDIR}/music.log"
 
-### mjpg_streamer
-MJPG_STREAMER="${BINDIR}/mjpg-streamer.sh"
-MJPG_STREAMER_LOG="${LOGDIR}/mjpg-streamer.log"
+#
+# functions
+#
+echo_date () {
+    DATE_STR=`date +'%Y/%m%d(%a) %H:%M:%S'`
+    echo "${DATE_STR}> $*"
+}
 
-#######
+echo_do () {
+    DATE_STR=`date +'%Y/%m%d(%a) %H:%M:%S'`
+    echo_date $*
+    eval $*
+}
+
+#
+# init
+#
+echo_date "MYNAME=${MYNAME}"
+echo_date "MYDIR=${MYDIR}"
+
+cd ${MYDIR}
+BASEDIR=`pwd`
+echo_date "BASEDIR=${BASEDIR}"
+
+cd ..
+ENVDIR=`pwd`
+if [ ! -f ${ENVDIR}/bin/activate ]; then
+    echo "${ENVDIR}: invalid venv directory"
+    exit 1
+fi
+echo_date "ENVDIR=${ENVDIR}"
+
+BINDIR="${ENVDIR}/bin"
+echo_date "BINDIR=${BINDIR}"
+
+#
 # main
-#######
-
-#gpio -g mode ${PIN_LED} output && gpio -g write ${PIN_LED} 1
-#gpio -g mode ${PIN_VCC} output && gpio -g write ${PIN_VCC} 1
-#gpio -g mode ${PIN_SW} input
-
-#echo "OPENING_MUSIC=${OPENING_MUSIC}"
-#if [ "${OPENING_MUSIC}" = "ON" ]; then
-#    #nice -n 5 ${OPENING_MUSIC_PLAYER} ${OPENING_MUSIC_DATA} &
-#    ${OPENING_MUSIC_PLAYER} ${OPENING_MUSIC_DATA} &
-#    sleep 5
-#fi
-
-#if [ -x ${SPEAK_SERVER} ]; then
-#    SPEAK=ON
-#    if [ -f ${SPEAK_LOG} ]; then
-#	mv ${SPEAK_LOG} ${SPEAK_LOG}.1
-#    fi
-#    ${SPEAK_SERVER} -d > ${SPEAK_LOG} 2>&1 &
-#    sleep 3
-#    ${SPEAK_CMD} "音声合成システムを起動しました"
-#    sleep 3
 #
-#    #${SPEAK_CMD} "私は二そくほこうロボット"
-#    #${SPEAK_CMD} "${MY_NAME} です"
-#    ${SPEAK_CMD} "起動処理を実行しています"
-#    ${SPEAK_CMD} "しばらくお待ちください"
-#    sleep 3
-#fi
-#
-#if which ${SPEAKIPADDR_CMD}; then
-#    ${SPEAKIPADDR_CMD} ${PIN_SW}
-#    ${SPEAK_CMD} "起動処理を続行します"
-#fi
 
-if [ -x ${HTTP_SERVER} ]; then
-    cd ${BINDIR}
-    if [ -f ${HTTP_LOG} ]; then
-	mv ${HTTP_LOG} ${HTTP_LOG}.1
+#
+# start pigpiod
+#
+echo_date "* start pigpiod"
+sudo pigpiod
+sleep 5
+
+#
+# setup GPIO pins
+#
+echo_date "* setup GPIO pins"
+pigs m ${PIN_AUDIO1} 0
+pigs m ${PIN_AUDIO2} 0
+
+pigs s ${PIN_SERVO1} 0
+pigs s ${PIN_SERVO2} 0
+pigs s ${PIN_SERVO3} 0
+pigs s ${PIN_SERVO4} 0
+
+pigs m ${PIN_LED} w
+pigs m ${PIN_VCC} w
+pigs m ${PIN_SW} r
+
+pigs w ${PIN_LED} 0
+pigs w ${PIN_VCC} 1
+
+#
+# activate Python venv
+#
+echo_date "* activate Python venv"
+. ${BINDIR}/activate
+
+sleep 5
+
+#
+# start opening music
+#
+echo_date "* start opening music"
+OPENING_MUSIC_FILE="${BASEDIR}/sound/opening/${OPENING_MUSIC}"
+if [ -f ${OPENING_MUSIC_FILE} ]; then
+    echo_do ${OPENING_MUSIC_PLAYER} ${OPENING_MUSIC_FILE} &
+else
+    echo_date "${OPENING_MUSIC_FILE}: no such file"
+fi
+sleep 1
+
+#
+# get IP address
+#
+IPADDR=`${BASEDIR}/IpAddr.py -d 2> ${LOGDIR}/IpAddr.log`
+echo_date "IPADDR=${IPADDR}"
+
+#
+# make HTML file including IP address and publish
+#
+IPHTML_TEMPLATE=${BASEDIR}/ipaddr-template.html
+TMPFILE1=`tempfile -s '.html'`
+sed "s/{{ ipaddr }}/${IPADDR}/g" ${IPHTML_TEMPLATE} > ${TMPFILE1}
+sed "s/{{ port }}/${HTTP_PORT}/g" ${TMPFILE1} > ${IPHTML}
+rm -fv ${TMPFILE1}
+echo_date "IPHTML=${IPHTML}"
+
+echo_date "* publish IP address file ${IPHTML} to ${IPHTML_DST}"
+echo_do scp ${IPHTML} ${IPHTML_DST}
+rm -fv ${IPHTML}
+
+#
+# start speak server
+#
+if which ${SPEAK_SVR}; then
+    if [ -f ${SPEAK_LOG} ]; then
+        mv -fv ${SPEAK_LOG} ${SPEAK_LOG}.1
     fi
-    ${HTTP_SERVER} ${HTTP_OPT} > ${HTTP_LOG} 2>&1 &
-
-    ${SPEAK_CMD} "リモート操作インターフェースを起動します" &
+    ${SPEAK_SVR} ${SPEAK_SVR_OPT} > ${SPEAK_LOG} 2>&1 &
+    sleep 3
+    ${SPEAK_CMD} "音声合成システムを起動しました" &
+    sleep 2
+    ${SPEAK_CMD} "起動処理を実行しています" &
+    sleep 2
+    ${SPEAK_CMD} "しばらくお待ちください" &
+    sleep 2
+    ${SPEAK_CMD} "起動処理の状況を音声でお知らせします" &
     sleep 3
 fi
 
-if [ -x ${ROBOT_SERVER} ]; then
-    cd ${BINDIR}
-    if [ -f ${ROBOT_LOG} ]; then
-	mv ${ROBOT_LOG} ${ROBOT_LOG}.1
-    fi
-    ${ROBOT_SERVER} ${ROBOT_OPT} > ${ROBOT_LOG} 2>&1 &
+#
+# speak IP address
+#
+if which ${SPEAKIPADDR}; then
+    ${SPEAKIPADDR} ${PIN_SW}
+    ${SPEAK_CMD} "起動処理を続行します" &
+    sleep 1
+fi
 
-    ${SPEAK_CMD} "モーター制御システムを起動します" &
+#
+# HTTP server
+#
+if which ${HTTP_SVR}; then
+    if [ -f ${HTTP_LOG} ]; then
+        mv -fv ${HTTP_LOG} ${HTTP_LOG}.1
+    fi
+    cd ${BASEDIR}
+    ${HTTP_SVR} ${HTTP_SVR_OPT} > ${HTTP_LOG} 2>&1 &
     sleep 3
+    ${SPEAK_CMD} "リモート操作インタフェースを起動します" &
+    sleep 1
+    ${SPEAK_CMD} "スマートフォンでの操作が可能になりました" &
+    sleep 5
+fi
+
+#
+# robot server
+#
+if which ${ROBOT_SVR}; then
+    if [ -f ${ROBOT_LOG} ]; then
+        mv -fv ${ROBOT_LOG} ${ROBOT_LOG}.1
+    fi
+    cd ${BASEDIR}
+    ${ROBOT_SVR} ${ROBOT_SVR_OPT} > ${ROBOT_LOG} 2>&1 &
+    sleep 3
+    ${SPEAK_CMD} "モーター制御システムを起動し" &
+    sleep 1
+    ${SPEAK_CMD} "モーターの動作確認を行います" &
+    sleep 6
     ${ROBOT_CLIENT} -d ':.happy'
     sleep 2
 fi
 
-#if [ -x ${WS_SERVER} ]; then
-#    cd ${BINDIR}
-#    if [ -f ${WS_SERVER_LOG} ]; then
-#	mv ${WS_SERVER_LOG} ${WS_SERVER_LOG}.1
-#    fi
-#    ${WS_SERVER} ${WS_SERVER_OPT} > ${WS_SERVER_LOG} 2>&1 &
 #
-#    ${SPEAK_CMD} "ウエブソックサーバーを起動します" &
-#    sleep 3
-#    ${ROBOT_CLIENT} -d  ':.surprised'
-#    sleep 3
-#fi
-
-if [ -x ${BLE_SERVER} ]; then
-    cd ${BINDIR}
-    if [ -f ${BLE_SERVER_LOG} ]; then
-	mv ${BLE_SERVER_LOG} ${BLE_SERVER_LOG}.1
+# BLE server
+#
+if which ${BLE_SVR}; then
+    if [ -f ${BLE_LOG} ]; then
+        mv -fv ${BLE_LOG} ${BLE_LOG}.1
     fi
-    sudo ${BLE_SERVER} ${BLE_SERVER_OPT} > ${BLE_SERVER_LOG} 2>&1 &
-
-    ${SPEAK_CMD} "BLEサーバーを起動します" &
+    cd ${BASEDIR}
+    sudo ${BINDIR}/activate-do.sh ${ENVDIR} ${BLE_SVR} ${BLE_SVR_OPT} > ${BLE_LOG} 2>&1 &
     sleep 3
-    ${ROBOT_CLIENT} -d ':.hi_right'
+    ${SPEAK_CMD} "BLEサーバーを起動します" &
+    sleep 2
+    ${SPEAK_CMD} "スクラッチからの制御が可能になりました" &
     sleep 2
 fi
 
-#if [ -x ${MJPG_STREAMER} ]; then
-#    ${MJPG_STREAMER} > ${MJPG_STREAMER_LOG} 2>&1 &
-#fi
+#
+# boot complete
+#
+${SPEAK_CMD} "起動処理が完了しました" &
+sleep 1
+${SPEAK_CMD} "お待たせしました" &
+sleep 1
+${SPEAK_CMD} "準備、オーケーです" &
+sleep 5
+${ROBOT_CLIENT} -d ':.hi_right'
 
-# if [ -x ${BUTTON_CMD} ]; then
-#     ${BUTTON_CMD} ${BUTTON_OPT} > ${BUTTON_LOG} 2>&1 &
-
-#     ${SPEAK_CMD} "ボタン操作を可能にします" &
-#     sleep 5
-# fi
-
-# if which ${SPEAKIPADDR_CMD}; then
-#     #${SPEAKIPADDR_CMD} ${PIN_SW} repeat &
-#     ${SPEAKIPADDR_CMD} ${PIN_SW} &
-#     PID_IPADDR=$!
-# fi
-# echo "wait ${PID_IPADDR}"
-# wait ${PID_IPADDR}
-# echo "done: ${PID_IPADDR}"
-
-${SPEAK_CMD} "起動処理が完了しました"
-${SPEAK_CMD} "お待たせしました"
-${SPEAK_CMD} "準備、オーケーです"
+#
+# wait opening music
+#
+#while pgrep vlc; do
+#    echo_date "waiting vlc to end .."
+#    sleep 1
+#done
 
 sleep 5
-if [ -x ${LOOP_SH} ]; then
+
+echo_date "start ${LOOP_SH}"
+if which ${LOOP_SH}; then
     ${LOOP_SH} > ${LOOP_LOG} 2>&1 &
 fi
 
-if [ -x ${MUSIC_SH} ]; then
+echo_date "start ${MUSIC_SH}"
+if which ${MUSIC_SH}; then
     ${MUSIC_SH} > ${MUSIC_LOG} 2>&1 &
 fi

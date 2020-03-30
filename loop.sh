@@ -1,18 +1,12 @@
 #!/bin/sh
 #
-# (c) 2019 Yoichi Tanibayashi
+# (c) 2020 Yoichi Tanibayashi
 #
 
-ROBOTDIR=${HOME}/OttoPi
-
-SPEECH_SH=${ROBOTDIR}/speech.sh
-SPEECH_TXT=${ROBOTDIR}/speech.txt
+SPEECH_SH=speech.sh
+SPEECH_TXT=speech.txt
 SPEECH_STOP_FILE=${HOME}/stop_speech
 SPEECH_INTERVAL=60
-
-MUSIC_SH=${ROBOTDIR}/music.sh
-MUSIC_FILE=${ROBOTDIR}/carnival.mp3
-MUSIC_STOP_FILE=${HOME}/stop_music
 
 ##### main
 while true; do
