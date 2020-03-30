@@ -1,5 +1,4 @@
-[![OttoPi](https://img.youtube.com/vi/jVhbuxwXMSc/0.jpg)](http://www.ytani.net:8080/tmp/OttoPi/OttoPi-Scratch.mp4)
-[![OttoPi](https://img.youtube.com/vi/jVhbuxwXMSc/0.jpg)](https://www.youtube.com/watch?v=jVhbuxwXMSc)
+[![OttoPi](doc/OttoPi-Scratch.mp4.png)](http://www.ytani.net:8080/tmp/OttoPi/OttoPi-Scratch.mp4)
 
 # OttoPi: Otto DIY like biped robot for Raspberry Pi (Zero)
 
