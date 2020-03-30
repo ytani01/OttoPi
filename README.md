@@ -46,7 +46,7 @@ $ ./setup.sh
 
 ## access from smartphone or PC
 
-``http://{IP address}}:5000/``
+``http://{IP address}:5000/``
 
 
 ## control with Scratch 3.0
