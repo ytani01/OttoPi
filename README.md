@@ -18,7 +18,22 @@ Raspberry Piがベースと言うことで、
 * 音声合成機能内蔵(OpenJTalk)で、自由な文章をしゃべらせることができます。
 
 
-## Install
+## 3D model
+
+T.B.D
+
+
+## Hardware
+
+### BOM(Bill of Materials)
+
+|-----|-----|
+| Raspberry Pi Zero WH | x1 |
+| 18650 battery        | x1 |
+| battery box          | x1 |
+
+
+## Install software
 
 ### make Python3 venv
 
@@ -34,7 +49,6 @@ $ python3 -m venv env1
 $ cd ~/env1
 $ git clone https://www.github.com/ytani01/OttoPi.git
 ```
-
 
 ### install 
 
