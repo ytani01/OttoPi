@@ -1,5 +1,9 @@
 # OttoPi: Otto DIY like biped robot for Raspberry Pi (Zero)
 
+
+
+[![OttoPi](https://img.youtube.com/vi/jVhbuxwXMSc/0.jpg)](https://www.youtube.com/watch?v=jVhbuxwXMSc)
+
 ## about
 
 Raspberry Pi Zeroをベースに、
