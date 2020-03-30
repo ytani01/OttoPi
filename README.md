@@ -28,10 +28,11 @@ T.B.D
 ### BOM(Bill of Materials)
 
 | Item | Qty |
-|-----|-----|
+|------|-----|
 | Raspberry Pi Zero WH | x1 |
 | 18650 battery        | x1 |
 | battery box          | x1 |
+| SG-90 Servo Motor    | x4 | 
 
 
 ## Install software
