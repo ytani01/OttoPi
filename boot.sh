@@ -167,11 +167,11 @@ if which ${SPEAK_SVR}; then
     ${SPEAK_SVR} ${SPEAK_SVR_OPT} > ${SPEAK_LOG} 2>&1 &
     sleep 3
     ${SPEAK_CMD} "音声合成システムを起動しました" &
-    sleep 2
+    sleep 3
     ${SPEAK_CMD} "起動処理を実行しています" &
-    sleep 2
+    sleep 3
     ${SPEAK_CMD} "しばらくお待ちください" &
-    sleep 2
+    sleep 3
     ${SPEAK_CMD} "起動処理の状況を音声でお知らせします" &
     sleep 3
 fi
@@ -182,7 +182,7 @@ fi
 if which ${SPEAKIPADDR}; then
     ${SPEAKIPADDR} ${PIN_SW}
     ${SPEAK_CMD} "起動処理を続行します" &
-    sleep 1
+    sleep 2
 fi
 
 #
@@ -196,9 +196,9 @@ if which ${HTTP_SVR}; then
     ${HTTP_SVR} ${HTTP_SVR_OPT} > ${HTTP_LOG} 2>&1 &
     sleep 3
     ${SPEAK_CMD} "リモート操作インタフェースを起動します" &
-    sleep 1
+    sleep 2
     ${SPEAK_CMD} "スマートフォンでの操作が可能になりました" &
-    sleep 5
+    sleep 6
 fi
 
 #
@@ -212,11 +212,11 @@ if which ${ROBOT_SVR}; then
     ${ROBOT_SVR} ${ROBOT_SVR_OPT} > ${ROBOT_LOG} 2>&1 &
     sleep 3
     ${SPEAK_CMD} "モーター制御システムを起動し" &
-    sleep 1
+    sleep 2
     ${SPEAK_CMD} "モーターの動作確認を行います" &
     sleep 6
     ${ROBOT_CLIENT} -d ':.happy'
-    sleep 2
+    sleep 5
 fi
 
 #
@@ -230,20 +230,20 @@ if which ${BLE_SVR}; then
     sudo ${BINDIR}/activate-do.sh ${ENVDIR} ${BLE_SVR} ${BLE_SVR_OPT} > ${BLE_LOG} 2>&1 &
     sleep 3
     ${SPEAK_CMD} "BLEサーバーを起動します" &
-    sleep 2
+    sleep 3
     ${SPEAK_CMD} "スクラッチからの制御が可能になりました" &
-    sleep 2
+    sleep 3
 fi
 
 #
 # boot complete
 #
 ${SPEAK_CMD} "起動処理が完了しました" &
-sleep 1
+sleep 2
 ${SPEAK_CMD} "お待たせしました" &
-sleep 1
+sleep 2
 ${SPEAK_CMD} "準備、オーケーです" &
-sleep 5
+sleep 3
 ${ROBOT_CLIENT} -d ':.hi_right'
 
 #
