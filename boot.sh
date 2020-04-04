@@ -2,9 +2,6 @@
 #
 # (c) 2020 Yoichi Tanibayashi
 #
-MYNAME=`basename $0`
-MYDIR=`dirname $0`
-
 LOGDIR=${HOME}/tmp
 
 IPHTML="/tmp/`hostname`-ip.html"
@@ -55,53 +52,67 @@ MUSIC_LOG="${LOGDIR}/music.log"
 #
 # functions
 #
-echo_date () {
+ts_echo () {
     DATE_STR=`date +'%Y/%m%d(%a) %H:%M:%S'`
     echo "${DATE_STR}> $*"
 }
 
-echo_do () {
+ts_echo_do () {
     DATE_STR=`date +'%Y/%m%d(%a) %H:%M:%S'`
-    echo_date $*
+    ts_echo $*
     eval $*
 }
 
 #
 # init
 #
-echo_date "MYNAME=${MYNAME}"
-echo_date "MYDIR=${MYDIR}"
+MYNAME=`basename $0`
+ts_echo "MYNAME=${MYNAME}"
+
+MYDIR=`dirname $0`
+ts_echo "MYDIR=${MYDIR}"
 
 cd ${MYDIR}
 BASEDIR=`pwd`
-echo_date "BASEDIR=${BASEDIR}"
+ts_echo "BASEDIR=${BASEDIR}"
 
 cd ..
-ENVDIR=`pwd`
-if [ ! -f ${ENVDIR}/bin/activate ]; then
-    echo "${ENVDIR}: invalid venv directory"
+VENVDIR=`pwd`
+ts_echo "VENVDIR=${VENVDIR}"
+
+BINDIR="${VENVDIR}/bin"
+ts_echo "BINDIR=${BINDIR}"
+
+#
+# check venv and activate it
+#
+if [ -z "${VIRTUAL_ENV}" ]; then
+    ACTIVATE="${BINDIR}/activate"
+    ts_echo "ACTIVATE=${ACTIVATE}"
+
+    if [ ! -f ${ACTIVATE} ]; then
+        ts_echo "ERROR: ${ACTIVATE}: no such file"
+        exit 1
+    fi
+    . ${ACTIVATE}
+fi
+if [ ${VIRTUAL_ENV} != ${VENVDIR} ]; then
+    ts_echo "ERROR: VIRTUAL_ENV=${VIRTUAL_ENV} != VENVIDR=${VENVDIR}"
     exit 1
 fi
-echo_date "ENVDIR=${ENVDIR}"
-
-BINDIR="${ENVDIR}/bin"
-echo_date "BINDIR=${BINDIR}"
-
-#
-# main
-#
+ts_echo "VIRTUAL_ENV=${VIRTUAL_ENV}"
 
 #
 # start pigpiod
 #
-echo_date "* start pigpiod"
-sudo pigpiod
+ts_echo "* start pigpiod"
+ts_echo_do sudo pigpiod
 sleep 5
 
 #
 # setup GPIO pins
 #
-echo_date "* setup GPIO pins"
+ts_echo "* setup GPIO pins"
 pigs m ${PIN_AUDIO1} 0
 pigs m ${PIN_AUDIO2} 0
 
@@ -117,31 +128,25 @@ pigs m ${PIN_SW} r
 pigs w ${PIN_LED} 0
 pigs w ${PIN_VCC} 1
 
-#
-# activate Python venv
-#
-echo_date "* activate Python venv"
-. ${BINDIR}/activate
-
-sleep 5
+sleep 3
 
 #
 # start opening music
 #
-echo_date "* start opening music"
+ts_echo "* start opening music"
 OPENING_MUSIC_FILE="${BASEDIR}/sound/opening/${OPENING_MUSIC}"
 if [ -f ${OPENING_MUSIC_FILE} ]; then
-    echo_do ${OPENING_MUSIC_PLAYER} ${OPENING_MUSIC_FILE} &
+    ts_echo_do ${OPENING_MUSIC_PLAYER} ${OPENING_MUSIC_FILE} &
 else
-    echo_date "${OPENING_MUSIC_FILE}: no such file"
+    ts_echo "${OPENING_MUSIC_FILE}: no such file"
 fi
-sleep 1
+sleep 2
 
 #
 # get IP address
 #
 IPADDR=`${BASEDIR}/IpAddr.py -d 2> ${LOGDIR}/IpAddr.log`
-echo_date "IPADDR=${IPADDR}"
+ts_echo "IPADDR=${IPADDR}"
 
 #
 # make HTML file including IP address and publish
@@ -151,10 +156,10 @@ TMPFILE1=`tempfile -s '.html'`
 sed "s/{{ ipaddr }}/${IPADDR}/g" ${IPHTML_TEMPLATE} > ${TMPFILE1}
 sed "s/{{ port }}/${HTTP_PORT}/g" ${TMPFILE1} > ${IPHTML}
 rm -fv ${TMPFILE1}
-echo_date "IPHTML=${IPHTML}"
+ts_echo "IPHTML=${IPHTML}"
 
-echo_date "* publish IP address file ${IPHTML} to ${IPHTML_DST}"
-echo_do scp ${IPHTML} ${IPHTML_DST}
+ts_echo "* publish IP address file ${IPHTML} to ${IPHTML_DST}"
+ts_echo_do scp ${IPHTML} ${IPHTML_DST}
 rm -fv ${IPHTML}
 
 #
@@ -194,7 +199,7 @@ if which ${HTTP_SVR}; then
     fi
     cd ${BASEDIR}
     ${HTTP_SVR} ${HTTP_SVR_OPT} > ${HTTP_LOG} 2>&1 &
-    sleep 3
+    sleep 5
     ${SPEAK_CMD} "リモート操作インタフェースを起動します" &
     sleep 2
     ${SPEAK_CMD} "スマートフォンでの操作が可能になりました" &
@@ -208,9 +213,9 @@ if which ${ROBOT_SVR}; then
     if [ -f ${ROBOT_LOG} ]; then
         mv -fv ${ROBOT_LOG} ${ROBOT_LOG}.1
     fi
-    cd ${BASEDIR}
+    cd ${BINDIR}
     ${ROBOT_SVR} ${ROBOT_SVR_OPT} > ${ROBOT_LOG} 2>&1 &
-    sleep 3
+    sleep 5
     ${SPEAK_CMD} "モーター制御システムを起動し" &
     sleep 2
     ${SPEAK_CMD} "モーターの動作確認を行います" &
@@ -226,11 +231,11 @@ if which ${BLE_SVR}; then
     if [ -f ${BLE_LOG} ]; then
         mv -fv ${BLE_LOG} ${BLE_LOG}.1
     fi
-    cd ${BASEDIR}
-    sudo ${BINDIR}/activate-do.sh ${ENVDIR} ${BLE_SVR} ${BLE_SVR_OPT} > ${BLE_LOG} 2>&1 &
-    sleep 3
+    cd ${BINDIR}
+    sudo ${BINDIR}/activate-do.sh ${VENVDIR} ${BLE_SVR} ${BLE_SVR_OPT} > ${BLE_LOG} 2>&1 &
+    sleep 5
     ${SPEAK_CMD} "BLEサーバーを起動します" &
-    sleep 3
+    sleep 2
     ${SPEAK_CMD} "スクラッチからの制御が可能になりました" &
     sleep 3
 fi
@@ -250,18 +255,18 @@ ${ROBOT_CLIENT} -d ':.hi_right'
 # wait opening music
 #
 #while pgrep vlc; do
-#    echo_date "waiting vlc to end .."
+#    ts_echo "waiting vlc to end .."
 #    sleep 1
 #done
 
 sleep 5
 
-echo_date "start ${LOOP_SH}"
+ts_echo "start ${LOOP_SH}"
 if which ${LOOP_SH}; then
     ${LOOP_SH} > ${LOOP_LOG} 2>&1 &
 fi
 
-echo_date "start ${MUSIC_SH}"
+ts_echo "start ${MUSIC_SH}"
 if which ${MUSIC_SH}; then
     ${MUSIC_SH} > ${MUSIC_LOG} 2>&1 &
 fi

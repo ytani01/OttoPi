@@ -2,11 +2,6 @@
 #
 # (c) 2019 Yoichi Tanibayashi
 #
-MYNAME=`basename $0`
-MYDIR=`dirname $0`
-echo "MYNAME=${MYNAME}"
-echo "MYDIR=${MYDIR}"
-
 LOGDIR=${HOME}/tmp
 
 PKGS="pigpio vlc python3-pip python3-venv"
@@ -22,38 +17,71 @@ CMDS="${CMDS} loop.sh speech.sh speech.txt music.sh speakipaddr2.sh"
 CMDS="${CMDS} activate-do.sh"
 
 #
-# init
+# functions
 #
+usage () {
+    echo
+    echo "    usage: ${MYNAME}"
+    echo
+}
 
-cd ${MYDIR}
-BASEDIR=`pwd`
-echo "BASEDIR=${BASEDIR}"
+ts_echo () {
+    DATESTR=`date +'%Y/%m/%d(%a) %H:%M:%S'`
+    echo "* ${DATESTR}> $*"
+}
 
-cd ..
-ENVDIR=`pwd`
-if [ ! -f bin/activate ]; then
-    echo "${ENVDIR}: invalid venv directory"
-    exit 1
-fi
-echo "ENVDIR=${ENVDIR}"
-
-BINDIR="${ENVDIR}/bin"
-echo "BINDIR=${BINDIR}"
+ts_echo_do () {
+    ts_echo $*
+    $*
+    if [ $? -ne 0 ]; then
+        ts_echo "ERROR: ${MYNAME}: failed"
+        exit 1
+    fi
+}
 
 #
 # main
 #
+MYNAME=`basename $0`
+ts_echo "MYNAME=${MYNAME}"
+
+MYDIR=`dirname $0`
+ts_echo "MYDIR=${MYDIR}"
+
+cd ${MYDIR}
+BASEDIR=`pwd`
+ts_echo "BASEDIR=${BASEDIR}"
+
+cd ..
+VENVDIR=`pwd`
+ts_echo "VENVDIR=${VENVDIR}"
+
+BINDIR="${VENVDIR}/bin"
+ts_echo "BINDIR=${BINDIR}"
 
 #
-# activate Python venv
+# check venv and activate it
 #
-echo "* activate venv"
-. ${BINDIR}/activate
+if [ -z "${VIRTUAL_ENV}" ]; then
+    ACTIVATE="${BINDIR}/activate"
+    ts_echo "ACTIVATE=${ACTIVATE}"
+
+    if [ ! -f ${ACTIVATE} ]; then
+        ts_echo "ERROR: ${ACTIVATE}: no such file"
+        exit 1
+    fi
+    . ${ACTIVATE}
+fi
+if [ ${VIRTUAL_ENV} != ${VENVDIR} ]; then
+    ts_echo "ERROR: VIRTUAL_ENV=${VIRTUAL_ENV} != VENVIDR=${VENVDIR}"
+    exit 1
+fi
+ts_echo "VIRTUAL_ENV=${VIRTUAL_ENV}"
 
 #
 # make dirs
 #
-echo "* mkdirs"
+ts_echo "* mkdirs"
 for d in ${LOGDIR}; do
     d1=${d}
     if [ ! -d ${d1} ]; then
@@ -64,41 +92,28 @@ done
 #
 # install packages
 #
-echo "* install packages"
-sudo apt install -y ${PKGS}
-if [ $? != 0 ]; then
-    exit 1
-fi
-sudo apt autoremove -y
-if [ $? != 0 ]; then
-    exit 1
-fi
+ts_echo "* install packages"
+ts_echo_do sudo apt install -y ${PKGS}
+ts_echo_do sudo apt autoremove -y
 
 #
 # update pip3
 #
-echo "* update pip command"
-python3 -m pip install -U pip
-if [ $? != 0 ]; then
-    exit 1
-fi
+ts_echo_do python3 -m pip install -U pip
 hash -r
 pip -V
 
 #
 # install python packages
 #
-echo "* install python packages"
-pip install -r ${BASEDIR}/requirements.txt
-if [ $? != 0 ]; then
-    exit 1
-fi
+ts_echo "* install python packages"
+ts_echo_do pip install -r ${BASEDIR}/requirements.txt
 
 #
 # copy OttoPi.conf
 #
 if [ ! -f ${HOME}/OttoPi.conf ]; then
-    echo "* make default config file: ${HOME}/OttoPi.conf"
+    ts_echo "* make default config file: ${HOME}/OttoPi.conf"
     cp -v ${BASEDIR}/OttoPi.conf-sample ${HOME}/OttoPi.conf
 fi
 
@@ -111,34 +126,39 @@ fi
 #
 # audio settings
 #
-echo "* audio settings"
-amixer set -i PCM 97%
+ts_echo "* audio settings"
+ts_echo_do amixer set -i PCM 97%
 
 #
 # setup sepak
 #
-echo "* setup speak system"
-cd ${ENVDIR}
-git clone git@github.com:ytani01/speak.git
-SPEAK_SETUP="${ENVDIR}/speak/setup-venv.sh"
+ts_echo "* setup speak system"
+cd ${VENVDIR}
+if [ -d speak ]; then
+    ts_echo "speak: directory already exists"
+else
+    ts_echo_do git clone git@github.com:ytani01/speak.git
+fi
+
+SPEAK_SETUP="${VENVDIR}/speak/setup-venv.sh"
 if [ ! -x ${SPEAK_SETUP} ]; then
-    echo "${SPEAK_SETUP}: no such file"
+    ts_echo "${SPEAK_SETUP}: no such file"
     exit 1
 fi
-echo "* execute ${SPEAK_SETUP}"
+ts_echo "* execute ${SPEAK_SETUP}"
 ${SPEAK_SETUP}
 
 #
 # copy sound files
 #
-echo "* copy sound files"
+ts_echo "* copy sound files"
 cd ${BASEDIR}
 cp -rfv sound ${HOME}
 
 #
 # create symbolic links
 #
-echo "* create symbolic links on ${BINDIR}"
+ts_echo "* create symbolic links on ${BINDIR}"
 cd ${BINDIR}
 ln -sfv ${BASEDIR}/*.py .
 for cmd in ${CMDS}; do
