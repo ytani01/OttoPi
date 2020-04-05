@@ -51,7 +51,7 @@ class OttoPiBleServer(BlePeripheral):
         __class__._log = get_logger(__class__.__name__, self._dbg)
         self._log.debug('name=%s', name)
         self._log.debug('robot_host=%s, robot_port=%s', robot_host, robot_port)
-        
+
         self._name = name
         self._robot_host = robot_host
         self._robot_port = robot_port
@@ -96,7 +96,7 @@ class CmdCharacteristic(BleCharacteristic):
         self._robot_host = robot_host
         self._robot_port = robot_port
         self._chara_resp = chara_resp
-        
+
         super().__init__(uuid, ['write', 'read', 'notify'], debug=debug)
 
     def onWriteRequest(self, data, offset, withoutRespoinse, callback):
@@ -106,7 +106,7 @@ class CmdCharacteristic(BleCharacteristic):
 
         cmd = data.decode('utf-8')
         self._log.debug('cmd=%a', cmd)
-        
+
         robot_client = OttoPiClient(self._robot_host, self._robot_port,
                                     debug=False)
         ret = robot_client.send_cmd(cmd)
@@ -131,6 +131,16 @@ class RespCharacteristic(BleCharacteristic):
         self._log.debug('uuid=%s', uuid)
 
         super().__init__(uuid, ['read', 'notify'], debug=debug)
+
+        self._updateValueCallback = None
+
+    def onSubscribe(self, maxValueSize, updateValueCallback):
+        self._log.debug('maxValueSize=%s', maxValueSize)
+        self._updateValueCallback = updateValueCallback
+
+    def onUnsubscribe(self):
+        self._log.debug('')
+        self._updateValueCallback = None
 
 
 class OttoPiBleServerApp(BlePeripheralApp):

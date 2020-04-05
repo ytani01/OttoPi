@@ -219,8 +219,10 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                                    auto_cmd, cmd_name)
 
                     if cmd_name in self.robot_auto.cmd_func.keys():
-                        self.robot_auto.send(cmd_name)
-                        self.send_reply(data, True, '')
+                        d = self.robot_auto.send(cmd_name)
+                        self._log.debug('d=%smm', '{:,}'.format(d))
+
+                        self.send_reply(data, True, {'d': d})
                     else:
                         self._log.warning('%s: invalid auto command', auto_cmd)
                         self.send_reply(data, False, 'invalid auto command')

@@ -22,7 +22,7 @@ OttoPiAuto -- ロボットの自動運転 (自動運転スレッド)
 ------------------------------------------------------------
 """
 __author__ = 'Yoichi Tanibayashi'
-__date__   = '2019'
+__date__   = '2020'
 
 from OttoPiCtrl import OttoPiCtrl
 import VL53L0X as VL53L0X
@@ -38,6 +38,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
 class OttoPiAuto(threading.Thread):
+    CMD_NULL  = 'null'
     CMD_ON    = 'on'
     CMD_OFF   = 'off'
     CMD_ENABLE = 'enable'
@@ -69,7 +70,8 @@ class OttoPiAuto(threading.Thread):
         self._log = get_logger(__class__.__name__, self.dbg)
         self._log.debug('')
 
-        self.cmd_func = {self.CMD_ON:  self.cmd_on,
+        self.cmd_func = {self.CMD_NULL: self.cmd_null,
+                         self.CMD_ON:  self.cmd_on,
                          self.CMD_OFF: self.cmd_off,
                          self.CMD_ENABLE:  self.cmd_enable,
                          self.CMD_DISABLE: self.cmd_disable,
@@ -123,6 +125,12 @@ class OttoPiAuto(threading.Thread):
 
         self._log.debug('done')
 
+    def cmd_null(self):
+        """
+        do nothing (to get distance)
+        """
+        self._log.debug('')
+
     def cmd_on(self):
         self._log.debug('')
         if not self.enable:
@@ -167,14 +175,19 @@ class OttoPiAuto(threading.Thread):
     def send(self, cmd):
         self._log.debug('cmd=\'%s\'', cmd)
         self.cmdq.put(cmd)
+        d = self.get_distance()
+        self._log.debug('d=%smm', '{:,}'.format(d))
+        return d
 
     def recv(self, timeout=DEF_RECV_TIMEOUT):
-        self._log.debug('timeout=%.1f', timeout)
+        # self._log.debug('timeout=%.1f', timeout)
         try:
             cmd = self.cmdq.get(timeout=timeout)
         except queue.Empty:
             cmd = ''
-        self._log.debug('cmd=\'%s\'', cmd)
+        else:
+            self._log.debug('cmd=\'%s\'', cmd)
+
         return cmd
 
     def get_distance(self):
@@ -203,7 +216,7 @@ class OttoPiAuto(threading.Thread):
                     self._log.error('%s: invalid command .. ignore', cmd)
 
             d = self.get_distance()
-            self._log.debug('d = %smm', '{:,}'.format(d))
+            # self._log.debug('d = %smm', '{:,}'.format(d))
             if d < 0:
                 continue
 
@@ -212,7 +225,8 @@ class OttoPiAuto(threading.Thread):
 
             if not self.on:
                 if self.ready_count > 0:
-                    self._log.info('ready_count=%d', self.ready_count)
+                    self._log.info('ready_count=%d/%d',
+                                   self.read_count, self.READY_COUNT_COMMIT)
 
                 if self.ready_count < self.READY_COUNT_COMMIT:
                     if d >= self.D_READY_MIN and d <= self.D_READY_MAX:
