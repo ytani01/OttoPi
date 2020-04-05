@@ -14,7 +14,9 @@ CMDS="${CMDS} OttoPiMotion.py OttoPiServer.py PiServo.py RobotButton.py"
 CMDS="${CMDS} OttoPiWebsockServer.py OttoPiBleServer.py BlePeripheral.py"
 CMDS="${CMDS} VL53L0X.py vl53l0x_python.so"
 CMDS="${CMDS} loop.sh speech.sh speech.txt music.sh speakipaddr2.sh"
-CMDS="${CMDS} activate-do.sh"
+# CMDS="${CMDS} activate-do.sh"
+
+GITS="speak BleBeacon"
 
 #
 # functions
@@ -130,15 +132,22 @@ ts_echo "* audio settings"
 ts_echo_do amixer set -i PCM 97%
 
 #
+# download other repositories
+#
+cd ${VENVDIR}
+ts_echo "* GITS=${GITS}"
+for g in ${GITS}; do
+    if [ -d ${g} ]; then
+        ts_echo "${g}: directory already exists"
+    else
+        ts_echo_do git clone git@github.com:ytani01/${g}.git
+    fi
+done
+
+#
 # setup sepak
 #
 ts_echo "* setup speak system"
-cd ${VENVDIR}
-if [ -d speak ]; then
-    ts_echo "speak: directory already exists"
-else
-    ts_echo_do git clone git@github.com:ytani01/speak.git
-fi
 
 SPEAK_SETUP="${VENVDIR}/speak/setup-venv.sh"
 if [ ! -x ${SPEAK_SETUP} ]; then
