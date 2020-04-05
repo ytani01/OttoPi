@@ -118,16 +118,9 @@ class CmdCharacteristic(BleCharacteristic):
         self._chara_resp._value = bytearray(json.dumps(ret).encode('utf-8'))
         self._log.debug('_chara_resp._value=%s', self._chara_resp._value)
 
-        self.notify2(self._chara_resp, self._chara_resp._value)
+        OttoPiBleServer.notify(self._chara_resp)
 
         self._log.debug('done')
-
-    def notify2(self, chara, value):
-        self._log.debug('chara._uuid=%s, value=%s', chara._uuid, value)
-
-        if chara._updateValueCallback:
-            self._log.debug('Notify !')
-            chara._updateValueCallback(value)
 
 
 class RespCharacteristic(BleCharacteristic):
@@ -172,14 +165,27 @@ class OttoPiBleServerApp(BlePeripheralApp):
 
         self._ble.start()
 
+        chara_resp = self._ble._chara_resp
+
         self._active =True
         while self._active:
-            robot_cl = OttoPiClient(self._robot_svr, self._robot_port,
-                                    debug=False)
-            ret = robot_cl.send_cmd(':.auto_null')
-            robot_cl.close()
-            
-            time.sleep(5)
+            try:
+                robot_cl = OttoPiClient(self._robot_svr, self._robot_port,
+                                        debug=False)
+                ret = robot_cl.send_cmd(':.auto_null')
+                robot_cl.close()
+
+                chara_resp._value = bytearray(json.dumps(ret).encode('utf-8'))
+                self._log.debug('chara_resp._value=%a', chara_resp._value)
+
+                OttoPiBleServer.notify(chara_resp)
+
+            except Exception as e:
+                msg = '%s:%s' % (type(e).__name__, e)
+                self._log.warning(msg)
+                
+
+            time.sleep(1)
 
         self._log.debug('done')
 

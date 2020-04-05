@@ -206,7 +206,7 @@ class OttoPiAuto(threading.Thread):
         while self.alive:
             cmd = self.recv()
             if cmd != '':
-                self._log.info('cmd=%a', cmd)
+                self._log.debug('cmd=%a', cmd)
                 cmdline = cmd.split()
                 cmd_name = cmdline[0]
                 self._log.info('cmd_name=%a', cmd_name)

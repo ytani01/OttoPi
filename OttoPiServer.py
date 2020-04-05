@@ -173,10 +173,10 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             for ch in decoded_data:
                 if ord(ch) >= 0x20:
                     data += ch
-            self._log.info('data=%a', data)
+            self._log.debug('data=%a', data)
             if len(data) == 0:
                 msg = 'No data .. disconnect'
-                self._log.debug(msg)
+                self._log.warning(msg)
                 self.net_write((msg + '\r\n').encode('utf-8'))
                 break
 
