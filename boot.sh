@@ -234,7 +234,7 @@ if which ${BLE_SVR}; then
         mv -fv ${BLE_LOG} ${BLE_LOG}.1
     fi
     cd ${BINDIR}
-    sudo ${BINDIR}/activate-do.sh ${VENVDIR} ${BLE_SVR} ${BLE_SVR_OPT} > ${BLE_LOG} 2>&1 &
+    ${BLE_SVR} ${BLE_SVR_OPT} > ${BLE_LOG} 2>&1 &
     sleep 5
     ${SPEAK_CMD} "BLEサーバーを起動します" &
     sleep 2

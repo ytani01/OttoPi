@@ -117,6 +117,9 @@ class CmdCharacteristic(BleCharacteristic):
         self._chara_resp._value = bytearray(json.dumps(ret).encode('utf-8'))
         self._log.debug('_chara_resp._value=%s', self._chara_resp._value)
 
+        if self._chara_resp._updateValueCallback:
+            self._chara_resp._updateValueCallback(self._chara_resp._value)
+
         self._log.debug('done')
 
 

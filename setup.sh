@@ -156,6 +156,11 @@ cd ${BASEDIR}
 cp -rfv sound ${HOME}
 
 #
+# setcap
+#
+ts_echo_do sudo setcap 'cap_net_raw,cap_net_admin+eip' $(readlink -f $(which python3))
+
+#
 # create symbolic links
 #
 ts_echo "* create symbolic links on ${BINDIR}"
