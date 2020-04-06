@@ -93,7 +93,7 @@ class OttoPiAuto(threading.Thread):
 
         self.cmdq = queue.Queue()
 
-        self.alive = True
+        self.active = True
         self.on    = False
         self.enable = False
 
@@ -112,7 +112,7 @@ class OttoPiAuto(threading.Thread):
 
     def end(self):
         self._log.debug('')
-        self.alive = False
+        self.active = False
 
         self.robot_ctrl.send(OttoPiCtrl.CMD_STOP)
 
@@ -166,11 +166,11 @@ class OttoPiAuto(threading.Thread):
     def cmd_end(self):
         self._log.debug('')
         self.cmd_off()
-        self.alive = False
+        self.active = False
 
-    def is_alive(self):
-        self._log.debug('alive=%s', self.alive)
-        return self.alive
+    def is_active(self):
+        self._log.debug('active=%s', self.active)
+        return self.active
 
     def send(self, cmd):
         self._log.debug('cmd=\'%s\'', cmd)
@@ -180,7 +180,7 @@ class OttoPiAuto(threading.Thread):
         return d
 
     def recv(self, timeout=DEF_RECV_TIMEOUT):
-        # self._log.debug('timeout=%.1f', timeout)
+        self._log.debug('timeout=%.1f', timeout)
         try:
             cmd = self.cmdq.get(timeout=timeout)
         except queue.Empty:
@@ -203,7 +203,7 @@ class OttoPiAuto(threading.Thread):
     def run(self):
         self._log.debug('')
 
-        while self.alive:
+        while self.active:
             cmd = self.recv()
             if cmd != '':
                 self._log.debug('cmd=%a', cmd)
@@ -226,7 +226,7 @@ class OttoPiAuto(threading.Thread):
             if not self.on:
                 if self.ready_count > 0:
                     self._log.info('ready_count=%d/%d',
-                                   self.read_count, self.READY_COUNT_COMMIT)
+                                   self.ready_count, self.READY_COUNT_COMMIT)
 
                 if self.ready_count < self.READY_COUNT_COMMIT:
                     if d >= self.D_READY_MIN and d <= self.D_READY_MAX:
@@ -315,7 +315,7 @@ class OttoPiAuto(threading.Thread):
             self.touch_count = 0
             self._log.debug('stat=%s', self.stat)
 
-        self._log.info('done(alive=%s)', self.alive)
+        self._log.info('done(active=%s)', self.active)
 
 
 class OttoPiAutoApp:
@@ -332,22 +332,22 @@ class OttoPiAutoApp:
         self.robot_auto = OttoPiAuto(self.robot_ctrl, debug=self.dbg)
         self.robot_auto.start()
 
-        self.alive = True
+        self.active = True
 
     def main(self):
         self._log.debug('')
 
-        while self.alive:
+        while self.active:
             cmdline = input()
             self._log.debug('cmdline = %s', cmdline)
 
             self.robot_auto.send(cmdline)
             time.sleep(1)
 
-            if not self.robot_auto.is_alive():
-                self.alive = False
+            if not self.robot_auto.is_active():
+                self.active = False
 
-        self._log.debug('done(alive=%s)', self.alive)
+        self._log.debug('done(active=%s)', self.active)
 
     def end(self):
         self._log.debug('')

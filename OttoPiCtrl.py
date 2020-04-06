@@ -109,7 +109,7 @@ class OttoPiCtrl(threading.Thread):
             self.CMD_END :    {'func': None,                    'loop': False}}
 
         self.cmdq = queue.Queue()
-        self.alive = False
+        self.active = False
 
         super().__init__(daemon=True)
 
@@ -210,23 +210,23 @@ class OttoPiCtrl(threading.Thread):
             print('%s' % cmd)
         return
 
-    def is_alive(self):
-        return self.alive
+    def is_active(self):
+        return self.active
 
     def run(self):
         self._log.debug('')
 
-        self.alive = True
-        while self.alive:
+        self.active = True
+        while self.active:
             # コマンドライン受信
             cmd = self.recv()
             self._log.debug('cmd=%a', cmd)
             # コマンドライン実行
-            self.alive = self.exec_cmd(cmd)
-            self._log.debug('alive=%s', self.alive)
+            self.active = self.exec_cmd(cmd)
+            self._log.debug('active=%s', self.active)
 
         # スレッド終了処理
-        self._log.info('done(alive=%s)', self.alive)
+        self._log.info('done(active=%s)', self.active)
 
 
 class OttoPiCtrlApp:
@@ -251,7 +251,7 @@ class OttoPiCtrlApp:
             self.robot_ctrl.send(cmdline)
             time.sleep(1)
 
-            if not self.robot_ctrl.is_alive():
+            if not self.robot_ctrl.is_active():
                 break
 
         self._log.info('done')

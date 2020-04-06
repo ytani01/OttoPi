@@ -3,7 +3,7 @@
 # (c) 2019 Yoichi Tanibayashi
 #
 __author__ = 'Yoichi Tanibayashi'
-__date__   = '2019'
+__date__   = '2020'
 """
 ロボット制御サーバ
 
@@ -19,10 +19,10 @@ OttoPiServer -- ロボット制御サーバ (ネットワーク送受信スレ�
  |   |
  +---+- OttoPiCtrl -- コマンド制御 (動作実行スレッド)
          |
-         + OttoPiMotion -- 動作定義
-            |
-            +- PiServo -- 複数サーボの同期制御
-            +- OttoPiConfig -- 設定ファイルの読み込み・保存
+         +- OttoPiMotion -- 動作定義
+             |
+             +- PiServo -- 複数サーボの同期制御
+             +- OttoPiConfig -- 設定ファイルの読み込み・保存
 -----------------------------------------------------------------
 """
 
@@ -45,9 +45,9 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
         self._log = get_logger(__class__.__name__, self._dbg)
         self._log.debug('client_address: %s', client_address)
 
-        self.server     = server
-        self.robot_ctrl = server.robot_ctrl
-        self.robot_auto = server.robot_auto
+        self._svr     = server
+        self._ctrl = server._ctrl
+        self._auto = server._auto
 
         self.cmd_key = {
             # auto switch commands
@@ -152,7 +152,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             except BaseException as e:
                 self._log.warning('BaseException:%s:%s.', type(e), e)
                 self._log.warning('send: OttoPiCtrl.CMD_STOP')
-                self.robot_ctrl.send(OttoPiCtrl.CMD_STOP)
+                self._ctrl.send(OttoPiCtrl.CMD_STOP)
                 return
             else:
                 self._log.debug('net_data:%a', net_data)
@@ -182,12 +182,21 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                 break
 
             # 制御スレッドが動いていない場合は(異常終了など?)、再起動
-            if not self.robot_ctrl.is_alive():
+            if not self._ctrl.is_active():
                 self._log.warning('robot control thread is dead !? .. restart')
-                self.server.robot_ctrl = OttoPiCtrl(self.server.pi,
-                                                    debug=self.server._dbg)
-                self.robot_ctrl = self.server.robot_ctrl
-                self.robot_ctrl.start()
+                self._svr._ctrl = OttoPiCtrl(self._svr._pi,
+                                             debug=self._svr._dbg)
+
+                self._ctrl = self._svr._ctrl
+                self._ctrl.start()
+
+            # 自動運転スレッドが動いていない場合は(異常終了など?)、再起動
+            if not self._auto.is_active():
+                self._log.warning('auto control thread is dead !? .. restart')
+                self._svr._auto = OttoPiAuto(self._ctrl, debug=self._svr._dbg)
+
+                self._auto = self._svr._auto
+                self._auto.start()
 
             # word command
             if data[0] == OttoPiServer.CMD_PREFIX:
@@ -219,8 +228,8 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                     self._log.info('auto_cmd=%s, cmd_name=%s',
                                    auto_cmd, cmd_name)
 
-                    if cmd_name in self.robot_auto.cmd_func.keys():
-                        d = self.robot_auto.send(cmd_name)
+                    if cmd_name in self._auto.cmd_func.keys():
+                        d = self._auto.send(cmd_name)
                         self._log.info('d=%smm', '{:,}'.format(d))
 
                         self.send_reply(data, True, {'d': d})
@@ -231,8 +240,8 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                     """
                     control command
                     """
-                    if cmd_name in self.robot_ctrl.cmd_func.keys():
-                        self.robot_ctrl.send(cmd, interrupt_flag)
+                    if cmd_name in self._ctrl.cmd_func.keys():
+                        self._ctrl.send(cmd, interrupt_flag)
                         self.send_reply(data, True, '')
                     else:
                         msg = 'invalid control command'
@@ -246,7 +255,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                 self._log.info('ch=%a', ch)
 
                 if ch not in self.cmd_key.keys():
-                    self.robot_ctrl.send(OttoPiCtrl.CMD_STOP)
+                    self._ctrl.send(OttoPiCtrl.CMD_STOP)
                     self._log.warning('invalid 1-key command:%a .. stop', ch)
                     self.send_reply(ch, False, 'invalid 1-key command')
                     continue
@@ -259,12 +268,12 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                     auto_cmd = cmd.replace(OttoPiServer.CMD_AUTO_PREFIX, '')
                     self._log.info('auto_cmd=%s', auto_cmd)
 
-                    self.robot_auto.send(auto_cmd)
+                    self._auto.send(auto_cmd)
                     self.send_reply('%s(%s)' % (ch, cmd), True, '')
 
                 else:
                     # control command
-                    self.robot_ctrl.send(cmd)
+                    self._ctrl.send(cmd)
                     self.send_reply('%s(%s)' % (ch, cmd), True, '')
 
         self._log.debug('done')
@@ -286,25 +295,25 @@ class OttoPiServer(socketserver.ThreadingTCPServer):
         self._log.debug('pi=%s, port=%s', pi, port)
 
         if type(pi) == pigpio.pi:
-            self.pi   = pi
-            self.mypi = False
+            self._pi   = pi
+            self._mypi = False
         else:
-            self.pi   = pigpio.pi()
-            self.mypi = True
-        self._log.debug('mypi = %s', self.mypi)
+            self._pi   = pigpio.pi()
+            self._mypi = True
+        self._log.debug('mypi = %s', self._mypi)
 
-        self.robot_ctrl = OttoPiCtrl(self.pi, debug=self._dbg)
-        self.robot_ctrl.start()
+        self._ctrl = OttoPiCtrl(self._pi, debug=self._dbg)
+        self._ctrl.start()
 
-        self.robot_auto = OttoPiAuto(self.robot_ctrl, debug=self._dbg)
-        self.robot_auto.start()
+        self._auto = OttoPiAuto(self._ctrl, debug=self._dbg)
+        self._auto.start()
 
         time.sleep(1)
 
-        self.port  = port
+        self._port  = port
 
         try:
-            super().__init__(('', self.port), OttoPiHandler)
+            super().__init__(('', self._port), OttoPiHandler)
         except Exception as e:
             self._log.warning('%s:%s', type(e).__name__, e)
             return None
@@ -316,18 +325,18 @@ class OttoPiServer(socketserver.ThreadingTCPServer):
     def end(self):
         self._log.debug('')
 
-        if self.robot_auto.is_alive():
-            self.robot_auto.end()
-            self._log.debug('robot_auto thread: done')
+        if self._auto.is_active():
+            self._auto.end()
+            self._log.debug('_auto thread: done')
 
-        if self.robot_ctrl.is_alive():
-            self.robot_ctrl.end()
-            self._log.debug('robot_ctrl thread: done')
+        if self._ctrl.is_active():
+            self._ctrl.end()
+            self._log.debug('_ctrl thread: done')
 
-        if self.mypi:
+        if self._mypi:
             self._log.debug('clean up pigpio')
-            self.pi.stop()
-            self.mypi = False
+            self._pi.stop()
+            self._mypi = False
 
         self._log.debug('done')
 
@@ -342,17 +351,17 @@ class OttoPiServerApp:
         self._log = get_logger(__class__.__name__, debug)
         self._log.debug('port=%d', port)
 
-        self.port   = port
-        self.server = OttoPiServer(None, self.port, debug=self._dbg)
+        self._port = port
+        self._svr = OttoPiServer(None, self._port, debug=self._dbg)
 
     def main(self):
         self._log.debug('')
         self._log.debug('start server')
-        self.server.serve_forever()
+        self._svr.serve_forever()
 
     def end(self):
         self._log.debug('')
-        self.server.end()
+        self._svr.end()
         self._log.debug('done')
 
 
