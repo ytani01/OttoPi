@@ -151,7 +151,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                 return
             except BaseException as e:
                 self._log.warning('BaseException:%s:%s.', type(e), e)
-                self._log.warning('send: CootPiCtrl.CMD_STOP')
+                self._log.warning('send: OttoPiCtrl.CMD_STOP')
                 self.robot_ctrl.send(OttoPiCtrl.CMD_STOP)
                 return
             else:
@@ -174,6 +174,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                 if ord(ch) >= 0x20:
                     data += ch
             self._log.debug('data=%a', data)
+
             if len(data) == 0:
                 msg = 'No data .. disconnect'
                 self._log.warning(msg)
@@ -220,7 +221,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
 
                     if cmd_name in self.robot_auto.cmd_func.keys():
                         d = self.robot_auto.send(cmd_name)
-                        self._log.debug('d=%smm', '{:,}'.format(d))
+                        self._log.info('d=%smm', '{:,}'.format(d))
 
                         self.send_reply(data, True, {'d': d})
                     else:
