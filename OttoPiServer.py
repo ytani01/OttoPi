@@ -175,6 +175,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                     data += ch
             self._log.debug('data=%a', data)
 
+            # 文字数が0の場合、コネクションが切断されたと判断し終了
             if len(data) == 0:
                 msg = 'No data .. disconnect'
                 self._log.warning(msg)
@@ -198,7 +199,12 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                 self._auto = self._svr._auto
                 self._auto.start()
 
-            # word command
+            """
+            word command
+            
+              ex. ":.forward 2", ":happy 1", ":auto_off"
+
+            """
             if data[0] == OttoPiServer.CMD_PREFIX:
                 cmd = data[1:]
                 interrupt_flag = True
@@ -285,9 +291,9 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
 
 class OttoPiServer(socketserver.ThreadingTCPServer):
     DEF_PORT = 12345
-    CMD_PREFIX = ':'
-    CMD_PREFIX2 = '.'
-    CMD_AUTO_PREFIX = 'auto_'
+    CMD_PREFIX = ':'           # word command
+    CMD_PREFIX2 = '.'          # interupt off
+    CMD_AUTO_PREFIX = 'auto_'  # auto command
 
     def __init__(self, pi=None, port=DEF_PORT, debug=False):
         self._dbg = debug

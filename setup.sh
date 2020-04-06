@@ -16,7 +16,7 @@ CMDS="${CMDS} VL53L0X.py vl53l0x_python.so"
 CMDS="${CMDS} loop.sh speech.sh speech.txt music.sh speakipaddr2.sh"
 # CMDS="${CMDS} activate-do.sh"
 
-GITS="speak BleBeacon"
+GITS="speak BleBeacon Template"
 
 #
 # functions
