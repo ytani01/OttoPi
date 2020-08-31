@@ -22,8 +22,8 @@ Raspberry Piがベースと言うことで、
 
 ## Control with Scratch 3.0
 
-* (for PC) run ``Scratch Link``
-* [Scratch & 専用拡張機能](https://ytani01.github.io/scratch-gui/)
+1. (for PC) run ``Scratch Link``
+2. [Scratch & 専用拡張機能](https://ytani01.github.io/scratch-gui/)
 
 
 ## Control with smartphone or PC
