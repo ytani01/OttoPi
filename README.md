@@ -15,21 +15,21 @@ Raspberry Piがベースと言うことで、
 * 距離センサーで障害物を検知して、自動的に歩き回ります。(自動運転モード）
 * BLE経由で、スクラッチ(の専用拡張機能)から、制御することができます。(距離センサーの値も取得可能)
 * Wi-Fi経由で、スマートフォンからマニュアル操作するこができます。
-<<<<<<< HEAD
-* 音声合成機能内蔵(OpenJTalk)で、自由な文章(日本語)をしゃべらせることができます。
-=======
-* 音声合成機能内蔵(OpenJTalk)で、自由な文章をしゃべらせることができます。
+* 音声合成機能内蔵(OpenJTalk)で、
+自由な文章(日本語)をしゃべらせることができます。
 * Scrtchの独自拡張機能を利用して、Scratchからロボットを制御できます。
-
-以下、まだまだドキュメントが未整備で、最新の状態ではありません。
-m(_ _)m
 
 
 ## Control with Scratch 3.0
 
 * (for PC) run ``Scratch Link``
 * [Scratch & 専用拡張機能](https://ytani01.github.io/scratch-gui/)
->>>>>>> current
+
+
+## Control with smartphone or PC
+
+``http://{IP address}:5000/``
+
 
 以下、まだまだドキュメントが未整備で、
 最新の状態にできていません。
@@ -64,7 +64,6 @@ $ cd ${HOME}
 $ python3 -m venv env1
 ```
 
-
 ### download
 
 ```bash
@@ -78,11 +77,6 @@ $ git clone https://www.github.com/ytani01/OttoPi.git
 $ cd ~/env1/OttoPi
 $ ./setup.sh
 ```
-
-
-## Access from smartphone or PC
-
-``http://{IP address}:5000/``
 
 
 ## References
