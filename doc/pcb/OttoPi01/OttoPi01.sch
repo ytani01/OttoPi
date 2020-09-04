@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="9.6.2">
+<eagle version="9.6.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -11074,6 +11074,7 @@ Source: www.kingbright.com</description>
 <part name="GND4" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="R1" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-EU_" device="0204/7" package3d_urn="urn:adsk.eagle:package:23498/2"/>
 <part name="RPI2" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-2X20" device="" package3d_urn="urn:adsk.eagle:package:22443/2"/>
+<part name="GND7" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -11178,6 +11179,9 @@ Source: www.kingbright.com</description>
 <attribute name="NAME" x="165.735" y="-39.37" size="1.778" layer="95" rot="R270"/>
 <attribute name="VALUE" x="109.22" y="-39.37" size="1.778" layer="96" rot="R270"/>
 </instance>
+<instance part="GND7" gate="1" x="152.4" y="-71.12" smashed="yes">
+<attribute name="VALUE" x="149.86" y="-73.66" size="1.778" layer="96"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -11273,6 +11277,16 @@ Source: www.kingbright.com</description>
 <pinref part="GND4" gate="1" pin="GND"/>
 <pinref part="LED1" gate="G$1" pin="C"/>
 <wire x1="127" y1="53.34" x2="127" y2="55.88" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="RPI1" gate="A" pin="10"/>
+<wire x1="88.9" y1="-50.8" x2="88.9" y2="-66.04" width="0.1524" layer="91"/>
+<wire x1="88.9" y1="-66.04" x2="152.4" y2="-66.04" width="0.1524" layer="91"/>
+<pinref part="RPI2" gate="A" pin="10"/>
+<wire x1="152.4" y1="-66.04" x2="152.4" y2="-50.8" width="0.1524" layer="91"/>
+<pinref part="GND7" gate="1" pin="GND"/>
+<wire x1="152.4" y1="-68.58" x2="152.4" y2="-66.04" width="0.1524" layer="91"/>
+<junction x="152.4" y="-66.04"/>
 </segment>
 </net>
 <net name="N$5" class="0">
@@ -11623,15 +11637,6 @@ Source: www.kingbright.com</description>
 <wire x1="154.94" y1="-63.5" x2="91.44" y2="-63.5" width="0.1524" layer="91"/>
 <pinref part="RPI1" gate="A" pin="8"/>
 <wire x1="91.44" y1="-63.5" x2="91.44" y2="-50.8" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$40" class="0">
-<segment>
-<pinref part="RPI1" gate="A" pin="10"/>
-<wire x1="88.9" y1="-50.8" x2="88.9" y2="-66.04" width="0.1524" layer="91"/>
-<wire x1="88.9" y1="-66.04" x2="152.4" y2="-66.04" width="0.1524" layer="91"/>
-<pinref part="RPI2" gate="A" pin="10"/>
-<wire x1="152.4" y1="-66.04" x2="152.4" y2="-50.8" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$41" class="0">
