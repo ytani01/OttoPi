@@ -2,5 +2,7 @@ RCS/
 __pycache__/
 *.pyc
 *~
-#*
+\#*
 OttoPi.conf
+
+*.s#?
