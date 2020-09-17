@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="9.6.0">
+<eagle version="9.6.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -9118,12 +9118,6 @@ DIN A4, landscape with location and doc. field</description>
 <pinref part="R1" gate="G$1" pin="2"/>
 <wire x1="53.34" y1="139.7" x2="53.34" y2="137.16" width="0.1524" layer="91"/>
 <wire x1="53.34" y1="134.62" x2="53.34" y2="137.16" width="0.1524" layer="91"/>
-<wire x1="55.88" y1="132.08" x2="55.88" y2="137.16" width="0.1524" layer="91"/>
-<junction x="55.88" y="137.16"/>
-<pinref part="SW" gate="BEF1" pin="S"/>
-<wire x1="66.04" y1="134.62" x2="68.58" y2="134.62" width="0.1524" layer="91"/>
-<wire x1="68.58" y1="134.62" x2="68.58" y2="132.08" width="0.1524" layer="91"/>
-<wire x1="55.88" y1="132.08" x2="68.58" y2="132.08" width="0.1524" layer="91"/>
 <pinref part="P+3" gate="1" pin="V+"/>
 <wire x1="53.34" y1="144.78" x2="53.34" y2="137.16" width="0.1524" layer="91"/>
 <pinref part="DC/DC1" gate="G$1" pin="VIN"/>
