@@ -1899,10 +1899,10 @@ W = angled&lt;p&gt;
 <description>&lt;a href="https://github.com/ytani01/EagleLib-ytani/"&gt;https://github.com/ytani01/EagleLib-ytani/&lt;/a&gt;</description>
 <packages>
 <package name="DCDC-5V_28V-2A">
-<pad name="VIN+" x="-13.25" y="7" drill="0.9" shape="long"/>
-<pad name="VIN-" x="-13.25" y="-7" drill="0.9" shape="long"/>
-<pad name="VOUT+" x="13.25" y="7" drill="0.9" shape="long"/>
-<pad name="VOUT-" x="13.25" y="-7" drill="0.9" shape="long"/>
+<pad name="VIN+" x="-13.25" y="7" drill="0.9" diameter="1.5" shape="long"/>
+<pad name="VIN-" x="-13.25" y="-7" drill="0.9" diameter="1.5" shape="long"/>
+<pad name="VOUT+" x="13.25" y="7" drill="0.9" diameter="1.5" shape="long"/>
+<pad name="VOUT-" x="13.25" y="-7" drill="0.9" diameter="1.5" shape="long"/>
 <wire x1="-15.4" y1="4.318" x2="-15" y2="4" width="0.1524" layer="21"/>
 <wire x1="-15" y1="4" x2="-10" y2="4" width="0.1524" layer="21"/>
 <wire x1="-10" y1="4" x2="-10" y2="-4" width="0.1524" layer="21"/>
@@ -1953,24 +1953,22 @@ W = angled&lt;p&gt;
 <text x="5.08" y="8.89" size="1.778" layer="27">&gt;VALUE</text>
 </package>
 <package name="SW3-1">
-<pad name="1" x="-2.54" y="0" drill="0.9" shape="square"/>
-<pad name="2" x="0" y="0" drill="0.9"/>
-<pad name="3" x="2.54" y="0" drill="0.9"/>
-<wire x1="-4.8" y1="2.3" x2="-4.8" y2="-2.3" width="0.1524" layer="21"/>
-<wire x1="-4.8" y1="-2.3" x2="4.8" y2="-2.3" width="0.1524" layer="21"/>
-<wire x1="4.8" y1="-2.3" x2="4.8" y2="2.3" width="0.1524" layer="21"/>
-<wire x1="4.8" y1="2.3" x2="-4.8" y2="2.3" width="0.1524" layer="21"/>
-<text x="-5.08" y="2.54" size="1.778" layer="25">&gt;NAME</text>
+<pad name="1" x="1.27" y="1.27" drill="0.9" diameter="1.5" shape="square"/>
+<pad name="2" x="3.81" y="1.27" drill="0.9" diameter="1.5"/>
+<pad name="3" x="6.35" y="1.27" drill="0.9" diameter="1.5"/>
+<wire x1="-0.99" y1="3.57" x2="-0.99" y2="-1.03" width="0.1524" layer="21"/>
+<wire x1="-0.99" y1="-1.03" x2="8.61" y2="-1.03" width="0.1524" layer="21"/>
+<wire x1="8.61" y1="-1.03" x2="8.61" y2="3.57" width="0.1524" layer="21"/>
+<wire x1="8.61" y1="3.57" x2="-0.99" y2="3.57" width="0.1524" layer="21"/>
+<text x="-1.27" y="3.81" size="1.778" layer="25">&gt;NAME</text>
 </package>
-<package name="PAM8012MOD">
-<pad name="V+" x="-3.81" y="3.81" drill="0.9" shape="offset"/>
-<pad name="GND" x="-3.81" y="1.27" drill="0.9" shape="offset"/>
-<pad name="IN+" x="-3.81" y="-1.27" drill="0.9" shape="offset"/>
-<pad name="IN-" x="-3.81" y="-3.81" drill="0.9" shape="offset"/>
-<pad name="SP-@1" x="3.81" y="-1.27" drill="0.9"/>
-<pad name="SP+@1" x="3.81" y="1.27" drill="0.9" rot="R180"/>
-<pad name="SP+@2" x="3.81" y="3.81" drill="0.9"/>
-<pad name="SP-@2" x="3.81" y="-3.81" drill="0.9"/>
+<package name="PAM8012MOD-A">
+<pad name="V+" x="-3.81" y="3.81" drill="0.9" diameter="1.5" shape="offset"/>
+<pad name="GND" x="-3.81" y="1.27" drill="0.9" diameter="1.5" shape="offset"/>
+<pad name="IN+" x="-3.81" y="-1.27" drill="0.9" diameter="1.5" shape="offset"/>
+<pad name="IN-" x="-3.81" y="-3.81" drill="0.9" diameter="1.5" shape="offset"/>
+<pad name="SP-@1" x="3.81" y="-1.27" drill="0.9" diameter="1.5"/>
+<pad name="SP+@1" x="3.81" y="1.27" drill="0.9" diameter="1.5" rot="R180"/>
 <wire x1="-5" y1="5.5" x2="5" y2="5.5" width="0.127" layer="21"/>
 <wire x1="5" y1="5.5" x2="5" y2="-5.5" width="0.127" layer="21"/>
 <wire x1="5" y1="-5.5" x2="-5" y2="-5.5" width="0.127" layer="21"/>
@@ -2047,8 +2045,8 @@ W = angled&lt;p&gt;
 <wire x1="0.4" y1="-1.1" x2="2.35" y2="-1.1" width="0.127" layer="21"/>
 <wire x1="0.4" y1="-1.1" x2="0.4" y2="-1.7" width="0.127" layer="21"/>
 <wire x1="-0.4" y1="-1.1" x2="-0.4" y2="-1.7" width="0.127" layer="21"/>
-<pad name="1" x="-1" y="0" drill="0.8128" diameter="1.6764" shape="square"/>
-<pad name="2" x="1" y="0" drill="0.8128" diameter="1.6764"/>
+<pad name="1" x="-1" y="0" drill="0.9" diameter="1.6764" shape="square"/>
+<pad name="2" x="1" y="0" drill="0.9" diameter="1.5"/>
 <text x="-3" y="3.5001" size="1.27" layer="25">&gt;NAME</text>
 </package>
 </packages>
@@ -2361,7 +2359,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="49.53" y="52.07" size="1.016" layer="25" rot="R180"/>
 <attribute name="URL_AMAZON" value="https://www.amazon.co.jp/gp/product/B01LYVYQNO/" x="45.72" y="48.26" size="1.778" layer="27" rot="R180" display="off"/>
 </element>
-<element name="AMP" library="ytani1" package="PAM8012MOD" value="PAM8012MOD" x="6.35" y="21.59" smashed="yes" rot="R90">
+<element name="AMP" library="ytani1" package="PAM8012MOD-A" value="PAM8012MOD" x="6.35" y="21.59" smashed="yes" rot="R90">
 <attribute name="CHIP1" value="PAM8012" x="6.35" y="21.59" size="1.778" layer="27" rot="R90" display="off"/>
 <attribute name="NAME" x="0" y="15.24" size="1.016" layer="25"/>
 <attribute name="OC_AKIZUKI" value="K-08217" x="6.35" y="21.59" size="1.778" layer="27" rot="R90" display="off"/>
@@ -2826,8 +2824,8 @@ design rules under a new name.</description>
 <wire x1="12.7" y1="45.72" x2="17.78" y2="45.72" width="0.8128" layer="16"/>
 <wire x1="17.78" y1="45.72" x2="22.86" y2="45.72" width="0.8128" layer="16"/>
 <wire x1="22.86" y1="45.72" x2="27.94" y2="45.72" width="0.8128" layer="16"/>
-<wire x1="43.18" y1="48.26" x2="45.72" y2="48.26" width="0.8128" layer="16"/>
-<wire x1="45.72" y1="48.26" x2="45.72" y2="43.18" width="0.8128" layer="16"/>
+<wire x1="39.37" y1="46.99" x2="41.91" y2="46.99" width="0.8128" layer="16"/>
+<wire x1="41.91" y1="46.99" x2="45.72" y2="43.18" width="0.8128" layer="16"/>
 <wire x1="45.72" y1="43.18" x2="57.8" y2="43.18" width="0.8128" layer="16"/>
 <wire x1="57.8" y1="39.92" x2="57.8" y2="43.18" width="0.8128" layer="16"/>
 <wire x1="45.72" y1="43.18" x2="38.1" y2="43.18" width="0.8128" layer="16"/>
@@ -2860,15 +2858,13 @@ design rules under a new name.</description>
 <wire x1="12.7" y1="15.24" x2="7.62" y2="15.24" width="0.6096" layer="16"/>
 </signal>
 <signal name="SP+">
-<contactref element="AMP" pad="SP+@1"/>
-<contactref element="AMP" pad="SP+@2"/>
+<contactref element="AMP" pad="SP+@1" route="any" routetag="G$1.SP+"/>
 <wire x1="2.54" y1="25.4" x2="5.08" y2="25.4" width="0.8128" layer="16"/>
 <contactref element="SP" pad="1"/>
 <wire x1="5.08" y1="25.4" x2="5.08" y2="30.48" width="0.8128" layer="16"/>
 </signal>
 <signal name="SP-">
 <contactref element="AMP" pad="SP-@1"/>
-<contactref element="AMP" pad="SP-@2"/>
 <wire x1="7.62" y1="25.4" x2="10.16" y2="25.4" width="0.8128" layer="16"/>
 <wire x1="7.62" y1="33.02" x2="7.62" y2="25.4" width="0.6096" layer="16"/>
 <contactref element="SP" pad="2"/>
@@ -2877,7 +2873,7 @@ design rules under a new name.</description>
 <signal name="BAT+S">
 <contactref element="BAT" pad="1"/>
 <contactref element="PWR" pad="1"/>
-<wire x1="48.26" y1="48.26" x2="53.61" y2="48.26" width="0.8128" layer="16"/>
+<wire x1="44.45" y1="46.99" x2="53.61" y2="48.26" width="0.8128" layer="16"/>
 </signal>
 <signal name="GND14">
 <contactref element="RPI" pad="14"/>
