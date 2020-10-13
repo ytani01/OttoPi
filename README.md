@@ -86,5 +86,6 @@ $ ./setup.sh
 
 ## References
 
+* [pigpio](http://abyz.me.uk/rpi/pigpio/)
 * [Otto DIY](https://www.ottodiy.com/)
 * [Open JTalk](http://open-jtalk.sp.nitech.ac.jp/)
