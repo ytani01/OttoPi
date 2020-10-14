@@ -2,6 +2,9 @@
 #
 # (c) 2020 Yoichi Tanibayashi
 #
+MYNAME=`basename $0`
+MYDIR=`dirname $0`
+
 LOGDIR=${HOME}/tmp
 
 IPHTML="/tmp/`hostname`-ip.html"
@@ -11,15 +14,6 @@ IPHTML_DST="ytani@ssh.ytani.net:public_html/iot"
 
 PIN_AUDIO1=12
 PIN_AUDIO2=13
-
-PIN_SERVO1=17
-PIN_SERVO2=27
-PIN_SERVO3=22
-PIN_SERVO4=23
-
-PIN_SW=21
-PIN_VCC=26
-PIN_LED=20
 
 OPENING_MUSIC="StarTrek-VOY-opening.mp3"
 OPENING_MUSIC_PLAYER="cvlc --play-and-exit --alsa-gain 0.5"
@@ -101,6 +95,7 @@ if [ ${VIRTUAL_ENV} != ${VENVDIR} ]; then
     exit 1
 fi
 ts_echo "VIRTUAL_ENV=${VIRTUAL_ENV}"
+ts_echo "PATH=${PATH}"
 
 #
 # start pigpiod
@@ -115,18 +110,6 @@ sleep 5
 ts_echo "* setup GPIO pins"
 pigs m ${PIN_AUDIO1} 0
 pigs m ${PIN_AUDIO2} 0
-
-pigs s ${PIN_SERVO1} 0
-pigs s ${PIN_SERVO2} 0
-pigs s ${PIN_SERVO3} 0
-pigs s ${PIN_SERVO4} 0
-
-pigs m ${PIN_LED} w
-pigs m ${PIN_VCC} w
-pigs m ${PIN_SW} r
-
-pigs w ${PIN_LED} 0
-pigs w ${PIN_VCC} 1
 
 sleep 3
 
@@ -179,6 +162,9 @@ if which ${SPEAK_SVR}; then
     sleep 3
     ${SPEAK_CMD} "起動処理の状況を音声でお知らせします" &
     sleep 3
+else
+    ts_echo "ERROR> ${SPEAK_SVR}: not found"
+    exit 1
 fi
 
 #
@@ -204,6 +190,9 @@ if which ${HTTP_SVR}; then
     sleep 2
     ${SPEAK_CMD} "スマートフォンでの操作が可能になりました" &
     sleep 6
+else
+    ts_echo "ERROR> ${HTTP_SVR}: not found"
+    exit 1
 fi
 
 #
@@ -224,6 +213,9 @@ if which ${ROBOT_SVR}; then
         sleep 2
     done
     sleep 5
+else
+    ts_echo "ERROR> ${ROBOT_SVR}: not found"
+    exit 1
 fi
 
 #
@@ -240,6 +232,9 @@ if which ${BLE_SVR}; then
     sleep 2
     ${SPEAK_CMD} "スクラッチからの制御が可能になりました" &
     sleep 3
+else
+    ts_echo "ERROR> ${BLE_SVR}: not found"
+    exit 1
 fi
 
 #
