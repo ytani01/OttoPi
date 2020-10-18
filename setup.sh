@@ -129,7 +129,9 @@ fi
 # audio settings
 #
 ts_echo "* audio settings"
-ts_echo_do amixer set -i PCM 97%
+#ts_echo_do amixer set -i PCM 97%
+ts_echo_do amixer scontrols
+ts_echo_do amixer set -i Headphone  97%
 
 #
 # download other repositories
