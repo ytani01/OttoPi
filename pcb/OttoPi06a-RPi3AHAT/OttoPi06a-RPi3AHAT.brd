@@ -194,81 +194,50 @@
 <hole x="24.5" y="29" drill="2.85"/>
 <hole x="-24.5" y="29" drill="2.85"/>
 <hole x="-24.5" y="-29" drill="2.85"/>
-<<<<<<< HEAD
-<text x="15.875" y="25.4" size="0.8128" layer="21" rot="R180">3
+<text x="15.875" y="24.13" size="0.8128" layer="21" font="vector" rot="R180" align="center">3
 V</text>
-<text x="15.875" y="14.605" size="0.8128" layer="21" rot="R180">G</text>
-<text x="15.875" y="22.225" size="0.8128" layer="21" rot="R180">2</text>
-<text x="15.875" y="19.685" size="0.8128" layer="21" rot="R180">3</text>
-<text x="15.875" y="17.145" size="0.8128" layer="21" rot="R180">4</text>
-<text x="15.875" y="12.065" size="0.8128" layer="21" rot="R180">17</text>
-<text x="15.875" y="9.525" size="0.8128" layer="21" rot="R180">27</text>
-<text x="15.875" y="6.985" size="0.8128" layer="21" rot="R180">22</text>
-<text x="26.67" y="22.86" size="0.8128" layer="21">5
+<text x="15.875" y="13.97" size="0.8128" layer="21" font="vector" rot="R180" align="center">G</text>
+<text x="15.875" y="21.59" size="0.8128" layer="21" font="vector" rot="R180" align="center">2</text>
+<text x="15.875" y="19.05" size="0.8128" layer="21" font="vector" rot="R180" align="center">3</text>
+<text x="15.875" y="16.51" size="0.8128" layer="21" font="vector" rot="R180" align="center">4</text>
+<text x="15.875" y="11.43" size="0.8128" layer="21" font="vector" rot="R180" align="center">17</text>
+<text x="15.875" y="8.89" size="0.8128" layer="21" font="vector" rot="R180" align="center">27</text>
+<text x="15.875" y="6.35" size="0.8128" layer="21" font="vector" rot="R180" align="center">22</text>
+<text x="27.305" y="24.13" size="0.8128" layer="21" align="center">5
 V</text>
-<text x="15.875" y="5.08" size="0.8128" layer="21" font="vector" rot="R180">3
+<text x="15.875" y="3.81" size="0.8128" layer="21" font="vector" rot="R180" align="center">3
 V</text>
-=======
-<text x="15.24" y="24.13" size="0.8128" layer="21">3V</text>
-<text x="15.24" y="13.97" size="0.8128" layer="21">G</text>
-<text x="15.24" y="20.955" size="0.8128" layer="21">2</text>
-<text x="15.24" y="18.415" size="0.8128" layer="21">3</text>
-<text x="15.24" y="16.51" size="0.8128" layer="21">4</text>
-<text x="15.24" y="11.43" size="0.8128" layer="21">17</text>
-<text x="15.24" y="8.89" size="0.8128" layer="21">27</text>
-<text x="15.24" y="6.35" size="0.8128" layer="21">22</text>
-<text x="26.67" y="22.86" size="0.8128" layer="21">5
+<text x="27.305" y="21.59" size="0.8128" layer="21" align="center">5
 V</text>
-<text x="15.24" y="3.81" size="0.8128" layer="21">3V</text>
->>>>>>> c31cf1790c7598ade123d0130e5e66835da35a03
-<text x="26.67" y="20.32" size="0.8128" layer="21">5
-V</text>
-<text x="26.67" y="18.415" size="0.8128" layer="21">G</text>
-<text x="26.67" y="8.255" size="0.8128" layer="21">G</text>
-<<<<<<< HEAD
-<text x="26.67" y="0.635" size="0.8128" layer="21" font="vector">G</text>
-<text x="15.875" y="-5.715" size="0.8128" layer="21" rot="R180">G</text>
-<text x="26.67" y="-12.065" size="0.8128" layer="21">G</text>
-<text x="26.67" y="-17.145" size="0.8128" layer="21">G</text>
-<text x="15.875" y="-23.495" size="0.8128" layer="21" rot="R180">G</text>
-<text x="15.875" y="1.905" size="0.8128" layer="21" font="vector" rot="R180">10</text>
-<text x="15.875" y="-0.635" size="0.8128" layer="21" font="vector" rot="R180">9</text>
-<text x="15.875" y="-3.175" size="0.8128" layer="21" rot="R180">11</text>
-<text x="15.875" y="-8.255" size="0.8128" layer="21" rot="R180">0</text>
-<text x="15.875" y="-10.795" size="0.8128" layer="21" rot="R180">5</text>
-<text x="15.875" y="-13.335" size="0.8128" layer="21" rot="R180">6</text>
-<text x="15.875" y="-15.875" size="0.8128" layer="21" rot="R180">13</text>
-<text x="15.875" y="-18.415" size="0.8128" layer="21" rot="R180">19</text>
-<text x="15.875" y="-20.955" size="0.8128" layer="21" rot="R180">26</text>
-=======
-<text x="26.67" y="0.635" size="0.8128" layer="21">G</text>
-<text x="15.24" y="-6.35" size="0.8128" layer="21">G</text>
-<text x="26.67" y="-12.065" size="0.8128" layer="21">G</text>
-<text x="26.67" y="-17.145" size="0.8128" layer="21">G</text>
-<text x="15.24" y="-24.13" size="0.8128" layer="21">G</text>
-<text x="15.24" y="1.27" size="0.8128" layer="21">10</text>
-<text x="15.24" y="-1.27" size="0.8128" layer="21">9</text>
-<text x="15.24" y="-4.445" size="0.8128" layer="21">11</text>
-<text x="15.24" y="-8.89" size="0.8128" layer="21">0</text>
-<text x="15.24" y="-11.43" size="0.8128" layer="21">5</text>
-<text x="15.24" y="-13.97" size="0.8128" layer="21">6</text>
-<text x="15.24" y="-16.51" size="0.8128" layer="21">13</text>
-<text x="15.24" y="-19.05" size="0.8128" layer="21">19</text>
-<text x="15.24" y="-21.59" size="0.8128" layer="21">26</text>
->>>>>>> c31cf1790c7598ade123d0130e5e66835da35a03
-<text x="26.67" y="-22.225" size="0.8128" layer="21">20</text>
-<text x="26.67" y="-14.605" size="0.8128" layer="21">12</text>
-<text x="26.67" y="-19.685" size="0.8128" layer="21">16</text>
-<text x="26.67" y="-9.525" size="0.8128" layer="21">1</text>
-<text x="26.67" y="-6.985" size="0.8128" layer="21">7</text>
-<text x="26.67" y="-4.445" size="0.8128" layer="21">8</text>
-<text x="26.67" y="-1.905" size="0.8128" layer="21">25</text>
-<text x="26.67" y="3.175" size="0.8128" layer="21">24</text>
-<text x="26.67" y="5.715" size="0.8128" layer="21">23</text>
-<text x="26.67" y="10.795" size="0.8128" layer="21">18</text>
-<text x="26.67" y="13.335" size="0.8128" layer="21" font="vector">15</text>
-<text x="26.67" y="15.875" size="0.8128" layer="21">14</text>
-<text x="26.67" y="-24.765" size="0.8128" layer="21">21</text>
+<text x="27.305" y="19.05" size="0.8128" layer="21" align="center">G</text>
+<text x="27.305" y="8.89" size="0.8128" layer="21" font="vector" align="center">G</text>
+<text x="27.305" y="1.27" size="0.8128" layer="21" font="vector" align="center">G</text>
+<text x="15.875" y="-6.35" size="0.8128" layer="21" font="vector" rot="R180" align="center">G</text>
+<text x="27.305" y="-11.43" size="0.8128" layer="21" font="vector" align="center">G</text>
+<text x="27.305" y="-16.51" size="0.8128" layer="21" font="vector" align="center">G</text>
+<text x="15.875" y="-24.13" size="0.8128" layer="21" font="vector" rot="R180" align="center">G</text>
+<text x="15.875" y="1.27" size="0.8128" layer="21" font="vector" rot="R180" align="center">10</text>
+<text x="15.875" y="-1.27" size="0.8128" layer="21" font="vector" rot="R180" align="center">9</text>
+<text x="15.875" y="-3.81" size="0.8128" layer="21" font="vector" rot="R180" align="center">11</text>
+<text x="15.875" y="-8.89" size="0.8128" layer="21" font="vector" rot="R180" align="center">0</text>
+<text x="15.875" y="-11.43" size="0.8128" layer="21" font="vector" rot="R180" align="center">5</text>
+<text x="15.875" y="-13.97" size="0.8128" layer="21" font="vector" rot="R180" align="center">6</text>
+<text x="15.875" y="-16.51" size="0.8128" layer="21" font="vector" rot="R180" align="center">13</text>
+<text x="15.875" y="-19.05" size="0.8128" layer="21" font="vector" rot="R180" align="center">19</text>
+<text x="15.875" y="-21.59" size="0.8128" layer="21" font="vector" rot="R180" align="center">26</text>
+<text x="27.305" y="-21.59" size="0.8128" layer="21" font="vector" align="center">20</text>
+<text x="27.305" y="-13.97" size="0.8128" layer="21" font="vector" align="center">12</text>
+<text x="27.305" y="-19.05" size="0.8128" layer="21" font="vector" align="center">16</text>
+<text x="27.305" y="-8.89" size="0.8128" layer="21" font="vector" align="center">1</text>
+<text x="27.305" y="-6.35" size="0.8128" layer="21" font="vector" align="center">7</text>
+<text x="27.305" y="-3.81" size="0.8128" layer="21" font="vector" align="center">8</text>
+<text x="27.305" y="-1.27" size="0.8128" layer="21" font="vector" align="center">25</text>
+<text x="27.305" y="3.81" size="0.8128" layer="21" font="vector" align="center">24</text>
+<text x="27.305" y="6.35" size="0.8128" layer="21" font="vector" align="center">23</text>
+<text x="27.305" y="11.43" size="0.8128" layer="21" font="vector" align="center">18</text>
+<text x="27.305" y="13.97" size="0.8128" layer="21" font="vector" align="center">15</text>
+<text x="27.305" y="16.51" size="0.8128" layer="21" align="center">14</text>
+<text x="27.305" y="-24.13" size="0.8128" layer="21" font="vector" align="center">21</text>
 <text x="-15.24" y="-7.62" size="0.8128" layer="21">SDA</text>
 <text x="-15.24" y="-10.16" size="0.8128" layer="21">SCL</text>
 <text x="-3.81" y="-15.47" size="0.8128" layer="21" rot="R90">H</text>
@@ -350,10 +319,10 @@ V</text>
 <text x="1.27" y="8.89" size="1.27" layer="27">&gt;VALUE</text>
 </package>
 <package name="RPI-PIN" urn="urn:adsk.eagle:footprint:23610111/1" locally_modified="yes">
-<pad name="1" x="-1.27" y="24.13" drill="0.9" shape="square"/>
-<pad name="2" x="1.27" y="24.13" drill="0.9"/>
-<pad name="3" x="-1.27" y="21.59" drill="0.9"/>
-<pad name="4" x="1.27" y="21.59" drill="0.9"/>
+<pad name="1" x="-1.27" y="24.13" drill="0.9" diameter="1.4224" shape="square"/>
+<pad name="2" x="1.27" y="24.13" drill="0.9" diameter="1.4224"/>
+<pad name="3" x="-1.27" y="21.59" drill="0.9" diameter="1.4224"/>
+<pad name="4" x="1.27" y="21.59" drill="0.9" diameter="1.4224"/>
 <pad name="5" x="-1.27" y="19.05" drill="0.9"/>
 <pad name="6" x="1.27" y="19.05" drill="0.9"/>
 <pad name="7" x="-1.27" y="16.51" drill="0.9"/>
@@ -2119,7 +2088,7 @@ design rules under a new name.</description>
 <attribute name="URL_AMAZON" value="https://www.amazon.co.jp/dp/B073J66H62/" x="5.08" y="-19" size="1.778" layer="27" rot="R90" display="off"/>
 </element>
 <element name="RPI1" library="ytani1" package="RPI-PIN" package3d_urn="urn:adsk.eagle:package:23610134/1" value="" x="19.05" y="0" smashed="yes">
-<attribute name="NAME" x="17.145" y="25.4" size="0.8128" layer="25"/>
+<attribute name="NAME" x="18.415" y="26.035" size="0.8128" layer="25" align="center"/>
 <attribute name="VALUE" x="16.51" y="-27.94" size="1.778" layer="27"/>
 </element>
 <element name="SW1" library="ytani1" package="SW3-1" package3d_urn="urn:adsk.eagle:package:23610140/1" value="" x="-25.4" y="19.05" smashed="yes" rot="R90">
@@ -2139,7 +2108,7 @@ design rules under a new name.</description>
 <attribute name="VALUE" x="-20.4724" y="14.8844" size="0.9906" layer="27" ratio="10" rot="R90"/>
 </element>
 <element name="RPI2" library="ytani1" package="RPI-PIN" package3d_urn="urn:adsk.eagle:package:23610134/1" value="" x="24.13" y="0" smashed="yes">
-<attribute name="NAME" x="23.495" y="25.4" size="0.8128" layer="25"/>
+<attribute name="NAME" x="23.495" y="26.035" size="0.8128" layer="25" align="center"/>
 <attribute name="VALUE" x="21.59" y="-27.94" size="1.778" layer="27"/>
 </element>
 <element name="AMP" library="ytani1" package="PAM8012MOD-A" package3d_urn="urn:adsk.eagle:package:23610141/1" value="" x="1.27" y="6.35" smashed="yes" rot="R270">
@@ -2582,11 +2551,13 @@ design rules under a new name.</description>
 <signal name="N$16">
 <contactref element="RPI2" pad="4"/>
 <contactref element="RPI1" pad="4"/>
-<wire x1="22.3790125" y1="22.7512" x2="23.3409875" y2="22.7512" width="0.6096" layer="1"/>
 <wire x1="20.32" y1="21.59" x2="21.2178125" y2="21.59" width="0.6096" layer="1"/>
-<wire x1="24.5021875" y1="21.59" x2="25.4" y2="21.59" width="0.6096" layer="1"/>
-<wire x1="21.2178125" y1="21.59" x2="22.3790125" y2="22.7512" width="0.6096" layer="1"/>
-<wire x1="23.3409875" y1="22.7512" x2="24.5021875" y2="21.59" width="0.6096" layer="1"/>
+<wire x1="21.6916" y1="22.07396875" x2="22.37603125" y2="22.7584" width="0.6096" layer="1"/>
+<wire x1="22.37603125" y1="22.7584" x2="23.34396875" y2="22.7584" width="0.6096" layer="1"/>
+<wire x1="21.2178125" y1="21.59" x2="21.6916" y2="22.0637875" width="0.6096" layer="1"/>
+<wire x1="21.6916" y1="22.0637875" x2="21.6916" y2="22.07396875" width="0.6096" layer="1"/>
+<wire x1="24.51236875" y1="21.59" x2="25.4" y2="21.59" width="0.6096" layer="1"/>
+<wire x1="23.34396875" y1="22.7584" x2="24.51236875" y2="21.59" width="0.6096" layer="1"/>
 </signal>
 <signal name="N$18">
 <contactref element="RPI2" pad="8"/>
@@ -2764,11 +2735,6 @@ design rules under a new name.</description>
 <contactref element="RPI1" pad="1"/>
 <contactref element="RPI2" pad="1"/>
 <contactref element="R2" pad="2"/>
-<wire x1="19.8390125" y1="25.2912" x2="20.8009875" y2="25.2912" width="0.6096" layer="16"/>
-<wire x1="17.78" y1="24.13" x2="18.6778125" y2="24.13" width="0.6096" layer="16"/>
-<wire x1="21.9621875" y1="24.13" x2="22.86" y2="24.13" width="0.6096" layer="16"/>
-<wire x1="18.6778125" y1="24.13" x2="19.8390125" y2="25.2912" width="0.6096" layer="16"/>
-<wire x1="20.8009875" y1="25.2912" x2="21.9621875" y2="24.13" width="0.6096" layer="16"/>
 <wire x1="-13.97" y1="-12.7" x2="-11.43" y2="-15.24" width="0.8128" layer="1"/>
 <wire x1="-13.97" y1="-12.7" x2="-13.97" y2="-4.445" width="0.8128" layer="1"/>
 <contactref element="MODE" pad="3"/>
@@ -2785,15 +2751,15 @@ design rules under a new name.</description>
 <wire x1="-11.43" y1="-15.24" x2="-6.35" y2="-15.24" width="0.8128" layer="1"/>
 <wire x1="-11.43" y1="-16.51" x2="-11.43" y2="-15.24" width="0.8128" layer="1"/>
 <wire x1="-11.43" y1="-1.905" x2="-11.43" y2="-4.445" width="0.8128" layer="1"/>
+<wire x1="19.83603125" y1="25.2984" x2="20.80396875" y2="25.2984" width="0.6096" layer="16"/>
+<wire x1="17.78" y1="24.13" x2="18.66763125" y2="24.13" width="0.6096" layer="16"/>
+<wire x1="21.97236875" y1="24.13" x2="22.86" y2="24.13" width="0.6096" layer="16"/>
+<wire x1="18.66763125" y1="24.13" x2="19.83603125" y2="25.2984" width="0.6096" layer="16"/>
+<wire x1="20.80396875" y1="25.2984" x2="21.97236875" y2="24.13" width="0.6096" layer="16"/>
 </signal>
 <signal name="SDA">
 <contactref element="RPI2" pad="3"/>
 <contactref element="RPI1" pad="3"/>
-<wire x1="19.8390125" y1="22.7512" x2="20.8009875" y2="22.7512" width="0.6096" layer="16"/>
-<wire x1="17.78" y1="21.59" x2="18.6778125" y2="21.59" width="0.6096" layer="16"/>
-<wire x1="21.9621875" y1="21.59" x2="22.86" y2="21.59" width="0.6096" layer="16"/>
-<wire x1="18.6778125" y1="21.59" x2="19.8390125" y2="22.7512" width="0.6096" layer="16"/>
-<wire x1="20.8009875" y1="22.7512" x2="21.9621875" y2="21.59" width="0.6096" layer="16"/>
 <contactref element="I2C1" pad="2"/>
 <contactref element="I2C2" pad="2"/>
 <wire x1="-8.89" y1="-6.985" x2="-11.43" y2="-6.985" width="0.8128" layer="1"/>
@@ -2804,6 +2770,11 @@ design rules under a new name.</description>
 <wire x1="8.89" y1="0" x2="8.89" y2="17.145" width="0.8128" layer="1"/>
 <wire x1="8.89" y1="17.145" x2="13.335" y2="21.59" width="0.8128" layer="1"/>
 <wire x1="13.335" y1="21.59" x2="17.78" y2="21.59" width="0.8128" layer="1"/>
+<wire x1="19.83603125" y1="22.7584" x2="20.80396875" y2="22.7584" width="0.6096" layer="16"/>
+<wire x1="17.78" y1="21.59" x2="18.66763125" y2="21.59" width="0.6096" layer="16"/>
+<wire x1="21.97236875" y1="21.59" x2="22.86" y2="21.59" width="0.6096" layer="16"/>
+<wire x1="18.66763125" y1="21.59" x2="19.83603125" y2="22.7584" width="0.6096" layer="16"/>
+<wire x1="20.80396875" y1="22.7584" x2="21.97236875" y2="21.59" width="0.6096" layer="16"/>
 </signal>
 <signal name="SCL">
 <contactref element="RPI2" pad="5"/>

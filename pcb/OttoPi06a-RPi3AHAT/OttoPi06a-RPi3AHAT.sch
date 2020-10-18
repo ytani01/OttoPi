@@ -340,10 +340,10 @@
 <text x="1.27" y="8.89" size="1.27" layer="27">&gt;VALUE</text>
 </package>
 <package name="RPI-PIN" urn="urn:adsk.eagle:footprint:23610111/1" locally_modified="yes">
-<pad name="1" x="-1.27" y="24.13" drill="0.9" shape="square"/>
-<pad name="2" x="1.27" y="24.13" drill="0.9"/>
-<pad name="3" x="-1.27" y="21.59" drill="0.9"/>
-<pad name="4" x="1.27" y="21.59" drill="0.9"/>
+<pad name="1" x="-1.27" y="24.13" drill="0.9" diameter="1.4224" shape="square"/>
+<pad name="2" x="1.27" y="24.13" drill="0.9" diameter="1.4224"/>
+<pad name="3" x="-1.27" y="21.59" drill="0.9" diameter="1.4224"/>
+<pad name="4" x="1.27" y="21.59" drill="0.9" diameter="1.4224"/>
 <pad name="5" x="-1.27" y="19.05" drill="0.9"/>
 <pad name="6" x="1.27" y="19.05" drill="0.9"/>
 <pad name="7" x="-1.27" y="16.51" drill="0.9"/>
