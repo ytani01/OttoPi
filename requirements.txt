@@ -8,3 +8,4 @@ netifaces
 pigpio
 smbus2
 Werkzeug
+pybleno
