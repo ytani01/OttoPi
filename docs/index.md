@@ -1,6 +1,5 @@
 ![OttoPi](media/walk1/OttoPi-walk1.gif)
 [![OttoPi](media/OttoPi-Scratch.mp4.jpg)](http://www.ytani.net:8080/tmp/OttoPi/OttoPi-Scratch.mp4)
-<iframe width="560" height="315" src="https://www.youtube.com/embed/tdhGacsOuL4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 [Youtube](https://youtu.be/tdhGacsOuL4)
 
 # OttoPi: Otto DIY like biped robot for Raspberry Pi (Zero)
