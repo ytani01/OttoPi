@@ -63,6 +63,16 @@ T.B.D
 
 ## Install software
 
+### purge pulseaudio packages
+
+現状、pulseaudioがあると、音声が出ません。
+以下のように、pulseaudioを削除してください。
+
+```bash
+$ sudo apt purge pulseaudio\*
+```
+
+
 ### make Python3 venv
 
 ```bash
