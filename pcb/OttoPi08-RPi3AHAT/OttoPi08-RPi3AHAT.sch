@@ -11244,6 +11244,208 @@ Source: www.kingbright.com</description>
 </deviceset>
 </devicesets>
 </library>
+<library name="ytani1" urn="urn:adsk.eagle:library:30941153">
+<description>&lt;a href="https://github.com/ytani01/EagleLib-ytani/"&gt;https://github.com/ytani01/EagleLib-ytani/&lt;/a&gt;</description>
+<packages>
+<package name="DCDC-MT3608-MOD1" urn="urn:adsk.eagle:footprint:23610109/1" library_version="1">
+<pad name="VOUT+" x="-15" y="3.5" drill="1" diameter="1.9304"/>
+<pad name="VOUT-" x="-15" y="-3.5" drill="1" diameter="1.9304"/>
+<pad name="VIN+" x="15" y="3.5" drill="1" diameter="1.9304"/>
+<pad name="VIN-" x="15" y="-3.5" drill="1" diameter="1.9304"/>
+<circle x="6" y="2.5" radius="4.7" width="0.1524" layer="21"/>
+<wire x1="-1.5" y1="-7.5" x2="-11" y2="-7.5" width="0.1524" layer="21"/>
+<wire x1="-11" y1="-7.5" x2="-11" y2="2.5" width="0.1524" layer="21"/>
+<wire x1="-11" y1="2.5" x2="-10" y2="2.5" width="0.1524" layer="21"/>
+<wire x1="-10" y1="2.5" x2="-10" y2="1.778" width="0.1524" layer="21"/>
+<wire x1="-10" y1="1.778" x2="-2.5" y2="1.778" width="0.1524" layer="21"/>
+<wire x1="-2.5" y1="1.778" x2="-2.5" y2="2.5" width="0.1524" layer="21"/>
+<wire x1="-2.5" y1="2.5" x2="-1.5" y2="2.5" width="0.1524" layer="21"/>
+<wire x1="-1.5" y1="2.5" x2="-1.5" y2="-7.5" width="0.1524" layer="21"/>
+<wire x1="-10.922" y1="-7.62" x2="-10.922" y2="-8.636" width="0.1524" layer="21"/>
+<wire x1="-10.922" y1="-8.636" x2="-9.652" y2="-8.636" width="0.1524" layer="21"/>
+<wire x1="-9.652" y1="-8.636" x2="-9.652" y2="-7.62" width="0.1524" layer="21"/>
+<wire x1="-9.652" y1="-7.62" x2="-10.922" y2="-7.62" width="0.1524" layer="21"/>
+<wire x1="17.23" y1="-8.5" x2="-17.23" y2="-8.5" width="0.1524" layer="21"/>
+<wire x1="-17.23" y1="-8.5" x2="-18.5" y2="-7.23" width="0.1524" layer="21"/>
+<wire x1="-18.5" y1="-7.23" x2="-18.5" y2="7.23" width="0.1524" layer="21"/>
+<wire x1="-18.5" y1="7.23" x2="-17.23" y2="8.5" width="0.1524" layer="21"/>
+<wire x1="-17.23" y1="8.5" x2="17.23" y2="8.5" width="0.1524" layer="21"/>
+<wire x1="17.23" y1="8.5" x2="18.5" y2="7.23" width="0.1524" layer="21"/>
+<wire x1="18.5" y1="7.23" x2="18.5" y2="-7.23" width="0.1524" layer="21"/>
+<wire x1="18.5" y1="-7.23" x2="17.23" y2="-8.5" width="0.1524" layer="21"/>
+<wire x1="-17.5" y1="5" x2="-12.5" y2="5" width="0.1524" layer="21"/>
+<wire x1="-12.5" y1="5" x2="-12.5" y2="2" width="0.1524" layer="21"/>
+<wire x1="-12.5" y1="2" x2="-17.5" y2="2" width="0.1524" layer="21"/>
+<wire x1="-17.5" y1="2" x2="-17.5" y2="5" width="0.1524" layer="21"/>
+<wire x1="-17.5" y1="-2" x2="-12.5" y2="-2" width="0.1524" layer="21"/>
+<wire x1="-12.5" y1="-2" x2="-12.5" y2="-5" width="0.1524" layer="21"/>
+<wire x1="-12.5" y1="-5" x2="-17.5" y2="-5" width="0.1524" layer="21"/>
+<wire x1="-17.5" y1="-5" x2="-17.5" y2="-2" width="0.1524" layer="21"/>
+<wire x1="12.5" y1="5" x2="17.5" y2="5" width="0.1524" layer="21"/>
+<wire x1="17.5" y1="5" x2="17.5" y2="2" width="0.1524" layer="21"/>
+<wire x1="17.5" y1="2" x2="12.5" y2="2" width="0.1524" layer="21"/>
+<wire x1="12.5" y1="2" x2="12.5" y2="5" width="0.1524" layer="21"/>
+<wire x1="12.5" y1="-2" x2="17.5" y2="-2" width="0.1524" layer="21"/>
+<wire x1="17.5" y1="-2" x2="17.5" y2="-5" width="0.1524" layer="21"/>
+<wire x1="17.5" y1="-5" x2="12.5" y2="-5" width="0.1524" layer="21"/>
+<wire x1="12.5" y1="-5" x2="12.5" y2="-2" width="0.1524" layer="21"/>
+<wire x1="1" y1="-1.865" x2="1" y2="5.5" width="0.1524" layer="21"/>
+<wire x1="1" y1="5.5" x2="3" y2="7.5" width="0.1524" layer="21"/>
+<wire x1="3" y1="7.5" x2="10.365" y2="7.5" width="0.1524" layer="21"/>
+<wire x1="10.365" y1="7.5" x2="11" y2="6.865" width="0.1524" layer="21" curve="-90"/>
+<wire x1="11" y1="6.865" x2="11" y2="-0.5" width="0.1524" layer="21"/>
+<wire x1="11" y1="-0.5" x2="9" y2="-2.5" width="0.1524" layer="21"/>
+<wire x1="9" y1="-2.5" x2="1.635" y2="-2.5" width="0.1524" layer="21"/>
+<wire x1="1.635" y1="-2.5" x2="1" y2="-1.865" width="0.1524" layer="21" curve="-90"/>
+<text x="12.7" y="6.35" size="1.27" layer="51">VIN+</text>
+<text x="12.7" y="-7.62" size="1.27" layer="51">VIN-</text>
+<text x="-17.78" y="6.35" size="1.27" layer="51">VOUT+</text>
+<text x="-17.78" y="-7.62" size="1.27" layer="51">VOUT-</text>
+<text x="-15.24" y="8.89" size="1.778" layer="25">&gt;NAME</text>
+<text x="5.08" y="8.89" size="1.778" layer="27">&gt;VALUE</text>
+</package>
+<package name="DCDC-MT3608-MOD2-USB" urn="urn:adsk.eagle:footprint:23610121/1" library_version="1">
+<pad name="VIN+" x="-13.25" y="7" drill="0.9" diameter="1.7"/>
+<pad name="VIN-" x="-13.25" y="-7" drill="0.9" diameter="1.7"/>
+<pad name="VOUT+" x="13.25" y="7" drill="0.9" diameter="1.7"/>
+<pad name="VOUT-" x="13.25" y="-7" drill="0.9" diameter="1.7"/>
+<wire x1="-15.4" y1="4.318" x2="-15" y2="4" width="0.1524" layer="21"/>
+<wire x1="-15" y1="4" x2="-10" y2="4" width="0.1524" layer="21"/>
+<wire x1="-10" y1="4" x2="-10" y2="-4" width="0.1524" layer="21"/>
+<wire x1="-10" y1="-4" x2="-15" y2="-4" width="0.1524" layer="21"/>
+<wire x1="-15" y1="-4" x2="-15.4" y2="-4.318" width="0.1524" layer="21"/>
+<wire x1="-15.4" y1="-4.318" x2="-15.4" y2="4.318" width="0.1524" layer="21"/>
+<wire x1="1.5" y1="7.5" x2="11" y2="7.5" width="0.1524" layer="21"/>
+<wire x1="11" y1="7.5" x2="11" y2="-2.5" width="0.1524" layer="21"/>
+<wire x1="11" y1="-2.5" x2="10" y2="-2.5" width="0.1524" layer="21"/>
+<wire x1="10" y1="-2.5" x2="10" y2="-1.778" width="0.1524" layer="21"/>
+<wire x1="10" y1="-1.778" x2="2.5" y2="-1.778" width="0.1524" layer="21"/>
+<wire x1="2.5" y1="-1.778" x2="2.5" y2="-2.5" width="0.1524" layer="21"/>
+<wire x1="2.5" y1="-2.5" x2="1.5" y2="-2.5" width="0.1524" layer="21"/>
+<wire x1="1.5" y1="-2.5" x2="1.5" y2="7.5" width="0.1524" layer="21"/>
+<wire x1="10.922" y1="7.62" x2="10.922" y2="8.636" width="0.1524" layer="21"/>
+<wire x1="10.922" y1="8.636" x2="9.652" y2="8.636" width="0.1524" layer="21"/>
+<wire x1="9.652" y1="8.636" x2="9.652" y2="7.62" width="0.1524" layer="21"/>
+<wire x1="9.652" y1="7.62" x2="10.922" y2="7.62" width="0.1524" layer="21"/>
+<wire x1="3.81" y1="-3.81" x2="8.89" y2="-3.81" width="0.1524" layer="51"/>
+<wire x1="8.89" y1="-3.81" x2="8.89" y2="-6.35" width="0.1524" layer="51"/>
+<wire x1="8.89" y1="-6.35" x2="3.81" y2="-6.35" width="0.1524" layer="51"/>
+<wire x1="3.81" y1="-6.35" x2="3.81" y2="-3.81" width="0.1524" layer="51"/>
+<wire x1="-7.62" y1="6.858" x2="-7.62" y2="3.81" width="0.1524" layer="51"/>
+<wire x1="-7.62" y1="3.81" x2="-6.35" y2="3.81" width="0.1524" layer="51"/>
+<wire x1="-6.35" y1="3.81" x2="-6.35" y2="6.858" width="0.1524" layer="51"/>
+<wire x1="-6.35" y1="6.858" x2="-7.62" y2="6.858" width="0.1524" layer="51"/>
+<wire x1="-3.302" y1="7.112" x2="-2.032" y2="7.112" width="0.1524" layer="51"/>
+<wire x1="-2.032" y1="7.112" x2="-2.032" y2="4.572" width="0.1524" layer="51"/>
+<wire x1="-2.032" y1="4.572" x2="-3.302" y2="4.572" width="0.1524" layer="51"/>
+<wire x1="-3.302" y1="4.572" x2="-3.302" y2="7.112" width="0.1524" layer="51"/>
+<wire x1="1.016" y1="6.858" x2="1.016" y2="5.08" width="0.1524" layer="51"/>
+<wire x1="1.016" y1="5.08" x2="0.254" y2="5.08" width="0.1524" layer="51"/>
+<wire x1="0.254" y1="5.08" x2="0.254" y2="6.858" width="0.1524" layer="51"/>
+<wire x1="0.254" y1="6.858" x2="1.016" y2="6.858" width="0.1524" layer="51"/>
+<wire x1="-15.5" y1="8.5" x2="15.5" y2="8.5" width="0.1524" layer="21"/>
+<wire x1="15.5" y1="8.5" x2="15.5" y2="-8.5" width="0.1524" layer="21"/>
+<wire x1="15.5" y1="-8.5" x2="-15.5" y2="-8.5" width="0.1524" layer="21"/>
+<wire x1="-15.5" y1="-8.5" x2="-15.5" y2="8.5" width="0.1524" layer="21"/>
+<circle x="-4.064" y="-3.556" radius="3.454771875" width="0.1524" layer="51"/>
+<circle x="6.096" y="5.334" radius="0.359209375" width="0.1524" layer="52"/>
+<circle x="4.318" y="3.302" radius="0.359209375" width="0.1524" layer="52"/>
+<circle x="7.874" y="3.302" radius="0.359209375" width="0.1524" layer="52"/>
+<text x="-11.43" y="6.35" size="1.27" layer="51">VIN+</text>
+<text x="-11.43" y="-7.62" size="1.27" layer="51">VIN-</text>
+<text x="11.938" y="5.334" size="0.8128" layer="51">OUT+</text>
+<text x="11.938" y="-6.096" size="0.8128" layer="51">OUT-</text>
+<text x="-15.24" y="8.89" size="1.778" layer="25">&gt;NAME</text>
+<text x="5.08" y="8.89" size="1.778" layer="27">&gt;VALUE</text>
+</package>
+</packages>
+<packages3d>
+<package3d name="DCDC-MT3608-MOD1" urn="urn:adsk.eagle:package:23610132/1" type="box" library_version="1">
+<packageinstances>
+<packageinstance name="DCDC-MT3608-MOD1"/>
+</packageinstances>
+</package3d>
+<package3d name="DCDC-MT3608-MOD2-USB" urn="urn:adsk.eagle:package:23610144/1" type="box" library_version="1">
+<packageinstances>
+<packageinstance name="DCDC-MT3608-MOD2-USB"/>
+</packageinstances>
+</package3d>
+</packages3d>
+<symbols>
+<symbol name="DCDC04" urn="urn:adsk.eagle:symbol:30941171/1" library_version="1">
+<pin name="VIN+" x="-12.7" y="2.54" visible="pin" length="short" direction="pwr"/>
+<pin name="VOUT+" x="12.7" y="2.54" visible="pin" length="short" direction="pwr" rot="R180"/>
+<pin name="VIN-" x="-12.7" y="-2.54" visible="pin" length="short" direction="pwr"/>
+<pin name="VOUT-" x="12.7" y="-2.54" visible="pin" length="short" direction="pwr" rot="R180"/>
+<text x="-10.16" y="5.08" size="1.778" layer="95">&gt;NAME</text>
+<text x="10.38" y="1" size="1.4224" layer="96">&gt;VALUE</text>
+<wire x1="-10.16" y1="3.81" x2="10.16" y2="3.81" width="0.1524" layer="94"/>
+<wire x1="10.16" y1="3.81" x2="10.16" y2="-3.81" width="0.1524" layer="94"/>
+<wire x1="10.16" y1="-3.81" x2="-10.16" y2="-3.81" width="0.1524" layer="94"/>
+<wire x1="-10.16" y1="-3.81" x2="-10.16" y2="3.81" width="0.1524" layer="94"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="DCDC-MT3608-MOD" urn="urn:adsk.eagle:component:30941210/1" prefix="DCDC" uservalue="yes" library_version="1">
+<description>&lt;strong&gt;DC/DC Step-Up converter MT3608&lt;/strong&gt;
+&lt;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.amazon.co.jp/gp/product/B086GDTYDS/"&gt;https://www.amazon.co.jp/gp/product/B086GDTYDS/&lt;/a&gt;
+&lt;li&gt;&lt;a href="https://www.amazon.co.jp/gp/product/B01D0WSBGY/"&gt;https://www.amazon.co.jp/gp/product/B01D0WSBGY/&lt;/a&gt;
+&lt;/ul&gt;
+&lt;/p&gt;
+&lt;p&gt;
+MT3608
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td&gt;In&lt;/td&gt;&lt;td&gt;2V-24V&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Out&lt;/td&gt;&lt;td&gt;5V-28V = &lt;strong&gt;[VALUE]&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+Max: 2A (1A recomended)
+&lt;/p;&gt;</description>
+<gates>
+<gate name="G$1" symbol="DCDC04" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="DCDC-MT3608-MOD1">
+<connects>
+<connect gate="G$1" pin="VIN+" pad="VIN+"/>
+<connect gate="G$1" pin="VIN-" pad="VIN-"/>
+<connect gate="G$1" pin="VOUT+" pad="VOUT+"/>
+<connect gate="G$1" pin="VOUT-" pad="VOUT-"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:23610132/1"/>
+</package3dinstances>
+<technologies>
+<technology name="">
+<attribute name="AMAZON_URL" value="https://www.amazon.co.jp/gp/product/B086GDTYDS/" constant="no"/>
+</technology>
+</technologies>
+</device>
+<device name="USB" package="DCDC-MT3608-MOD2-USB">
+<connects>
+<connect gate="G$1" pin="VIN+" pad="VIN+"/>
+<connect gate="G$1" pin="VIN-" pad="VIN-"/>
+<connect gate="G$1" pin="VOUT+" pad="VOUT+"/>
+<connect gate="G$1" pin="VOUT-" pad="VOUT-"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:23610144/1"/>
+</package3dinstances>
+<technologies>
+<technology name="">
+<attribute name="AMAZON_URL" value="https://www.amazon.co.jp/gp/product/B01D0WSBGY/" constant="no"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -11324,20 +11526,22 @@ Source: www.kingbright.com</description>
 <part name="I2C2" library="ytani1" deviceset="PINHEAD-MA04-1" device="" package3d_urn="urn:adsk.eagle:package:8337/1"/>
 <part name="SV10" library="ytani1" deviceset="PINHEAD-MA04-1" device="" package3d_urn="urn:adsk.eagle:package:8337/1"/>
 <part name="DCDC2" library="ytani1" deviceset="DCDC-SX1308-MOD1" device=""/>
+<part name="DCDC1" library="ytani1" library_urn="urn:adsk.eagle:library:30941153" deviceset="DCDC-MT3608-MOD" device="" package3d_urn="urn:adsk.eagle:package:23610132/1"/>
+<part name="DCDC3" library="ytani1" library_urn="urn:adsk.eagle:library:30941153" deviceset="DCDC-MT3608-MOD" device="USB" package3d_urn="urn:adsk.eagle:package:23610144/1"/>
 </parts>
 <sheets>
 <sheet>
 <plain>
 </plain>
 <instances>
-<instance part="P+2" gate="1" x="43.18" y="152.4" smashed="yes">
-<attribute name="VALUE" x="40.64" y="152.4" size="1.778" layer="96"/>
+<instance part="P+2" gate="1" x="49.53" y="152.4" smashed="yes">
+<attribute name="VALUE" x="46.99" y="152.4" size="1.778" layer="96"/>
 </instance>
 <instance part="P+4" gate="VCC" x="0" y="182.88" smashed="yes">
 <attribute name="VALUE" x="-2.54" y="182.88" size="1.778" layer="96"/>
 </instance>
-<instance part="GND2" gate="1" x="12.7" y="116.84" smashed="yes">
-<attribute name="VALUE" x="10.16" y="114.3" size="1.778" layer="96"/>
+<instance part="GND2" gate="1" x="7.62" y="115.57" smashed="yes">
+<attribute name="VALUE" x="5.08" y="113.03" size="1.778" layer="96"/>
 </instance>
 <instance part="GND3" gate="1" x="-50.8" y="35.56" smashed="yes">
 <attribute name="VALUE" x="-53.34" y="33.02" size="1.778" layer="96"/>
@@ -11454,16 +11658,16 @@ Source: www.kingbright.com</description>
 <attribute name="NAME" x="150.876" y="58.039" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="150.876" y="63.119" size="1.778" layer="96" rot="R180"/>
 </instance>
-<instance part="GND5" gate="1" x="43.18" y="116.84" smashed="yes">
-<attribute name="VALUE" x="40.64" y="114.3" size="1.778" layer="96"/>
+<instance part="GND5" gate="1" x="49.53" y="116.84" smashed="yes">
+<attribute name="VALUE" x="46.99" y="114.3" size="1.778" layer="96"/>
 </instance>
 <instance part="BAT+" gate="G$1" x="15.24" y="175.26" smashed="yes" rot="R180">
 <attribute name="VALUE" x="16.51" y="180.34" size="1.778" layer="96" rot="R180"/>
 <attribute name="NAME" x="16.51" y="169.418" size="1.778" layer="95" rot="R180"/>
 </instance>
-<instance part="+5V" gate="G$1" x="53.34" y="144.78" smashed="yes" rot="R180">
-<attribute name="VALUE" x="54.61" y="149.86" size="1.778" layer="96" rot="R180"/>
-<attribute name="NAME" x="54.61" y="138.938" size="1.778" layer="95" rot="R180"/>
+<instance part="+5V" gate="G$1" x="59.69" y="144.78" smashed="yes" rot="R180">
+<attribute name="VALUE" x="60.96" y="149.86" size="1.778" layer="96" rot="R180"/>
+<attribute name="NAME" x="60.96" y="138.938" size="1.778" layer="95" rot="R180"/>
 </instance>
 <instance part="JP1" gate="G$1" x="-10.16" y="154.94" smashed="yes" rot="R270">
 <attribute name="VALUE" x="-15.24" y="156.21" size="1.778" layer="96" rot="R270"/>
@@ -11568,9 +11772,17 @@ Source: www.kingbright.com</description>
 <attribute name="VALUE" x="85.09" y="53.34" size="1.778" layer="96" rot="R180"/>
 <attribute name="NAME" x="85.852" y="46.99" size="1.778" layer="95" rot="R270"/>
 </instance>
-<instance part="DCDC2" gate="G$1" x="27.94" y="142.24" smashed="yes">
-<attribute name="NAME" x="17.78" y="147.32" size="1.778" layer="95"/>
-<attribute name="VALUE" x="38.32" y="143.24" size="1.4224" layer="96"/>
+<instance part="DCDC2" gate="G$1" x="26.67" y="142.24" smashed="yes">
+<attribute name="NAME" x="16.51" y="147.32" size="1.778" layer="95"/>
+<attribute name="VALUE" x="37.05" y="143.24" size="1.4224" layer="96"/>
+</instance>
+<instance part="DCDC1" gate="G$1" x="26.67" y="154.94" smashed="yes">
+<attribute name="NAME" x="16.51" y="160.02" size="1.778" layer="95"/>
+<attribute name="VALUE" x="37.05" y="155.94" size="1.4224" layer="96"/>
+</instance>
+<instance part="DCDC3" gate="G$1" x="26.67" y="129.54" smashed="yes">
+<attribute name="NAME" x="16.51" y="134.62" size="1.778" layer="95"/>
+<attribute name="VALUE" x="37.05" y="130.54" size="1.4224" layer="96"/>
 </instance>
 </instances>
 <busses>
@@ -11612,10 +11824,18 @@ Source: www.kingbright.com</description>
 <wire x1="0" y1="121.92" x2="0" y2="119.38" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<wire x1="12.7" y1="119.38" x2="12.7" y2="139.7" width="0.1524" layer="91"/>
+<wire x1="7.62" y1="118.11" x2="7.62" y2="139.7" width="0.1524" layer="91"/>
 <pinref part="GND2" gate="1" pin="GND"/>
-<wire x1="15.24" y1="139.7" x2="12.7" y2="139.7" width="0.1524" layer="91"/>
+<wire x1="13.97" y1="139.7" x2="12.7" y2="139.7" width="0.1524" layer="91"/>
 <pinref part="DCDC2" gate="G$1" pin="VIN-"/>
+<pinref part="DCDC1" gate="G$1" pin="VIN-"/>
+<wire x1="12.7" y1="139.7" x2="7.62" y2="139.7" width="0.1524" layer="91"/>
+<wire x1="13.97" y1="152.4" x2="12.7" y2="152.4" width="0.1524" layer="91"/>
+<wire x1="12.7" y1="152.4" x2="12.7" y2="139.7" width="0.1524" layer="91"/>
+<junction x="12.7" y="139.7"/>
+<pinref part="DCDC3" gate="G$1" pin="VIN-"/>
+<wire x1="12.7" y1="139.7" x2="12.7" y2="127" width="0.1524" layer="91"/>
+<wire x1="12.7" y1="127" x2="13.97" y2="127" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND6" gate="1" pin="GND"/>
@@ -11767,14 +11987,22 @@ Source: www.kingbright.com</description>
 <junction x="48.26" y="63.5"/>
 </segment>
 <segment>
-<wire x1="43.18" y1="142.24" x2="43.18" y2="139.7" width="0.1524" layer="91"/>
-<wire x1="45.72" y1="142.24" x2="43.18" y2="142.24" width="0.1524" layer="91"/>
-<wire x1="40.64" y1="139.7" x2="43.18" y2="139.7" width="0.1524" layer="91"/>
+<wire x1="49.53" y1="142.24" x2="49.53" y2="139.7" width="0.1524" layer="91"/>
+<wire x1="52.07" y1="142.24" x2="49.53" y2="142.24" width="0.1524" layer="91"/>
+<wire x1="39.37" y1="139.7" x2="41.91" y2="139.7" width="0.1524" layer="91"/>
 <pinref part="+5V" gate="G$1" pin="2"/>
 <pinref part="DCDC2" gate="G$1" pin="VOUT-"/>
 <pinref part="GND5" gate="1" pin="GND"/>
-<wire x1="43.18" y1="119.38" x2="43.18" y2="139.7" width="0.1524" layer="91"/>
-<junction x="43.18" y="139.7"/>
+<wire x1="41.91" y1="139.7" x2="49.53" y2="139.7" width="0.1524" layer="91"/>
+<wire x1="49.53" y1="119.38" x2="49.53" y2="139.7" width="0.1524" layer="91"/>
+<junction x="49.53" y="139.7"/>
+<pinref part="DCDC1" gate="G$1" pin="VOUT-"/>
+<wire x1="39.37" y1="152.4" x2="41.91" y2="152.4" width="0.1524" layer="91"/>
+<wire x1="41.91" y1="152.4" x2="41.91" y2="139.7" width="0.1524" layer="91"/>
+<junction x="41.91" y="139.7"/>
+<pinref part="DCDC3" gate="G$1" pin="VOUT-"/>
+<wire x1="41.91" y1="139.7" x2="41.91" y2="127" width="0.1524" layer="91"/>
+<wire x1="41.91" y1="127" x2="39.37" y2="127" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="BAT+" class="1">
@@ -11793,7 +12021,15 @@ Source: www.kingbright.com</description>
 <pinref part="JP1" gate="G$1" pin="2"/>
 <pinref part="BAT+" gate="G$1" pin="1"/>
 <pinref part="DCDC2" gate="G$1" pin="VIN+"/>
-<wire x1="15.24" y1="144.78" x2="0" y2="144.78" width="0.1524" layer="91"/>
+<wire x1="13.97" y1="144.78" x2="10.16" y2="144.78" width="0.1524" layer="91"/>
+<pinref part="DCDC3" gate="G$1" pin="VIN+"/>
+<wire x1="10.16" y1="144.78" x2="0" y2="144.78" width="0.1524" layer="91"/>
+<wire x1="13.97" y1="132.08" x2="10.16" y2="132.08" width="0.1524" layer="91"/>
+<wire x1="10.16" y1="132.08" x2="10.16" y2="144.78" width="0.1524" layer="91"/>
+<junction x="10.16" y="144.78"/>
+<pinref part="DCDC1" gate="G$1" pin="VIN+"/>
+<wire x1="13.97" y1="157.48" x2="10.16" y2="157.48" width="0.1524" layer="91"/>
+<wire x1="10.16" y1="157.48" x2="10.16" y2="144.78" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <wire x1="68.58" y1="185.42" x2="68.58" y2="182.88" width="0.1524" layer="91"/>
@@ -11853,12 +12089,20 @@ Source: www.kingbright.com</description>
 <net name="+5V" class="0">
 <segment>
 <pinref part="P+2" gate="1" pin="+5V"/>
-<wire x1="43.18" y1="149.86" x2="43.18" y2="144.78" width="0.1524" layer="91"/>
-<wire x1="43.18" y1="144.78" x2="45.72" y2="144.78" width="0.1524" layer="91"/>
-<wire x1="40.64" y1="144.78" x2="43.18" y2="144.78" width="0.1524" layer="91"/>
-<junction x="43.18" y="144.78"/>
+<wire x1="49.53" y1="149.86" x2="49.53" y2="144.78" width="0.1524" layer="91"/>
+<wire x1="49.53" y1="144.78" x2="52.07" y2="144.78" width="0.1524" layer="91"/>
+<wire x1="39.37" y1="144.78" x2="45.72" y2="144.78" width="0.1524" layer="91"/>
+<junction x="49.53" y="144.78"/>
 <pinref part="+5V" gate="G$1" pin="1"/>
 <pinref part="DCDC2" gate="G$1" pin="VOUT+"/>
+<pinref part="DCDC1" gate="G$1" pin="VOUT+"/>
+<wire x1="45.72" y1="144.78" x2="49.53" y2="144.78" width="0.1524" layer="91"/>
+<wire x1="39.37" y1="157.48" x2="45.72" y2="157.48" width="0.1524" layer="91"/>
+<wire x1="45.72" y1="157.48" x2="45.72" y2="144.78" width="0.1524" layer="91"/>
+<junction x="45.72" y="144.78"/>
+<pinref part="DCDC3" gate="G$1" pin="VOUT+"/>
+<wire x1="39.37" y1="132.08" x2="45.72" y2="132.08" width="0.1524" layer="91"/>
+<wire x1="45.72" y1="132.08" x2="45.72" y2="144.78" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="P+5" gate="1" pin="+5V"/>
