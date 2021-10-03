@@ -9,6 +9,7 @@ PKILL_WORD="vlc"
 #MUSIC_FILE="${HOME}/sound/music/chess.mp3"
 #MUSIC_FILE="${HOME}/Music/HappySynthesizer.mp4"
 MUSIC_FILE="${HOME}/sound/music/HappySynthesizer.mp4"
+#MUSIC_FILE="${HOME}/sound/music/KARA-PANDORA.mp4"
 STOP_FILE="${HOME}/stop_music"
 
 pkill ${PKILL_WORD}
