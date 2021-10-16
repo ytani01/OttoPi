@@ -21,7 +21,7 @@ PIN_SW=21
 PIN_VCC=26
 PIN_LED=20
 
-OPENING_MUSIC="StarTrek-VOY-opening.mp3"
+OPENING_MUSIC="opening"
 OPENING_MUSIC_PLAYER="cvlc --play-and-exit --alsa-gain 0.5"
 
 SPEAK_SVR="SpeakServer.py"
@@ -134,7 +134,7 @@ sleep 3
 # start opening music
 #
 ts_echo "* start opening music"
-OPENING_MUSIC_FILE="${BASEDIR}/sound/opening/${OPENING_MUSIC}"
+OPENING_MUSIC_FILE="${BASEDIR}/sound/music/${OPENING_MUSIC}"
 if [ -f ${OPENING_MUSIC_FILE} ]; then
     ts_echo_do ${OPENING_MUSIC_PLAYER} ${OPENING_MUSIC_FILE} &
 else

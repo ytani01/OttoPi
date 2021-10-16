@@ -3,6 +3,7 @@
 # (c) Yoichi Tanibayashi
 #
 MYNAME=`basename $0`
+MYDIR=`dirname $0`
 
 STOP_FILE=$1
 PKILL_WORD_MUSIC="vlc"
