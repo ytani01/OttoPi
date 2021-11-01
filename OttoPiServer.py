@@ -201,7 +201,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
 
             """
             word command
-            
+
               ex. ":.forward 2", ":happy 1", ":auto_off"
 
             """

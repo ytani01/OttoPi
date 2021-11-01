@@ -15,7 +15,7 @@ IPHTML_DST="ytani@ssh.ytani.net:public_html/iot"
 PIN_AUDIO1=12
 PIN_AUDIO2=13
 
-OPENING_MUSIC="StarTrek-VOY-opening.mp3"
+OPENING_MUSIC="opening"
 OPENING_MUSIC_PLAYER="cvlc --play-and-exit --alsa-gain 0.5"
 
 SPEAK_SVR="SpeakServer.py"
@@ -117,7 +117,7 @@ sleep 3
 # start opening music
 #
 ts_echo "* start opening music"
-OPENING_MUSIC_FILE="${BASEDIR}/sound/opening/${OPENING_MUSIC}"
+OPENING_MUSIC_FILE="${BASEDIR}/sound/music/${OPENING_MUSIC}"
 if [ -f ${OPENING_MUSIC_FILE} ]; then
     ts_echo_do ${OPENING_MUSIC_PLAYER} ${OPENING_MUSIC_FILE} &
 else
@@ -209,7 +209,7 @@ if which ${ROBOT_SVR}; then
     sleep 2
     ${SPEAK_CMD} "モーターの動作確認を行います" &
     sleep 6
-    while ! ${ROBOT_CLIENT} -d ':.happy'; do
+    while ! ${ROBOT_CLIENT} -d ':.surprised'; do
         sleep 2
     done
     sleep 5
@@ -246,7 +246,7 @@ ${SPEAK_CMD} "お待たせしました" &
 sleep 2
 ${SPEAK_CMD} "準備、オーケーです" &
 sleep 3
-${ROBOT_CLIENT} -d ':.hi_right'
+${ROBOT_CLIENT} -d ':.happy'
 
 #
 # wait opening music

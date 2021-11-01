@@ -4,7 +4,7 @@
 #
 LOGDIR=${HOME}/tmp
 
-PKGS="pigpio vlc python3-pip python3-venv"
+PKGS="pigpio i2c-tools vlc python3-pip python3-venv"
 
 CMDS="boot.sh"
 CMDS="${CMDS} MyLogger.py OttoPiAuto.py OttoPiClient.py"

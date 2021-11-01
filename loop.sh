@@ -6,7 +6,7 @@
 SPEECH_SH=speech.sh
 SPEECH_TXT=speech.txt
 SPEECH_STOP_FILE=${HOME}/stop_speech
-SPEECH_INTERVAL=60
+SPEECH_INTERVAL=120
 
 ##### main
 while true; do

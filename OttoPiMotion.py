@@ -321,6 +321,35 @@ class OttoPiMotion:
                        [0, 0, 0, 0]], v=v, q=q)
             time.sleep(interval_msec / 1000)
 
+    def hi1(self, rl='r', interval_msec=0, v=None, q=False):
+        """ hi1 """
+        self.logger.info('rl=%s, interval_msec=%d, v=%s, q=%s',
+                          rl, interval_msec, str(v), q)
+        p1 = -65
+        p2 = [0, -85]
+        p3 = 0
+        p4 = 20
+
+        self.home()
+
+        if rl[0] == 'right'[0]:
+            self.move1(p1, p2[0], p3, p4, v=v, q=q)
+            self.move1(p1, p2[1], p3, p4, v=v, q=q)
+            time.sleep(0.5)
+            self.move1(p1, p2[0], p3, p4, v=v, q=q)
+            self.move1(0, 0, 0, 0, v=v, q=q)
+
+        if rl[0] == 'left'[0]:
+            self.move1(-p4, -p3, -p2[0], -p1, v=v, q=q)
+            self.move1(-p4, -p3, -p2[1], -p1, v=v, q=q)
+            time.sleep(0.5)
+            self.move1(-p4, -p3, -p2[0], -p1, v=v, q=q)
+            self.move1(0, 0, 0, 0, v=v, q=q)
+
+        time.sleep(0.5)
+        self.home()
+        time.sleep(0.2)
+
     def hi_right(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
@@ -331,25 +360,54 @@ class OttoPiMotion:
                           n, interval_msec, str(v), q)
         self.cmd_n(self.hi1, 'l', n, interval_msec, v, q)
 
-    def hi1(self, rl='r', interval_msec=0, v=None, q=False):
-        self.logger.info('rl=%s, interval_msec=%d, v=%s, q=%s',
+    def bye1(self, rl='r', interval_msec=0, v=None, q=False):
+        """ bye1 """
+        self.logger.debug('rl=%s, interval_msec=%d, v=%s, q=%s',
                           rl, interval_msec, str(v), q)
-        p1 = [-80, -70]
-        p2 = -85
-        p3 = -50
-        p4 = -10
+        p1 = [-70, -60]
+        p2 = [0, -85]
+        p3 = 0
+        p4 = 20
 
         self.home()
 
         if rl[0] == 'right'[0]:
-            self.move1(p1[0], p2, p3, p4, v=v, q=q)
+            self.move1(p1[0], p2[0], p3, p4, v=v, q=q)
+            self.move1(p1[0], p2[1], p3, p4, v=v, q=q)
+            time.sleep(0.5)
+
+            self.move1(p1[1], p2[1], p3, p4, v=v, q=q)
+            time.sleep(0.1)
+            self.move1(p1[0], p2[1], p3, p4, v=v, q=q)
+            time.sleep(0.1)
+            self.move1(p1[1], p2[1], p3, p4, v=v, q=q)
+            time.sleep(0.1)
+            self.move1(p1[0], p2[1], p3, p4, v=v, q=q)
+            time.sleep(0.5)
+
+            self.move1(p1[0], p2[0], p3, p4, v=v, q=q)
+            self.move1(0, 0, 0, 0, v=v, q=q)
 
         if rl[0] == 'left'[0]:
-            self.move1(-4, -p3, -p2, -p1[0], v=v, q=q)
+            self.move1(-p4, -p3, -p2[0], -p1[0], v=v, q=q)
+            self.move1(-p4, -p3, -p2[1], -p1[0], v=v, q=q)
+            time.sleep(0.5)
+
+            self.move1(-p4, -p3, -p2[1], -p1[1], v=v, q=q)
+            time.sleep(0.1)
+            self.move1(-p4, -p3, -p2[1], -p1[0], v=v, q=q)
+            time.sleep(0.1)
+            self.move1(-p4, -p3, -p2[1], -p1[1], v=v, q=q)
+            time.sleep(0.1)
+            self.move1(-p4, -p3, -p2[1], -p1[0], v=v, q=q)
+            time.sleep(0.5)
+
+            self.move1(-p4, -p3, -p2[0], -p1[0], v=v, q=q)
+            self.move1(0, 0, 0, 0, v=v, q=q)
 
         time.sleep(0.5)
         self.home()
-        time.sleep(0.5)
+        time.sleep(0.2)
 
     def bye_right(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
@@ -361,36 +419,6 @@ class OttoPiMotion:
                           n, interval_msec, str(v), q)
         self.cmd_n(self.bye1, 'l', n, interval_msec, v, q)
 
-    def bye1(self, rl='r', interval_msec=0, v=None, q=False):
-        self.logger.debug('rl=%s, interval_msec=%d, v=%s, q=%s',
-                          rl, interval_msec, str(v), q)
-        p1 = [-80, -70]
-        p2 = -85
-        p3 = -50
-        p4 = -10
-
-        self.home()
-
-        if rl[0] == 'right'[0]:
-            for i in range(2):
-                self.move1(p1[0], p2, p3, p4, v=v, q=q)
-                time.sleep(0.2)
-                self.move1(p1[1], p2, p3, p4, v=v, q=q)
-                time.sleep(0.2)
-            self.move1(p1[0], p2, p3, p4, v=v, q=q)
-
-        if rl[0] == 'left'[0]:
-            for i in range(2):
-                self.move1(-p4, -p3, -p2, -p1[0], v=v, q=q)
-                time.sleep(0.2)
-                self.move1(-p4, -p3, -p2, -p1[1], v=v, q=q)
-                time.sleep(0.2)
-            self.move1(-p4, -p3, -p2, -p1[0], v=v, q=q)
-
-        time.sleep(0.7)
-        self.home()
-        time.sleep(1)
-
     def surprised(self,  n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
@@ -399,7 +427,7 @@ class OttoPiMotion:
         for i in range(n):
             if self.stop_flag:
                 break
-            
+
             self.home()
             time.sleep(.2)
             self.move1(-p1, 0, 0, p1, q=True)
