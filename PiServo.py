@@ -32,6 +32,7 @@ DEF_PULSE_MAX  = [2500, 2500, 2500, 2500]
 
 #####
 class PiServo:
+    """複数のサーボモーターを同期を取りながら同時に動かす"""
     def __init__(self, pi=None, pins=DEF_PIN,
                  pulse_home=None, pulse_min=None, pulse_max=None,
                  debug=False):
