@@ -209,7 +209,7 @@ if which ${ROBOT_SVR}; then
     sleep 2
     ${SPEAK_CMD} "モーターの動作確認を行います" &
     sleep 6
-    while ! ${ROBOT_CLIENT} -d ':.happy'; do
+    while ! ${ROBOT_CLIENT} -d ':.surprised'; do
         sleep 2
     done
     sleep 5
@@ -246,7 +246,7 @@ ${SPEAK_CMD} "お待たせしました" &
 sleep 2
 ${SPEAK_CMD} "準備、オーケーです" &
 sleep 3
-${ROBOT_CLIENT} -d ':.hi_right'
+${ROBOT_CLIENT} -d ':.happy'
 
 #
 # wait opening music
