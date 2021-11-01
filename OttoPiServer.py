@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# (c) 2019 Yoichi Tanibayashi
+# Copyright(c) 2019 Yoichi Tanibayashi
 #
 __author__ = 'Yoichi Tanibayashi'
 __date__   = '2020'

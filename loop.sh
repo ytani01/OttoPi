@@ -2,9 +2,14 @@
 #
 # (c) 2020 Yoichi Tanibayashi
 #
+MYNAME=`basename $0`
+MYDIR=`dirname $0`
+cd $MYDIR
+MYDIR=`pwd`
 
-SPEECH_SH=speech.sh
-SPEECH_TXT=speech.txt
+
+SPEECH_SH=${MYDIR}/speech.sh
+SPEECH_TXT=${HOME}/speech.txt
 SPEECH_STOP_FILE=${HOME}/stop_speech
 SPEECH_INTERVAL=120
 

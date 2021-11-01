@@ -38,10 +38,12 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
 class OttoPiClient:
+    """ OttoPiClient """
     DEF_HOST = 'localhost'
     DEF_PORT = 12345
 
     def __init__(self, svr_host=DEF_HOST, svr_port=DEF_PORT, debug=False):
+        """ init """
         self._dbg = debug
         self._log = get_logger(__class__.__name__, debug)
         self._log.debug('svr_host=%s, svr_port=%d', svr_host, svr_port)
@@ -52,18 +54,22 @@ class OttoPiClient:
         self.tn = self.open(self.svr_host, self.svr_port)
 
     def __del__(self):
+        """ __del__ """
         self._log.debug('')
         self.close()
 
     def open(self, svr_host=DEF_HOST, svr_port=DEF_PORT):
+        """ open """
         self._log.debug('svr_host=%s, svr_port=%d', svr_host, svr_port)
         return telnetlib.Telnet(self.svr_host, self.svr_port)
 
     def close(self):
+        """ close """
         self._log.debug('')
         self.tn.close()
 
     def recv_reply(self):
+        """ recv_reply """
         self._log.debug('')
 
         buf = b''
@@ -104,6 +110,7 @@ class OttoPiClient:
         return ret
 
     def send_cmd1(self, cmd):
+        """ send_cmd1 """
         self._log.debug('cmd=%s', cmd)
 
         try:
@@ -119,6 +126,7 @@ class OttoPiClient:
         return ret
 
     def send_cmd(self, cmd):
+        """ send_cmd """
         self._log.debug('cmd=%s', cmd)
 
         self.recv_reply()
@@ -134,7 +142,9 @@ class OttoPiClient:
 
 
 class OttoPiClientApp:
+    """ OttoPiClientApp """
     def __init__(self, command, svr_host, svr_port, debug=False):
+        """ __init__ """
         self._dbg = debug
         self._log = get_logger(__class__.__name__, debug)
         self._log.debug('command=%s', command)
@@ -144,6 +154,7 @@ class OttoPiClientApp:
         self.command = command
 
     def main(self):
+        """ __init__ """
         self._log.debug('command:\'%s\'', self.command)
 
         for cmd1 in self.command:
@@ -157,6 +168,7 @@ class OttoPiClientApp:
                     print(ret)
 
     def end(self):
+        """ end """
         self._log.debug('')
         self.cl.close()
 
@@ -173,9 +185,10 @@ class OttoPiClientApp:
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(command, svr_host, svr_port, debug):
+    """ main """
     _log = get_logger(__name__, debug)
     _log.debug('command=%s, svr_host=%s, svr_port=%d',
-              command, svr_host, svr_port)
+               command, svr_host, svr_port)
 
     obj = OttoPiClientApp(command, svr_host, svr_port, debug=debug)
     try:
