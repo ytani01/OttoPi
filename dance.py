@@ -15,16 +15,20 @@ class OttoPiDanceApp:
     """ OttoPiDanceApp """
 
     CMD = [
-        ":slide_right",
-        ":slide_left",
-        ":happy",
-        ":surprised",
-        ":hi_right",
-        ":hi_left",
-        ":bye_right",
-        ":bye_left",
-        ":ojigi",
-        ":home"
+        "slide_right",
+        "slide_right",
+        "slide_left",
+        "slide_left",
+        "happy",
+        "happy",
+        "surprised",
+        "surprised",
+        "hi_right",
+        "hi_left",
+        "bye_right",
+        "bye_left",
+        "ojigi",
+        "home"
     ]
 
     def __init__(self, max_sleep_sec, svr_host, svr_port, debug=False):
@@ -42,7 +46,7 @@ class OttoPiDanceApp:
 
         while True:
             cmd_i = int(random.random() * len(self.CMD))
-            cmd = self.CMD[cmd_i] + " 1"
+            cmd = ':.' +  self.CMD[cmd_i] + " 1"
             self._log.debug('cmd=%a', cmd)
             self._cl.send_cmd(cmd)
 

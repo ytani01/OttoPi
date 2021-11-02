@@ -328,7 +328,7 @@ class OttoPiMotion:
         p1 = -65
         p2 = [0, -85]
         p3 = 0
-        p4 = 20
+        p4 = 25
 
         self.home()
 
@@ -367,7 +367,7 @@ class OttoPiMotion:
         p1 = [-70, -60]
         p2 = [0, -85]
         p3 = 0
-        p4 = 20
+        p4 = 25
 
         self.home()
 
