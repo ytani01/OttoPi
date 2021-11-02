@@ -26,7 +26,6 @@ import random
 from MyLogger import get_logger
 
 
-#####
 DEF_PIN        = [17, 27, 22, 23]
 DEF_PULSE_HOME = [1470, 1430, 1490, 1490]
 DEF_PULSE_MIN  = [ 500,  500,  500,  500]
@@ -35,13 +34,12 @@ DEF_PULSE_MAX  = [2500, 2500, 2500, 2500]
 N_CONTINUOUS = 99999
 
 
-#####
 class OttoPiMotion:
-    def __init__(self, pi=None, pin=[],
-                 pulse_home=[],
-                 pulse_min=DEF_PULSE_MIN,
-                 pulse_max=DEF_PULSE_MAX,
+    """ OttoPiMotion """
+    def __init__(self, pi=None, pin=[], pulse_home=[],
+                 pulse_min=DEF_PULSE_MIN, pulse_max=DEF_PULSE_MAX,
                  debug=False):
+        """ __init__ """
         self.debug = debug
         self.logger = get_logger(__class__.__name__, debug)
         self.logger.debug('pi  = %s', str(pi))

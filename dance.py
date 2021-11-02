@@ -63,7 +63,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
 @click.command(context_settings=CONTEXT_SETTINGS)
-@click.argument('max_sleep_sec', type=int, default=3)
+@click.argument('max_sleep_sec', type=int, default=4)
 @click.option('--svr_host', '-s', 'svr_host', type=str, default="localhost",
               help='server hostname or IP address')
 @click.option('--svr_port', '--port', '-p', 'svr_port', type=int,
