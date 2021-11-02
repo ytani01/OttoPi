@@ -154,7 +154,7 @@ class OttoPiBleServerApp(BlePeripheralApp):
 
         self._robot_svr = robot_svr
         self._robot_port = robot_port
-        
+
         self._ble = OttoPiBleServer(self._robot_svr, self._robot_port,
                                     debug=self._dbg)
 
@@ -167,7 +167,7 @@ class OttoPiBleServerApp(BlePeripheralApp):
 
         chara_resp = self._ble._chara_resp
 
-        self._active =True
+        self._active = True
         while self._active:
             try:
                 robot_cl = OttoPiClient(self._robot_svr, self._robot_port,
@@ -183,7 +183,6 @@ class OttoPiBleServerApp(BlePeripheralApp):
             except Exception as e:
                 msg = '%s:%s' % (type(e).__name__, e)
                 self._log.warning(msg)
-                
 
             time.sleep(1)
 

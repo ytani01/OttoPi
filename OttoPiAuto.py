@@ -24,20 +24,18 @@ OttoPiAuto -- ロボットの自動運転 (自動運転スレッド)
 __author__ = 'Yoichi Tanibayashi'
 __date__   = '2020'
 
-from OttoPiCtrl import OttoPiCtrl
-import VL53L0X as VL53L0X
-import pigpio
 import time
 import random
 import queue
 import threading
-
+import pigpio
+import VL53L0X as VL53L0X
+from OttoPiCtrl import OttoPiCtrl
 from MyLogger import get_logger
-import click
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
 class OttoPiAuto(threading.Thread):
+    """ auto pilot """
     CMD_NULL  = 'null'
     CMD_ON    = 'on'
     CMD_OFF   = 'off'
@@ -66,6 +64,7 @@ class OttoPiAuto(threading.Thread):
     READY_COUNT_COMMIT = 2
 
     def __init__(self, robot_ctrl=None, debug=False):
+        """ init """
         self.dbg = debug
         self._log = get_logger(__class__.__name__, self.dbg)
         self._log.debug('')
@@ -108,9 +107,11 @@ class OttoPiAuto(threading.Thread):
         super().__init__(daemon=True)
 
     def __del__(self):
+        """ del """
         self._log.debug('')
 
     def end(self):
+        """ end """
         self._log.debug('')
         self.active = False
 
@@ -126,12 +127,11 @@ class OttoPiAuto(threading.Thread):
         self._log.debug('done')
 
     def cmd_null(self):
-        """
-        do nothing (to get distance)
-        """
+        """ do nothing (to get distance) """
         self._log.debug('')
 
     def cmd_on(self):
+        """ cmd on """
         self._log.debug('')
         if not self.enable:
             self._log.warning('enable=%s .. ignored', self.enable)
@@ -142,6 +142,7 @@ class OttoPiAuto(threading.Thread):
         self.stat = self.STAT_NONE
 
     def cmd_off(self):
+        """ cmd off """
         self._log.debug('')
         self.robot_ctrl.send('stop')
         self.on = False
@@ -149,30 +150,35 @@ class OttoPiAuto(threading.Thread):
         self.stat = self.STAT_NONE
 
     def cmd_enable(self):
+        """ cmd enable """
         self._log.debug('')
         self.enable = True
         self._log.debug('enable=%s', self.enable)
         self.ready_count = 0
-        self._stat = self.STAT_NONE
+        self.stat = self.STAT_NONE
 
     def cmd_disable(self):
+        """ cmd disable """
         self._log.debug('')
         self.cmd_off()
         self.enable = False
         self._log.debug('enable=%s', self.enable)
         self.ready_count = 0
-        self._stat = self.STAT_NONE
+        self.stat = self.STAT_NONE
 
     def cmd_end(self):
+        """ cmd end """
         self._log.debug('')
         self.cmd_off()
         self.active = False
 
     def is_active(self):
+        """ """
         self._log.debug('active=%s', self.active)
         return self.active
 
     def send(self, cmd):
+        """ """
         self._log.debug('cmd=\'%s\'', cmd)
         self.cmdq.put(cmd)
         d = self.get_distance()
@@ -180,6 +186,7 @@ class OttoPiAuto(threading.Thread):
         return d
 
     def recv(self, timeout=DEF_RECV_TIMEOUT):
+        """ """
         self._log.debug('timeout=%.1f', timeout)
         try:
             cmd = self.cmdq.get(timeout=timeout)
@@ -191,6 +198,7 @@ class OttoPiAuto(threading.Thread):
         return cmd
 
     def get_distance(self):
+        """ """
         self.distance = self.tof.get_distance()
         if self.distance == 0:
             # ???
@@ -201,6 +209,7 @@ class OttoPiAuto(threading.Thread):
         return self.distance
 
     def run(self):
+        """ run """
         self._log.debug('')
 
         while self.active:
@@ -319,7 +328,9 @@ class OttoPiAuto(threading.Thread):
 
 
 class OttoPiAutoApp:
+    """ OttoPiAutoApp """
     def __init__(self, debug=False):
+        """ init """
         self.dbg = debug
         self._log = get_logger(__class__.__name__, debug)
         self._log.debug('')
@@ -335,6 +346,7 @@ class OttoPiAutoApp:
         self.active = True
 
     def main(self):
+        """ main """
         self._log.debug('')
 
         while self.active:
@@ -350,6 +362,7 @@ class OttoPiAutoApp:
         self._log.debug('done(active=%s)', self.active)
 
     def end(self):
+        """ end """
         self._log.debug('')
 
         self.robot_auto.end()
@@ -361,6 +374,10 @@ class OttoPiAutoApp:
 
         self.pi.stop()
         self._log.info('done')
+
+
+import click
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
 @click.command(context_settings=CONTEXT_SETTINGS)

@@ -10,7 +10,6 @@ __date__   = '2019'
 
 from OttoPiClient import OttoPiClient
 from Led import Led
-from Switch import Switch, SwitchListener, SwitchEvent
 
 import RPi.GPIO as GPIO
 import subprocess
@@ -108,7 +107,7 @@ class App:
 
         if start_music:
             self.start_music()
-        
+
     def start_speech(self):
         self.logger.debug('')
         self.exec_cmd('start_speech')

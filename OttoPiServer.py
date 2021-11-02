@@ -25,22 +25,21 @@ OttoPiServer -- ロボット制御サーバ (ネットワーク送受信スレ�
              +- OttoPiConfig -- 設定ファイルの読み込み・保存
 -----------------------------------------------------------------
 """
+import time
+import socketserver
+import json
+import pigpio
 
 from OttoPiCtrl import OttoPiCtrl
 from OttoPiAuto import OttoPiAuto
-
-import pigpio
-import socketserver
-import time
-import json
-
+from dance import Dance
 from MyLogger import get_logger
-import click
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
-class OttoPiHandler(socketserver.StreamRequestHandler):
+class ServerHandler(socketserver.StreamRequestHandler):
+    """ server handler """
     def __init__(self, request, client_address, server):
+        """ __init__ """
         self._dbg = server._dbg
         self._log = get_logger(__class__.__name__, self._dbg)
         self._log.debug('client_address: %s', client_address)
@@ -48,11 +47,18 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
         self._svr     = server
         self._ctrl = server._ctrl
         self._auto = server._auto
+        self._dance = None
 
         self.cmd_key = {
             # auto switch commands
             '@': 'auto_on',
             ' ': 'auto_off',
+
+            # dance switch commands
+            '$': 'dance_on',
+            '%': 'donce_off',
+            '$': 'dance_true',
+            '%': 'donce_false',
 
             # robot control commands
             'w': 'forward',
@@ -96,13 +102,15 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             'S': OttoPiCtrl.CMD_STOP,
             '' : OttoPiCtrl.CMD_END}
 
-        return super().__init__(request, client_address, server)
+        super().__init__(request, client_address, server)
 
     def setup(self):
+        """ setup """
         self._log.debug('')
         return super().setup()
 
     def net_write(self, msg):
+        """ net_write """
         self._log.debug('msg=%s', msg)
 
         try:
@@ -113,6 +121,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
             self._log.warning('%s:%s', type(e).__name__, e)
 
     def send_reply(self, cmd, accept=True, msg=''):
+        """ send_reply """
         self._log.debug('cmd=%s, accept=%s, msg=%s', cmd, accept, msg)
 
         ret_str = json.dumps({
@@ -128,6 +137,7 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
         self.net_write(ret)
 
     def handle(self):
+        """ handle """
         self._log.debug('')
 
         # Telnet Protocol
@@ -199,12 +209,8 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                 self._auto = self._svr._auto
                 self._auto.start()
 
-            """
-            word command
-
-              ex. ":.forward 2", ":happy 1", ":auto_off"
-
-            """
+            # word command
+            #   ex. ":.forward 2", ":happy 1", ":auto_off"
             if data[0] == OttoPiServer.CMD_PREFIX:
                 cmd = data[1:]
                 interrupt_flag = True
@@ -218,6 +224,24 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                 self._log.info('cmd=%s, cmd_name=%s, interrupt_flag=%s',
                                cmd, cmd_name, interrupt_flag)
 
+                """ dance """
+                if cmd_name in ['dance_on', 'dance_true']:
+                    if self._svr._dance is None:
+                        self._svr._dance = Dance(self._svr._ctrl,
+                                                 max_sleep_sec=5,
+                                                 debug=True)
+                        self._svr._dance.start()
+                        self.send_reply(data, True, '')
+                    continue
+
+                if cmd_name in ['dance_off', 'dance_false']:
+                    if self._svr._dance is not None:
+                        self._svr._dance.end()
+                        self._svr._dance = None
+                        self.send_reply(data, True, '')
+                    continue
+
+                """ auto """
                 if cmd.startswith(OttoPiServer.CMD_AUTO_PREFIX):
                     """
                     auto command
@@ -242,17 +266,17 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
                     else:
                         self._log.warning('%s: invalid auto command', auto_cmd)
                         self.send_reply(data, False, 'invalid auto command')
+
+                    continue
+
+                """ control command """
+                if cmd_name in self._ctrl.cmd_func.keys():
+                    self._ctrl.send(cmd, interrupt_flag)
+                    self.send_reply(data, True, '')
                 else:
-                    """
-                    control command
-                    """
-                    if cmd_name in self._ctrl.cmd_func.keys():
-                        self._ctrl.send(cmd, interrupt_flag)
-                        self.send_reply(data, True, '')
-                    else:
-                        msg = 'invalid control command'
-                        self._log.warning('%s: %s', cmd, msg)
-                        self.send_reply(data, False, msg)
+                    msg = 'invalid control command'
+                    self._log.warning('%s: %s', cmd, msg)
+                    self.send_reply(data, False, msg)
 
                 continue
 
@@ -285,17 +309,20 @@ class OttoPiHandler(socketserver.StreamRequestHandler):
         self._log.debug('done')
 
     def finish(self):
+        """ finish """
         self._log.debug('')
         return super().finish()
 
 
 class OttoPiServer(socketserver.ThreadingTCPServer):
+    """ server """
     DEF_PORT = 12345
     CMD_PREFIX = ':'           # word command
     CMD_PREFIX2 = '.'          # interupt off
     CMD_AUTO_PREFIX = 'auto_'  # auto command
 
     def __init__(self, pi=None, port=DEF_PORT, debug=False):
+        """ __init__ """
         self._dbg = debug
         self._log = get_logger(__class__.__name__, debug)
         self._log.debug('pi=%s, port=%s', pi, port)
@@ -314,21 +341,20 @@ class OttoPiServer(socketserver.ThreadingTCPServer):
         self._auto = OttoPiAuto(self._ctrl, debug=self._dbg)
         self._auto.start()
 
+        self._dance = None
+
         time.sleep(1)
 
         self._port  = port
 
         try:
-            super().__init__(('', self._port), OttoPiHandler)
+            super().__init__(('', self._port), ServerHandler)
         except Exception as e:
             self._log.warning('%s:%s', type(e).__name__, e)
             return None
 
-    def serve_forever(self):
-        self._log.debug('')
-        return super().serve_forever()
-
     def end(self):
+        """ end """
         self._log.debug('')
 
         if self._auto.is_active():
@@ -347,12 +373,15 @@ class OttoPiServer(socketserver.ThreadingTCPServer):
         self._log.debug('done')
 
     def _del_(self):
+        """ _del_ """
         self._log.debug('')
         self.end()
 
 
 class OttoPiServerApp:
+    """ app """
     def __init__(self, port, debug=False):
+        """ init """
         self._dbg = debug
         self._log = get_logger(__class__.__name__, debug)
         self._log.debug('port=%d', port)
@@ -369,6 +398,10 @@ class OttoPiServerApp:
         self._log.debug('')
         self._svr.end()
         self._log.debug('done')
+
+
+import click
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
 @click.command(context_settings=CONTEXT_SETTINGS)

@@ -8,14 +8,13 @@ import os
 from MyLogger import get_logger
 
 
-#####
 DEF_CONF_FILE = 'OttoPi.conf'
 DEF_CONF_PATH = ['.', os.environ['HOME'], '/etc']
 DEF_SECTION   = 'OttoPi'
 KEY_PIN       = 'pin'
 KEY_HOME      = 'home'
 
-#####
+
 class OttoPiConfig:
     def __init__(self, conf_file=DEF_CONF_FILE, debug=False):
         self.debug = debug
@@ -59,18 +58,16 @@ class OttoPiConfig:
 
         self.logger.warning('\'%s\' is not found', conf_file)
         return None
-        
 
     def get_intlist(self, key, section=DEF_SECTION):
         self.logger.debug('')
         int_list = [int(i) for i in self.config[section][key].split()]
         self.logger.debug('int_list=%s', int_list)
         return int_list
-    
+
     def set_intlist(self, key, int_list, section=DEF_SECTION):
         self.logger.debug('key=%s, int_list=%s', key, int_list)
         self.config[section][key] = ' '.join([str(i) for i in int_list])
-
 
     def get_pin(self):
         self.logger.debug('')
@@ -94,7 +91,7 @@ class OttoPiConfig:
         hl[i] += v
         self.set_home(hl)
 
-#####
+
 class Sample:
     def __init__(self, conf_file='', debug=False):
         self.debug = debug
@@ -114,15 +111,17 @@ class Sample:
 
     def __del__(self):
         self.logger.debug('')
-        #self.end()
+        # self.end()
 
     def end(self):
         self.logger.debug('')
         self.c.save('a.conf')
 
-#####
+
 import click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
+
+
 @click.command(context_settings=CONTEXT_SETTINGS)
 @click.argument('conf_file', type=str, default=DEF_CONF_FILE)
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
@@ -137,6 +136,7 @@ def main(conf_file, debug):
     finally:
         logger.debug('finally')
         obj.end()
+
 
 if __name__ == '__main__':
     main()

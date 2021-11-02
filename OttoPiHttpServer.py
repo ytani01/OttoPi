@@ -2,7 +2,7 @@
 #
 # (c) 2019 Yoichi Tanibayashi
 #
-'''
+"""
 ロボット制御Webインタフェース
 
 Web経由で入力を受信し、OttoPiServerにコマンドを送信する
@@ -23,22 +23,19 @@ OttoPiServer -- ロボット制御サーバ (ネットワーク送受信スレ�
             |
             +- PiServo -- 複数サーボの同期制御
             +- OttoPiConfig -- 設定ファイルの読み込み・保存
-'''
+"""
 __author__ = 'Yoichi Tanibayashi'
 __date__   = '2019'
 
+import os
+import sys
 from flask import Flask, render_template, request
+import netifaces
 from OttoPiClient import OttoPiClient
 from SpeakClient import SpeakClient
-
-import netifaces
-import sys
-import os
-
 from MyLogger import get_logger
 
 
-#####
 MyName = os.path.basename(sys.argv[0])
 
 SpeechStopFile = os.environ['HOME'] + '/' + 'stop_speech'
@@ -49,25 +46,26 @@ app = Flask(__name__)
 DEF_HOST = 'localhost'
 DEF_PORT = 12345
 
-Flag_Video = 'off'
+FlagVideo = 'off'
 
 RobotHost = DEF_HOST
 RobotPort = DEF_PORT
 
-#####
+
 def get_ipaddr():
+    """ get_ipaddr """
     for if_name in netifaces.interfaces():
         if if_name == 'lo':
             continue
 
         print(if_name)
-        
+
         addrs = netifaces.ifaddresses(if_name)
         print(addrs)
 
         try:
             ip = addrs[netifaces.AF_INET]
-        except(KeyError):
+        except KeyError:
             continue
         print(ip)
 
@@ -75,26 +73,30 @@ def get_ipaddr():
 
     return ''
 
+
 def index0(video_sw):
     ipaddr = get_ipaddr()
-    Flag_Video = video_sw
+    FlagVideo = video_sw
     return render_template('index.html', ipaddr=ipaddr, video=video_sw)
-    
-#####
+
+
 @app.route('/')
 def index():
     return index0('off')
 
+
 @app.route('/video')
 def video_mode():
     return index0('on')
-        
+
+
 @app.route('/action', methods=['POST'])
 def action():
+    """ action """
     global RobotHost, RobotPort
-    
+
     if request.method != 'POST':
-        return
+        return ''
 
     cmd = str(request.form['cmd'])
     print(MyName + ': cmd = \'' + cmd + '\'')
@@ -104,7 +106,8 @@ def action():
     rc.close()
 
     return ''
-    
+
+
 @app.route('/speak', methods=['POST'])
 def speak():
     print('speak():request=%s' % request)
@@ -117,8 +120,9 @@ def speak():
     sc.speak(msg)
     sc.close()
 
-    return index0(Flag_Video)
-    #return ''
+    return index0(FlagVideo)
+    # return ''
+
 
 @app.route('/speech', methods=['POST'])
 def speech():
@@ -138,6 +142,7 @@ def speech():
         f.close()
 
     return ''
+
 
 @app.route('/music', methods=['POST'])
 def music():
@@ -159,9 +164,10 @@ def music():
     return ''
 
 
-#####
 import click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
+
+
 @click.command(context_settings=CONTEXT_SETTINGS)
 @click.argument('robot_host', type=str, default=DEF_HOST)
 @click.argument('robot_port', type=int, default=DEF_PORT)
@@ -180,6 +186,7 @@ def main(robot_host, robot_port, debug):
         app.run(host='0.0.0.0', debug=debug)
     finally:
         logger.info('finally')
-    
+
+
 if __name__ == '__main__':
     main()
