@@ -346,7 +346,6 @@ class OttoPiMotion:
 
         time.sleep(0.5)
         self.home()
-        time.sleep(0.2)
 
     def hi_right(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
@@ -405,7 +404,6 @@ class OttoPiMotion:
 
         time.sleep(0.5)
         self.home()
-        time.sleep(0.2)
 
     def bye_right(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
@@ -491,21 +489,20 @@ class OttoPiMotion:
         self.turn1('r', interval_msec=interval_msec, v=v, q=q)
         self.walk(n, 'b', rl='', v=v, q=q)
 
-    def turn_right(self, n=1, interval_msec=0, v=None, q=False):
-        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
-                          n, interval_msec, str(v), q)
-        self.cmd_n(self.turn1, 'r', n, interval_msec, v, q)
+    def turn1(self, rl, interval_msec=0, v=None, q=False):
+        """ turn1
 
-    def turn_left(self, n=1, interval_msec=0, v=None, q=False):
-        self.logger.info('n=%d, interval_msec=%d, v=%s, q=%s',
-                          n, interval_msec, str(v), q)
-        self.cmd_n(self.turn1, 'l', n, interval_msec, v, q)
-
-    def turn1(self, rl='r', interval_msec=0, v=None, q=False):
+        Parameters
+        ----------
+        rl:
+        interval_msec:
+        v:
+        q:
+        """
         self.logger.debug('rl=%s, interval_msec=%d, v=%s, q=%s',
                           rl, interval_msec, str(v), q)
 
-        p1 = (60, 25)
+        p1 = (60, 20)
         p2 = (20, 5)
         p3 = 0.6
         sleep_sec = 0.1
@@ -535,15 +532,18 @@ class OttoPiMotion:
                        [0, 0, 0, 0]], interval_msec=interval_msec, v=v, q=q)
             time.sleep(sleep_sec)
 
-    def forward(self, n=1, rl='', v=None, q=False):
-        self.logger.debug('n=%d, rl=%s, v=%s, q=%s', n, rl, str(v), q)
-        self.walk(n, 'f', rl, v=v, q=q)
+    def turn_right(self, n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+        self.cmd_n(self.turn1, 'r', n, interval_msec, v, q)
 
-    def backward(self, n=1, rl='', v=None, q=False):
-        self.logger.debug('n=%d, rl=%s, v=%s, q=%s', n, rl, str(v), q)
-        self.walk(n, 'b', rl, v=v, q=q)
+    def turn_left(self, n=1, interval_msec=0, v=None, q=False):
+        self.logger.info('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+        self.cmd_n(self.turn1, 'l', n, interval_msec, v, q)
 
     def walk(self, n=1, mv='f', rl='', v=None, q=False):
+        """ walk    """
         self.logger.debug('n=%d, mv=%s rl=%s, v=%s, q=%s',
                           n, mv, rl, str(v), q)
 
@@ -574,7 +574,7 @@ class OttoPiMotion:
         if rl == '':
             return
 
-        p1 = (65, 25)
+        p1 = (65, 20)
         p2 = 30
 
         if mv[0] == 'backward'[0]:
@@ -602,31 +602,16 @@ class OttoPiMotion:
         if rl[0] == 'left'[0]:
             self.move1(0, -p2, -p2, 0, v=v, q=q)
 
-    def suriashi(self, n=1, mv='f', rl='', v=None, q=False):
-        self.logger.debug('n=%d, mv=%s, rl=%s, v=%s, q=%s',
-                          n, mv, rl, str(v), q)
+    def forward(self, n=1, rl='', v=None, q=False):
+        self.logger.debug('n=%d, rl=%s, v=%s, q=%s', n, rl, str(v), q)
+        self.walk(n, 'f', rl, v=v, q=q)
 
-        if n == 0:
-            n = N_CONTINUOUS
-            self.logger.debug('n=%d!', n)
-
-        if rl == '':
-            rl = 'rl'[random.randint(0, 1)]
-            self.logger.debug('rl=%s', rl)
-
-        self.home()
-        time.sleep(0.5)
-
-        for i in range(n):
-            if self.stop_flag:
-                break
-
-            self.suriashi1(mv, rl, v=v, q=q)
-            rl = self.change_rl(rl)
-
-        self.suriashi1('end', rl, v=v, q=q)
+    def backward(self, n=1, rl='', v=None, q=False):
+        self.logger.debug('n=%d, rl=%s, v=%s, q=%s', n, rl, str(v), q)
+        self.walk(n, 'b', rl, v=v, q=q)
 
     def suriashi1(self, mv='f', rl='r', v=None, q=False):
+        """ suriashi1 """
         self.logger.debug('mv=%s, rl=%s, v=%s, q=%s',
                           mv, rl, str(v), q)
 
@@ -662,18 +647,125 @@ class OttoPiMotion:
             else:
                 pass
 
+    def suriashi(self, n=1, mv='f', rl='', v=None, q=False):
+        """ suriashi """
+        self.logger.debug('n=%d, mv=%s, rl=%s, v=%s, q=%s',
+                          n, mv, rl, str(v), q)
 
-#####
+        if n == 0:
+            n = N_CONTINUOUS
+            self.logger.debug('n=%d!', n)
+
+        if rl == '':
+            rl = 'rl'[random.randint(0, 1)]
+            self.logger.debug('rl=%s', rl)
+
+        self.home()
+        time.sleep(0.5)
+
+        for i in range(n):
+            if self.stop_flag:
+                break
+
+            self.suriashi1(mv, rl, v=v, q=q)
+            rl = self.change_rl(rl)
+
+        self.suriashi1('end', rl, v=v, q=q)
+
+    def toe1(self, rl, n=3, v=None, q=False):
+        """ toe1 """
+        self.logger.debug('rl=%s, n=%d, v=%s, q=%s',
+                          rl, n, v, q)
+
+        interval_sec = 0.15
+
+        p0 = [-13, 0]
+        p1 = 0
+        p2 = 0
+        p3 = 0
+
+        self.home()
+
+        if rl[0] in 'rR':
+            for i in range(n):
+                self.move1(p0[0], p1, p2, p3)
+                time.sleep(interval_sec)
+                self.move1(p0[1], p1, p2, p3)
+                time.sleep(interval_sec)
+        else:
+            for i in range(n):
+                self.move1(-p3, -p2, -p1, -p0[0])
+                time.sleep(interval_sec)
+                self.move1(-p3, -p2, -p1, -p0[1])
+                time.sleep(interval_sec)
+
+        self.home()
+
+    def toe_right(self, n=3, v=None, q=False):
+        """ toe_right """
+        self.logger.debug('n=%d, v=%s, q=%s', n, v, q)
+
+        self.toe1('right', n, v, q)
+
+    def toe_left(self, n=3, v=None, q=False):
+        """ toe_left """
+        self.logger.debug('n=%d, v=%s, q=%s', n, v, q)
+
+        self.toe1('left', n, v, q)
+
+    def heel1(self, rl, n=3, v=None, q=False):
+        """ heel_right """
+        self.logger.debug('rl=%s, n=%d, v=%s, q=%s', n, v, q)
+
+        interval_sec = 0.15
+
+        p0 = [20, 0]
+        p1 = 0
+        p2 = 0
+        p3 = 0
+
+        self.home()
+
+        if rl[0] in 'rR':
+            for i in range(n):
+                self.move1(p0[0], p1, p2, p3)
+                time.sleep(interval_sec)
+                self.move1(p0[1], p1, p2, p3)
+                time.sleep(interval_sec)
+        else:
+            for i in range(n):
+                self.move1(-p3, -p2, -p1, -p0[0])
+                time.sleep(interval_sec)
+                self.move1(-p3, -p2, -p1, -p0[1])
+                time.sleep(interval_sec)
+
+        self.home()
+
+    def heel_right(self, n=3, v=None, q=False):
+        """ heel_right """
+        self.logger.debug('n=%d, v=%s, q=%s', n, v, q)
+
+        self.heel1('right', n, v, q)
+
+    def heel_left(self, n=3, v=None, q=False):
+        """ heel_left """
+        self.logger.debug('n=%d, v=%s, q=%s', n, v, q)
+
+        self.heel1('left', n, v, q)
+
+
+
 class App:
-    '''
-    '''
+    """ App """
     def __init__(self, debug=False):
+        """ __init__ """
         self.debug = debug
         self.logger = get_logger(__class__.__name__, self.debug)
 
         self.opm = OttoPiMotion(pi=None, debug=self.debug)
 
     def main(self, pos=(), interval=0.0):
+        """ main """
         self.logger.debug('pos=%s, interval=%.2f', pos, interval)
 
         self.opm.home()
@@ -710,7 +802,6 @@ class App:
         self.logger.debug('')
 
 
-#####
 import click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
@@ -722,6 +813,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option('--debug', '-d', 'debug', is_flag=True, default=False,
               help='debug flag')
 def main(pos, interval, debug):
+    """ main """
     logger = get_logger(__name__, debug)
     logger.debug("interval = %0.2f", interval)
     logger.debug('pos = %s', pos)

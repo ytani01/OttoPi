@@ -25,6 +25,14 @@ class Dance(threading.Thread):
         "hi_left",
         "bye_right",
         "bye_left",
+        "toe_right 2",
+        "toe_right 2",
+        "toe_left 2",
+        "toe_left 2",
+        "heel_right 2",
+        "heel_right 2",
+        "heel_left 2",
+        "heel_left 2",
         "ojigi",
         "home"
     ]

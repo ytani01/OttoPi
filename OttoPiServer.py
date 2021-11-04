@@ -78,6 +78,10 @@ class ServerHandler(socketserver.StreamRequestHandler):
             '6': 'surprised',
             '8': 'ojigi',
             '9': 'ojigi2',
+            't': 'toe_right',
+            'T': 'toe_right',
+            'h': 'heel_right',
+            'H': 'heel_right',
             '0': 'home',
 
             'h': 'move_up0',

@@ -80,6 +80,10 @@ class OttoPiCtrl(threading.Thread):
             'surprised':      {'func': self.opm.surprised,      'loop': False},
             'ojigi':          {'func': self.opm.ojigi,          'loop': False},
             'ojigi2':         {'func': self.opm.ojigi2,         'loop': False},
+            'toe_right':      {'func': self.opm.toe_right,      'loop': False},
+            'toe_left':       {'func': self.opm.toe_left,       'loop': False},
+            'heel_right':     {'func': self.opm.heel_right,     'loop': False},
+            'heel_left':      {'func': self.opm.heel_left,      'loop': False},
 
             # サーボモーター個別操作
             'move_up0':       {'func': self.opm.move_up0,       'loop': False},
