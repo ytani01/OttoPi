@@ -326,7 +326,7 @@ class OttoPiMotion:
         p1 = -65
         p2 = [0, -85]
         p3 = 0
-        p4 = 25
+        p4 = 20
 
         self.home()
 
@@ -346,6 +346,7 @@ class OttoPiMotion:
 
         time.sleep(0.5)
         self.home()
+        time.sleep(0.1)
 
     def hi_right(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
@@ -364,7 +365,7 @@ class OttoPiMotion:
         p1 = [-70, -60]
         p2 = [0, -85]
         p3 = 0
-        p4 = 25
+        p4 = 20
 
         self.home()
 
@@ -404,6 +405,7 @@ class OttoPiMotion:
 
         time.sleep(0.5)
         self.home()
+        time.sleep(0.1)
 
     def bye_right(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
