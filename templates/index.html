@@ -3,17 +3,26 @@
   <head>
     <title>OttoPi {{ipaddr}}</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=devicewidth,initial-scale=1,maximum-scale=3">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=3">
     <script type="text/javascript" src="/static/js/jquery.min.js"></script>
     <script type="text/javascript">
       function post(val) {
-	  var data = {"cmd": val};
-	  $.post("/action", data);
+        if ( val != ":dance_true" ) {
+          el_dance = document.getElementById("dance");
+          if ( el_dance.checked ) {
+             el_dance.checked = false;
+          }
+        }
+
+	var data = {"cmd": val};
+	$.post("/action", data);
       }
+
       function speak() {
 	  var data = {"msg": document.f1.msg.value};
 	  $.post("/speak", data);
       }
+
       function speak2() {
 	  var obj = document.f0.sentence;
 	  var idx = obj.selectedIndex;
@@ -24,13 +33,16 @@
 	      $.post("/speak", data);
 	  }
       }
+
       function clear_msg() {
 	  document.f1.msg.value = "";
       }
+
       function speech(val) {
 	  var data = {"onoff": val};
 	  $.post("/speech", data);
       }
+
       function music(val) {
 	  var data = {"onoff": val};
 	  $.post("/music", data);
@@ -65,7 +77,7 @@
               &nbsp;
             </td>
 	    <td align="center" nowrap>
-              <input type="checkbox" name="dance" onChange="post(':' + this.name + '_' + this.checked);">Dance
+              <input id="dance" type="checkbox" name="dance" onChange="post(':' + this.name + '_' + this.checked);">Dance
             </td>
           </tr>
         </tbody>
