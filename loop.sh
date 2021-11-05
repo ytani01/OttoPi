@@ -9,7 +9,7 @@ MYDIR=`pwd`
 
 
 SPEECH_SH=${MYDIR}/speech.sh
-SPEECH_TXT=${HOME}/speech.txt
+SPEECH_TXT=/boot/speech.txt
 SPEECH_STOP_FILE=${HOME}/stop_speech
 SPEECH_INTERVAL=120
 

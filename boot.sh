@@ -208,7 +208,7 @@ if which ${ROBOT_SVR}; then
     ${SPEAK_CMD} "モーター制御システムを起動し" &
     sleep 2
     ${SPEAK_CMD} "モーターの動作確認を行います" &
-    sleep 6
+    sleep 8
     while ! ${ROBOT_CLIENT} -d ':.surprised'; do
         sleep 2
     done
