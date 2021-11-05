@@ -21,10 +21,10 @@ class Dance(threading.Thread):
         "happy",
         "surprised",
         "surprised",
-        "hi_right",
-        "hi_left",
-        "bye_right",
-        "bye_left",
+#        "hi_right",
+#        "hi_left",
+#        "bye_right",
+#        "bye_left",
         "toe_right 2",
         "toe_right 2",
         "toe_left 2",
@@ -33,11 +33,11 @@ class Dance(threading.Thread):
         "heel_right 2",
         "heel_left 2",
         "heel_left 2",
-        "ojigi",
+#        "ojigi",
         "home"
     ]
 
-    def __init__(self, robot_ctrl, max_sleep_sec=5, debug=False):
+    def __init__(self, robot_ctrl, max_sleep_sec=4, debug=False):
         """ __init__ """
         self._dbg = debug
         self._log = get_logger(__class__.__name__, self._dbg)

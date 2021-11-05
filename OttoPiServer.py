@@ -232,7 +232,7 @@ class ServerHandler(socketserver.StreamRequestHandler):
                 if cmd_name in ['dance_on', 'dance_true']:
                     if self._svr._dance is None:
                         self._svr._dance = Dance(self._svr._ctrl,
-                                                 max_sleep_sec=5,
+                                                 max_sleep_sec=3,
                                                  debug=True)
                         self._svr._dance.start()
                         self.send_reply(data, True, '')
