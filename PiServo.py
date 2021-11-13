@@ -10,19 +10,18 @@ __date__   = '2019'
 
 import pigpio
 import time
-
-#####
 from MyLogger import MyLogger
+
+
 my_logger = MyLogger(__file__)
 
-#####
 PULSE_OFF  = 0
 PULSE_MIN  = 500
 PULSE_MAX  = 2500
 PULSE_HOME = 1500
 
 PULSE_STEP      = 10
-INTERVAL_FACTOR = 0.40
+INTERVAL_FACTOR = 0.50
 
 DEF_PIN = [17, 27, 22, 23]
 DEF_PULSE_HOME = [1500, 1500, 1500, 1500]
@@ -30,7 +29,6 @@ DEF_PULSE_MIN  = [ 500,  500,  500,  500]
 DEF_PULSE_MAX  = [2500, 2500, 2500, 2500]
 
 
-#####
 class PiServo:
     """複数のサーボモーターを同期を取りながら同時に動かす"""
     def __init__(self, pi=None, pins=DEF_PIN,
@@ -194,8 +192,8 @@ class PiServo:
                for i in range(self.pin_n)])
 
 
-#####
 class Sample:
+    """ Sample """
     def __init__(self, pins, debug=False):
         self.debug = debug
         self.logger = my_logger.get_logger(__class__.__name__, debug)
@@ -233,7 +231,6 @@ class Sample:
         self.pi.stop()
 
 
-#####
 import click
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 

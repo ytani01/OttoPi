@@ -463,34 +463,6 @@ class OttoPiMotion:
                        [-p2[1], 0, 0, -p2[0]],
                        [0, 0, 0, 0]], interval_msec=interval_msec, v=v, q=q)
 
-    def right_forward(self, n=1, interval_msec=0, v=None, q=False):
-        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
-                          n, interval_msec, str(v), q)
-
-        self.turn1('r', interval_msec=interval_msec, v=v, q=q)
-        self.walk(n, 'f', rl='', v=v, q=q)
-
-    def left_forward(self, n=1, interval_msec=0, v=None, q=False):
-        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
-                          n, interval_msec, str(v), q)
-
-        self.turn1('l', interval_msec=interval_msec, v=v, q=q)
-        self.walk(n, 'f', rl='', v=v, q=q)
-
-    def right_backward(self, n=1, interval_msec=0, v=None, q=False):
-        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
-                          n, interval_msec, str(v), q)
-
-        self.turn1('l', interval_msec=interval_msec, v=v, q=q)
-        self.walk(n, 'b', rl='', v=v, q=q)
-
-    def left_backward(self, n=1, interval_msec=0, v=None, q=False):
-        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
-                          n, interval_msec, str(v), q)
-
-        self.turn1('r', interval_msec=interval_msec, v=v, q=q)
-        self.walk(n, 'b', rl='', v=v, q=q)
-
     def turn1(self, rl, interval_msec=0, v=None, q=False):
         """ turn1
 
@@ -504,8 +476,8 @@ class OttoPiMotion:
         self.logger.debug('rl=%s, interval_msec=%d, v=%s, q=%s',
                           rl, interval_msec, str(v), q)
 
-        p1 = (60, 20)
-        p2 = (20, 5)
+        p1 = (55, 20)
+        p2 = (15, 5)
         p3 = 0.6
         sleep_sec = 0.1
 
@@ -534,6 +506,34 @@ class OttoPiMotion:
                        [0, 0, 0, 0]], interval_msec=interval_msec, v=v, q=q)
             time.sleep(sleep_sec)
 
+    def right_forward(self, n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+
+        self.turn1('r', interval_msec=interval_msec, v=v, q=q)
+        self.walk(n, 'f', rl='', v=v, q=q)
+
+    def left_forward(self, n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+
+        self.turn1('l', interval_msec=interval_msec, v=v, q=q)
+        self.walk(n, 'f', rl='', v=v, q=q)
+
+    def right_backward(self, n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+
+        self.turn1('l', interval_msec=interval_msec, v=v, q=q)
+        self.walk(n, 'b', rl='', v=v, q=q)
+
+    def left_backward(self, n=1, interval_msec=0, v=None, q=False):
+        self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
+                          n, interval_msec, str(v), q)
+
+        self.turn1('r', interval_msec=interval_msec, v=v, q=q)
+        self.walk(n, 'b', rl='', v=v, q=q)
+
     def turn_right(self, n=1, interval_msec=0, v=None, q=False):
         self.logger.debug('n=%d, interval_msec=%d, v=%s, q=%s',
                           n, interval_msec, str(v), q)
@@ -544,39 +544,15 @@ class OttoPiMotion:
                           n, interval_msec, str(v), q)
         self.cmd_n(self.turn1, 'l', n, interval_msec, v, q)
 
-    def walk(self, n=1, mv='f', rl='', v=None, q=False):
-        """ walk    """
-        self.logger.debug('n=%d, mv=%s rl=%s, v=%s, q=%s',
-                          n, mv, rl, str(v), q)
-
-        if n == 0:
-            n = N_CONTINUOUS
-            self.logger.debug('n=%d!', n)
-
-        if rl == '':
-            rl = 'rl'[random.randint(0, 1)]
-            self.logger.debug('rl=%s', rl)
-
-        self.home()
-        time.sleep(0.2)
-
-        for i in range(n):
-            if self.stop_flag:
-                break
-
-            self.walk1(mv, rl, v=v, q=q)
-            rl = self.change_rl(rl)
-
-        self.walk1('end', rl, v=v, q=q)
-
     def walk1(self, mv='f', rl='r', v=None, q=False):
+        """ walk1 """
         self.logger.debug('mv=%s, rl=%s, v=%s, q=%s',
                           mv, rl, str(v), q)
 
         if rl == '':
             return
 
-        p1 = (65, 20)
+        p1 = (70, 20)
         p2 = 30
 
         if mv[0] == 'backward'[0]:
@@ -603,6 +579,31 @@ class OttoPiMotion:
 
         if rl[0] == 'left'[0]:
             self.move1(0, -p2, -p2, 0, v=v, q=q)
+
+    def walk(self, n=1, mv='f', rl='', v=None, q=False):
+        """ walk    """
+        self.logger.debug('n=%d, mv=%s rl=%s, v=%s, q=%s',
+                          n, mv, rl, str(v), q)
+
+        if n == 0:
+            n = N_CONTINUOUS
+            self.logger.debug('n=%d!', n)
+
+        if rl == '':
+            rl = 'rl'[random.randint(0, 1)]
+            self.logger.debug('rl=%s', rl)
+
+        self.home()
+        time.sleep(0.2)
+
+        for i in range(n):
+            if self.stop_flag:
+                break
+
+            self.walk1(mv, rl, v=v, q=q)
+            rl = self.change_rl(rl)
+
+        self.walk1('end', rl, v=v, q=q)
 
     def forward(self, n=1, rl='', v=None, q=False):
         self.logger.debug('n=%d, rl=%s, v=%s, q=%s', n, rl, str(v), q)
