@@ -8,9 +8,16 @@
     <script type="text/javascript">
       function post(val) {
         if ( val != ":dance_true" ) {
-          el_dance = document.getElementById("dance");
+          const el_dance = document.getElementById("dance");
           if ( el_dance.checked ) {
              el_dance.checked = false;
+          }
+        }
+
+        if ( val != ":dance2_true" ) {
+          const el_dance2 = document.getElementById("dance2");
+          if ( el_dance2.checked ) {
+             el_dance2.checked = false;
           }
         }
 
@@ -78,6 +85,7 @@
             </td>
 	    <td align="center" nowrap>
               <input id="dance" type="checkbox" name="dance" onChange="post(':' + this.name + '_' + this.checked);">Dance
+              <input id="dance2" type="checkbox" name="dance2" onChange="post(':' + this.name + '_' + this.checked);">Dance2
             </td>
           </tr>
         </tbody>
@@ -144,7 +152,7 @@
 	    <td>
 	      <input type="image" src="/static/images/button_red1.png"
 		     width="60px"
-		     onClick="post(':dance_off');post(':auto_off');">
+		     onClick="post(':dance_off');post(':dance2_off');post(':auto_off');">
 	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_right.png"

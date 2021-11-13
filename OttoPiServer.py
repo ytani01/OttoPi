@@ -32,7 +32,7 @@ import pigpio
 
 from OttoPiCtrl import OttoPiCtrl
 from OttoPiAuto import OttoPiAuto
-from dance import Dance
+from dance import Dance, Dance2
 from MyLogger import get_logger
 
 
@@ -48,6 +48,7 @@ class ServerHandler(socketserver.StreamRequestHandler):
         self._ctrl = server._ctrl
         self._auto = server._auto
         self._dance = None
+        self._dance2 = None
 
         self.cmd_key = {
             # auto switch commands
@@ -59,6 +60,12 @@ class ServerHandler(socketserver.StreamRequestHandler):
             '%': 'donce_off',
             '$': 'dance_true',
             '%': 'donce_false',
+
+            # dance2 switch commands
+            '$': 'dance2_on',
+            '%': 'donce2_off',
+            '$': 'dance2_true',
+            '%': 'donce2_false',
 
             # robot control commands
             'w': 'forward',
@@ -230,19 +237,46 @@ class ServerHandler(socketserver.StreamRequestHandler):
 
                 """ dance """
                 if cmd_name in ['dance_on', 'dance_true']:
+                    if self._svr._dance2 is not None:
+                        self._svr._dance2.end()
+                        self._svr._dance2 = None
+                        
                     if self._svr._dance is None:
                         self._svr._dance = Dance(self._svr._ctrl,
                                                  max_sleep_sec=3,
                                                  debug=True)
                         self._svr._dance.start()
-                        self.send_reply(data, True, '')
+
+                    self.send_reply(data, True, '')
                     continue
 
-                if cmd_name in ['dance_off', 'dance_false']:
+                """ dance2 """
+                if cmd_name in ['dance2_on', 'dance2_true']:
                     if self._svr._dance is not None:
                         self._svr._dance.end()
                         self._svr._dance = None
-                        self.send_reply(data, True, '')
+
+                    if self._svr._dance2 is None:
+                        self._svr._dance2 = Dance2(self._svr._ctrl,
+                                                 max_sleep_sec=3,
+                                                 debug=True)
+                        self._svr._dance2.start()
+
+                    self.send_reply(data, True, '')
+                    continue
+
+                """ dance and dance2 off """
+                if cmd_name in ['dance_off', 'dance_false',
+                                'dance2_off', 'dance2_false']:
+                    if self._svr._dance is not None:
+                        self._svr._dance.end()
+                        self._svr._dance = None
+
+                    if self._svr._dance2 is not None:
+                        self._svr._dance2.end()
+                        self._svr._dance2 = None
+
+                    self.send_reply(data, True, '')
                     continue
 
                 """ auto """
@@ -346,6 +380,7 @@ class OttoPiServer(socketserver.ThreadingTCPServer):
         self._auto.start()
 
         self._dance = None
+        self._dance2 = None
 
         time.sleep(1)
 
