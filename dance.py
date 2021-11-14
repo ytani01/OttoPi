@@ -33,7 +33,7 @@ class Dance(threading.Thread):
         "heel_right 2",
         "heel_left 2",
         "heel_left 2",
-        "ojigi",
+#        "ojigi",
         "home"
     ]
 
@@ -80,6 +80,8 @@ class Dance2(Dance):
     CMD = [
         "slide_right",
         "slide_right",
+        "slide_right",
+        "slide_left",
         "slide_left",
         "slide_left",
         "happy",
@@ -92,13 +94,17 @@ class Dance2(Dance):
         "bye_left",
         "toe_right 2",
         "toe_right 2",
+        "toe_right 2",
+        "toe_left 2",
         "toe_left 2",
         "toe_left 2",
         "heel_right 2",
         "heel_right 2",
+        "heel_right 2",
         "heel_left 2",
         "heel_left 2",
-        "ojigi",
+        "heel_left 2",
+#        "ojigi",
         "home"
     ]
 

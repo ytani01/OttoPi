@@ -127,65 +127,67 @@
 	<tbody>
 	  <tr>
 	    <td></td>
-	    <td></td>
-	    <td align="center">
-	      <input type="button" value="suriashi" onClick="post(':suriashi_fwd');">
+	    <td align="center" colspan="3">
+	      <input style="font-size: x-large; color: white;
+                            background-color: blue;
+                            border-radius: 15px;"
+                     type="button" value="すり足"
+                     onClick="post(':suriashi_fwd');">
 	    </td>
-	    <td></td>
 	    <td></td>
 	  </tr>
 	  <tr>
 	    <td></td>
 	    <td>
 	      <input type="image" src="/static/images/button_up.png"
-		     width="60px" onClick="post(':left_forward');">
+		     width="65px" onClick="post(':left_forward');">
 	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_up.png"
-		     width="60px" onClick="post(':forward');">
+		     width="65px" onClick="post(':forward');">
 	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_up.png"
-		     width="60px" onClick="post(':right_forward');">
+		     width="65px" onClick="post(':right_forward');">
 	    </td>
 	    <td></td>
 	  </tr>
 	  <tr>
 	    <td>
 	      <input type="image" src="/static/images/button_left.png"
-		     width="60px" onClick="post(':slide_left');">
+		     width="65px" onClick="post(':slide_left');">
 	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_left.png"
-		     width="60px" onClick="post(':turn_left');">
+		     width="65px" onClick="post(':turn_left');">
 	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_red1.png"
-		     width="60px"
+		     width="65px"
 		     onClick="post(':dance_off');post(':dance2_off');post(':auto_off');">
 	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_right.png"
-		     width="60px" onClick="post(':turn_right');">
+		     width="65px" onClick="post(':turn_right');">
 	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_right.png"
-		     width="60px" onClick="post(':slide_right');">
+		     width="65px" onClick="post(':slide_right');">
 	    </td>
 	  </tr>
 	  <tr>
 	    <td></td>
 	    <td>
 	      <input type="image" src="/static/images/button_down.png"
-		     width="60px" onClick="post(':left_backward');">
+		     width="65px" onClick="post(':left_backward');">
 	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_down.png"
-		     width="60px" onClick="post(':backward');">
+		     width="65px" onClick="post(':backward');">
 	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_down.png"
-		     width="60px" onClick="post(':right_backward');">
+		     width="65px" onClick="post(':right_backward');">
 	    </td>
 	    <td></td>
 	  </tr>
@@ -195,25 +197,27 @@
       <div align="left">
 	<strong>【おしゃべり】</strong>
 	<form action="./" method="POST" name="f0">
-	  定型文: 
-	  <select id="sentence" onChange="speak2()">
+	  <span class="speak">定型文:</span>
+	  <select class="speak" id="sentence" onChange="speak2()">
 	    <option value=""></option>
 	    <option value="こんにちは">こんにちは</option>
 	    <option value="お元気ですか">お元気ですか</option>
 	    <option value="さようなら">さようなら</option>
+	    <option value="ばいばい">ばいばい</option>
 	    <option value="ありがとう">ありがとう</option>
-	    <option value="私は">私は</option>
-	    <option value="二そくほこうロボット">二足歩行ロボット</option>
-	    <option value="オットーパイと申します">OttoPiと申します</option>
+	    <option value="よろしく">よろしく</option>
+	    <option value="おねがいします">おねがいします</option>
 	  </select>
 	</form>
 	
 	<form action="./" method="POST" name="f1">
-	  <input type="text" name="msg" value="">
-	  <input type="button" value="speak" onClick="speak()">
-	  <input type="button" value="clear" onClick="clear_msg()">
+	  <input class="speak" type="text" name="msg" size="14" value="">
+     	  <input class="speak" type="button" value="speak" onClick="speak()">
+	  <input class="speak" type="button" value="clear" onClick="clear_msg()">
 	</form>
-	
+
+        <hr />
+
 	自動自己紹介:
 	<input type="button" value="ON" onClick="speech('on');">
 	<input type="button" value="OFF" onClick="speech('off');">
@@ -233,44 +237,44 @@
 	  <tr>
 	    <td>
 	      <input type="image" src="/static/images/button_up.png"
-		     width="40px" onClick="post(':move_down0');">
+		     width="50px" onClick="post(':move_down0');">
 	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_left.png"
-		     width="40px" onClick="post(':move_up1');">
+		     width="50px" onClick="post(':move_up1');">
 	    </td>
 	    <td align="center">
 	      HOME
 	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_right.png"
-		     width="40px" onClick="post(':move_down2');">
+		     width="50px" onClick="post(':move_down2');">
 	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_up.png"
-		     width="40px " onClick="post(':move_up3');">
+		     width="50px " onClick="post(':move_up3');">
 	    </td>
 	  </tr>
 	  <tr>
 	    <td>
 	      <input type="image" src="/static/images/button_down.png"
-		     width="40px" onClick="post(':move_up0');">
+		     width="50px" onClick="post(':move_up0');">
 	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_right.png"
-		     width="40px" onClick="post(':move_down1');">
+		     width="50px" onClick="post(':move_down1');">
 	    </td>
-	    <td>
+	    <td align="center">
 	      <input type="image" src="/static/images/button_blue2.png"
-		     width="40px" onClick="post(':home');">
+		     width="50px" onClick="post(':home');">
 	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_left.png"
-		     width="40px" onClick="post(':move_up2');">
+		     width="50px" onClick="post(':move_up2');">
 	    </td>
 	    <td>
 	      <input type="image" src="/static/images/button_down.png"
-		     width="40px" onClick="post(':move_down3');">
+		     width="50px" onClick="post(':move_down3');">
 	    </td>
 	  </tr>
 	</tbody>
@@ -339,6 +343,20 @@
 	    </td>
 	  </tr>
 	</tbody>
+      </table>
+      <hr />
+      <hr />
+      <table style="width:100%;">
+        <tbody>
+          <tr>
+            <td align="center">
+              <input class="btn" type="button" value="reboot" name="reboot">
+            </td>
+            <td align="center">
+              <input class="btn" type="button" value="shutdown" name="shutdown">
+            </td>
+          </tr>
+        </tbody>
       </table>
     </div>
   </body>
