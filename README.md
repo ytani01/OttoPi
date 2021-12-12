@@ -1,8 +1,8 @@
-# OttoPi: Otto DIY like biped robot for Raspberry Pi (Zero)
+# OttoPi: Otto DIY like biped robot for Raspberry Pi
 
 see [github pages](https://ytani01.github.io/OttoPi/)
 
-## ToDo
+## Power ON/OFF Button
 
 ### Power ON button
 
