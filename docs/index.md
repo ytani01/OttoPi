@@ -24,7 +24,7 @@ Raspberry Piがベースと言うことで、
 
 ## Control with Scratch 3.0
 
-0. (for Windows) Install [OLD Scratch Link (1.3.66.0)](https://github.com/ytani01/OttoPi/raw/master/ScratchLink/ScratchLink-1.3.66.0.zip)
+0. (for Windows) Download and UnZip [OLD Scratch Link (1.3.66.0)](https://github.com/ytani01/OttoPi/raw/master/ScratchLink/ScratchLink-1.3.66.0.zip)
 1. (for PC) run ``Scratch Link``
 2. [Scratch & 専用拡張機能](https://ytani01.github.io/scratch-gui/)
 
