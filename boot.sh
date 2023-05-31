@@ -33,7 +33,7 @@ ROBOT_SVR_OPT="12345"
 ROBOT_LOG="${LOGDIR}/robot.log"
 ROBOT_CLIENT="OttoPiClient.py"
 
-BLE_SVR="OttoPiBleServer.py"
+BLE_SVR="OttoPiBleServer.pyXXX"
 BLE_SVR_OPT="-d"
 BLE_LOG="${LOGDIR}/ble.log"
 
@@ -208,8 +208,9 @@ if which ${ROBOT_SVR}; then
     ${SPEAK_CMD} "モーター制御システムを起動し" &
     sleep 2
     ${SPEAK_CMD} "モーターの動作確認を行います" &
-    sleep 8
-    while ! ${ROBOT_CLIENT} -d ':.surprised'; do
+    sleep 5
+    # while ! ${ROBOT_CLIENT} -d ':.surprised'; do
+    while ! ${ROBOT_CLIENT} ':.hi_right' ':.hi_left'; do
         sleep 2
     done
     sleep 5
