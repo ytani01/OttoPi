@@ -15,7 +15,7 @@ IPHTML_DST="ytani@ssh.ytani.net:public_html/iot"
 PIN_AUDIO1=12
 PIN_AUDIO2=13
 
-OPENING_MUSIC="opening"
+OPENING_MUSIC="openingXXX"
 OPENING_MUSIC_PLAYER="cvlc --play-and-exit --alsa-gain 0.5"
 
 SPEAK_SVR="SpeakServer.py"
